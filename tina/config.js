@@ -21,7 +21,7 @@ export default defineConfig({
     collections: [
       {
         name: "page",
-        label: "Pagine",
+        label: "Sito Web",
         path: "content/page", // Questo corrisponde alla cartella 'content/page' che vedo nel tuo screenshot
         format: "json",
         fields: [
