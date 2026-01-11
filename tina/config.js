@@ -23,7 +23,6 @@ export default defineConfig({
         name: "page",
         label: "Sito Web",
         path: "content/page", // Questo corrisponde alla cartella 'content/page' che vedo nel tuo screenshot
-        format: "json",
         fields: [
           {
             type: "string",
