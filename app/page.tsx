@@ -1,91 +1,60 @@
-export default function Home() {
+import { client } from "../tina/__generated__/client";
+
+export default async function Home() {
+  // 1. Chiede a Tina i dati del file "home.mdx"
+  const res = await client.queries.page({ relativePath: "home.mdx" });
+  const page = res.data.page;
+
   return (
     <main className="container">
-      {/* CARD 1 - Grammatica */}
-      <article className="tile">
-        <div>
-          <span className="tile-category">Grammatica</span>
-          <h3>Mi serve ricordare il futuro?</h3>
-          <div className="tile-content">
-            <ul>
-              <li>Quando lo uso</li>
-              <li>Come si forma</li>
-            </ul>
+      
+      {/* 2. Se non ci sono tiles, mostra un avviso gentile */}
+      {(!page.tiles || page.tiles.length === 0) && (
+        <div style={{ textAlign: "center", width: "100%", padding: "50px" }}>
+          <h3>Nessun contenuto ancora...</h3>
+          <p>Vai su /admin per aggiungere le tue prime card!</p>
+        </div>
+      )}
+
+      {/* 3. CICLO: Per ogni "tile" che hai creato nel CMS, disegna una card */}
+      {page.tiles?.map((tile, i) => (
+        <article 
+          key={i} 
+          className={`tile ${tile?.style === 'idiom' ? 'idiom' : ''} ${tile?.style === 'joke' ? 'joke' : ''}`}
+        >
+          <div>
+            {/* Categoria (se c'è) */}
+            {tile?.category && (
+              <span className="tile-category">{tile.category}</span>
+            )}
+
+            {/* Titolo */}
+            {tile?.title && <h3>{tile.title}</h3>}
+
+            <div className="tile-content">
+              {/* Descrizione (se c'è) */}
+              {tile?.description && (
+                <p style={{ marginBottom: "10px" }}>{tile.description}</p>
+              )}
+
+              {/* Lista puntata (se c'è) */}
+              {tile?.bulletPoints && tile.bulletPoints.length > 0 && (
+                <ul>
+                  {tile.bulletPoints.map((point, index) => (
+                    <li key={index}>{point}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="read-more">Clicca per leggere</div>
-      </article>
 
-      {/* CARD 2 - Viaggi */}
-      <article className="tile">
-        <div>
-          <span className="tile-category">Prossima Vacanza a...</span>
-          <h3>Visita Padova</h3>
-          <div className="tile-content">
-            <ul>
-              <li>Cappella degli Scrovegni</li>
-              <li>Torre dell'Orologio</li>
-              <li>Prato della Valle</li>
-            </ul>
-          </div>
-        </div>
-        <div className="read-more">Scopri l'itinerario</div>
-      </article>
+          {/* Bottone/Link in basso (se c'è testo) */}
+          {tile?.buttonText && (
+            <div className="read-more">{tile.buttonText}</div>
+          )}
+        </article>
+      ))}
 
-      {/* CARD 3 - Modo di Dire (Rosso) */}
-      <article className="tile idiom">
-        <div>
-          <span className="tile-category">Modo di dire</span>
-          <h3>"Non avere peli sulla lingua"</h3>
-          <p>Significato: Essere molto schietti e sinceri, dire tutto ciò che si pensa.</p>
-        </div>
-      </article>
-
-      {/* CARD 4 - Barzelletta (Grigio) */}
-      <article className="tile joke">
-        <div>
-          <span className="tile-category">Barzelletta</span>
-          <h3>Il colmo per un matematico?</h3>
-          <p style={{ fontStyle: "italic", marginTop: "10px" }}>
-            "Abitare in una frazione!"
-          </p>
-        </div>
-        <div className="read-more">Ridi ancora</div>
-      </article>
-
-      {/* CARD 5 - Ricetta */}
-      <article className="tile">
-        <div>
-          <span className="tile-category">Ricetta del mese</span>
-          <h3>Tiramisù Classico</h3>
-          <div className="tile-content">
-            <p style={{ marginBottom: "10px" }}>
-              Il dolce italiano più famoso al mondo.
-            </p>
-            <ul>
-              <li>Mascarpone fresco</li>
-              <li>Caffè espresso</li>
-              <li>Savoiardi</li>
-            </ul>
-          </div>
-        </div>
-        <div className="read-more">Leggi la ricetta</div>
-      </article>
-
-      {/* CARD 6 - Film */}
-      <article className="tile">
-        <div>
-          <span className="tile-category">Film del mese</span>
-          <h3>La Grande Bellezza</h3>
-          <div className="tile-content">
-            <p><strong>Regia:</strong> Paolo Sorrentino</p>
-            <p style={{ marginTop: "10px", fontSize: "0.9rem" }}>
-              Un viaggio onirico attraverso Roma. Premio Oscar 2014.
-            </p>
-          </div>
-        </div>
-        <div className="read-more">Guarda il trailer</div>
-      </article>
     </main>
   );
 }
