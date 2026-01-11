@@ -22,7 +22,8 @@ export default defineConfig({
       {
         name: "page",
         label: "Sito Web",
-        path: "content/page", // Questo corrisponde alla cartella 'content/page' che vedo nel tuo screenshot
+        path: "content/page",
+        format: "mdx",
         fields: [
           {
             type: "string",
@@ -31,13 +32,14 @@ export default defineConfig({
             isTitle: true,
             required: true,
           },
-          // QUI DEFINIAMO LE TILES
+          // QUI INIZIA LA MAGIA DELLE TILES
           {
-            label: "Tiles (Piastrelle)",
-            name: "tiles",
             type: "object",
             list: true,
+            name: "tiles",
+            label: "Griglia di Card (Tiles)",
             ui: {
+              // Questo fa vedere il titolo della card nella lista invece di "Item 1"
               itemProps: (item) => {
                 return { label: item.title || 'Nuova Card' }
               },
@@ -45,21 +47,43 @@ export default defineConfig({
             fields: [
               {
                 type: "string",
-                label: "Stile Card",
-                name: "type",
+                name: "style",
+                label: "Stile Grafico",
                 options: [
                   { label: "Standard (Bianco)", value: "standard" },
                   { label: "Modo di Dire (Rosso)", value: "idiom" },
                   { label: "Barzelletta (Grigio)", value: "joke" },
                 ],
               },
-              { type: "string", label: "Categoria", name: "category" },
-              { type: "string", label: "Titolo Principale", name: "title" },
-              { type: "string", label: "Contenuto Testuale", name: "content", ui: { component: "textarea" } },
-              { type: "string", label: "Punti Elenco", name: "points", list: true },
-              { type: "string", label: "Testo del Link", name: "linkText" },
+              {
+                type: "string",
+                name: "category",
+                label: "Categoria (es. Grammatica)",
+              },
+              {
+                type: "string",
+                name: "title",
+                label: "Titolo Principale",
+              },
+              {
+                type: "string",
+                name: "description",
+                label: "Testo Descrittivo (Opzionale)",
+                ui: { component: "textarea" },
+              },
+              {
+                type: "string",
+                name: "bulletPoints",
+                label: "Punti Elenco (Lista)",
+                list: true,
+              },
+              {
+                type: "string",
+                name: "buttonText",
+                label: "Testo del Link (es. Leggi di più)",
+              },
             ],
-          }
+          },
         ],
       },
     ],
