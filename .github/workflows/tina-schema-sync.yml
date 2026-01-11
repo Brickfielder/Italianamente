@@ -1,0 +1,59 @@
+name: Tina schema sync
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "tina/**"
+      - "content/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build Tina schema
+        env:
+          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+          NEXT_PUBLIC_TINA_BRANCH: ${{ github.ref_name }}
+        run: |
+          if [ -z "${NEXT_PUBLIC_TINA_CLIENT_ID}" ] || [ -z "${TINA_TOKEN}" ]; then
+            echo "Missing Tina Cloud secrets. Set NEXT_PUBLIC_TINA_CLIENT_ID and TINA_TOKEN to enable schema sync."
+            exit 0
+          fi
+          pnpm exec tinacms build
+
+      - name: Commit updated schema artifacts
+        run: |
+          if git diff --quiet; then
+            echo "No schema changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tina/tina-lock.json tina/__generated__
+          git commit -m "chore(tina): sync schema artifacts"
+          git push
