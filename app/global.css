@@ -1,0 +1,187 @@
+/* --- VARIABILI COLORE --- */
+:root {
+  --primary-color: #B23A3A;
+  --accent-color: #D4AF37;
+  --bg-color: #FDFBF7;
+  --text-color: #333333;
+  --light-gray: #E5E5E5;
+  --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* --- BASE --- */
+body {
+  font-family: 'Lato', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+a { text-decoration: none; color: inherit; transition: 0.3s; }
+ul { list-style: none; padding: 0; margin: 0; }
+
+/* --- HEADER --- */
+header {
+  background: #fff;
+  border-bottom: 1px solid var(--light-gray);
+  padding: 20px 0;
+}
+
+.topBar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 5%;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #666;
+  margin-bottom: 10px;
+}
+.topBar a { margin-left: 20px; }
+.topBar a:hover { color: var(--primary-color); }
+
+.brandArea {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  color: var(--text-color);
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.subtitle {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  margin-top: -5px;
+}
+
+.mainNav {
+  border-top: 1px solid var(--light-gray);
+  border-bottom: 1px solid var(--light-gray);
+  margin-top: 20px;
+  padding: 15px 0;
+}
+
+.mainNav ul {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.mainNav a {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+.mainNav a:hover { color: var(--primary-color); border-bottom: 2px solid var(--accent-color); }
+
+/* --- GRID LAYOUT --- */
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+/* --- TILES --- */
+.tile {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border-color: var(--accent-color);
+}
+
+.tileCategory {
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--accent-color);
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.tile h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  line-height: 1.2;
+  margin-top: 0;
+}
+
+.tileContent ul li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.tileContent ul li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--accent-color);
+}
+
+/* Varianti Tile */
+.tile.idiom {
+  background-color: var(--primary-color);
+  color: white;
+}
+.tile.idiom .tileCategory { color: var(--accent-color); border-color: white; }
+.tile.idiom h3 { font-style: italic; font-size: 2.2rem; }
+.tile.idiom p { opacity: 0.9; }
+
+.tile.joke {
+  background-color: #fafafa;
+  border-left: 4px solid var(--accent-color);
+}
+
+.readMore {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+}
+.readMore::after {
+  content: "↓"; 
+  margin-left: 5px;
+  font-size: 1.2rem;
+}
+
+footer {
+  text-align: center;
+  padding: 40px;
+  margin-top: 50px;
+  background: #fff;
+  border-top: 1px solid #eee;
+  color: #888;
+  font-size: 0.9rem;
+}
