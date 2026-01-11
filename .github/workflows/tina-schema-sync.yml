@@ -39,7 +39,12 @@ jobs:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
           NEXT_PUBLIC_TINA_BRANCH: ${{ github.ref_name }}
-        run: pnpm exec tinacms build
+        run: |
+          if [ -z "${NEXT_PUBLIC_TINA_CLIENT_ID}" ] || [ -z "${TINA_TOKEN}" ]; then
+            echo "Missing Tina Cloud secrets. Set NEXT_PUBLIC_TINA_CLIENT_ID and TINA_TOKEN to enable schema sync."
+            exit 0
+          fi
+          pnpm exec tinacms build
 
       - name: Commit updated schema artifacts
         run: |
