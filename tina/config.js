@@ -137,6 +137,12 @@ export default defineConfig({
             required: true,
           },
           {
+            type: "string",
+            name: "tags",
+            label: "Tag",
+            list: true,
+          },
+          {
             type: "image",
             name: "image",
             label: "Immagine",
