@@ -15,6 +15,7 @@ export default async function PostPage({ params }: PostPageProps) {
       relativePath: `${params.slug}.mdx`,
     });
     const post = res.data.post;
+    const tags = (post as { tags?: string[] }).tags;
 
     return (
       <main className="container">
@@ -22,6 +23,15 @@ export default async function PostPage({ params }: PostPageProps) {
         <article className="tile">
           <div>
             <span className="tile-category">{post.category}</span>
+            {tags && tags.length > 0 && (
+              <div className="post-tags">
+                {tags.map((tag) => (
+                  <span key={tag} className="tag-pill">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
             <h3>{post.title}</h3>
             {post.image && (
               <div style={{ marginBottom: "20px" }}>
