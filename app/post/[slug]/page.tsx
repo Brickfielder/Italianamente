@@ -11,7 +11,7 @@ type PostPageProps = {
 export default async function PostPage({ params }: PostPageProps) {
   try {
     const res = await client.queries.post({
-      relativePath: `${params.slug}.md`,
+      relativePath: `${params.slug}.mdx`,
     });
     const post = res.data.post;
 

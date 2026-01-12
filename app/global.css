@@ -100,9 +100,12 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   gap: 30px;
 }
 
-/* Questa regola serve per assicurarsi che il link occupi tutto lo spazio della griglia */
+/* Questa regola serve per assicurarsi che il link non interrompa la griglia */
 .container > a {
-  display: flex;
+  display: contents;
+}
+
+.container a {
   text-decoration: none;
   color: inherit;
 }
@@ -121,6 +124,7 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   width: 100%; /* Assicura che la card riempia il link */
+  height: 100%;
 }
 
 /* Effetto hover sulla card quando avvolta dal link */
