@@ -32,6 +32,12 @@ export default defineConfig({
             isTitle: true,
             required: true,
           },
+          {
+            type: "rich-text",
+            name: "body",
+            label: "Contenuto",
+            isBody: true,
+          },
           // QUI INIZIA LA MAGIA DELLE TILES
           {
             type: "object",
@@ -85,6 +91,62 @@ export default defineConfig({
             ],
           },
         ],
+        ui: {
+          router: ({ document }) => {
+            if (document._sys.filename === "home") {
+              return `/`;
+            }
+            if (document._sys.filename === "about") {
+              return `/about`;
+            }
+            return undefined;
+          },
+        },
+      },
+      {
+        name: "post",
+        label: "Post",
+        path: "content/post",
+        format: "md",
+        fields: [
+          {
+            type: "string",
+            name: "title",
+            label: "Titolo",
+            required: true,
+            isTitle: true,
+          },
+          {
+            type: "string",
+            name: "category",
+            label: "Categoria",
+            options: [
+              "Grammatica",
+              "Prossima vacanza",
+              "Modo di dire",
+              "Barzelletta",
+              "Ricetta",
+              "Film",
+            ],
+            required: true,
+          },
+          {
+            type: "image",
+            name: "image",
+            label: "Immagine",
+          },
+          {
+            type: "rich-text",
+            name: "body",
+            label: "Contenuto",
+            isBody: true,
+          },
+        ],
+        ui: {
+          router: ({ document }) => {
+            return `/posts/${document._sys.filename}`;
+          },
+        },
       },
     ],
   },
