@@ -6,7 +6,6 @@ export default async function Home() {
     relativePath: "home.mdx",
     query: `query HomePage($relativePath: String!) {
       page(relativePath: $relativePath) {
-        title
         tiles {
           style
           category
@@ -32,65 +31,61 @@ export default async function Home() {
 
   return (
     <main className="container">
-      
-      {/* Intestazione della Home */}
-      <div style={{ textAlign: "center", marginBottom: "40px" }}>
-        <h1>{page.title}</h1>
-      </div>
+      {page.tiles?.map((tile, i) => {
+        // 1. Calcola i dati da mostrare (Override o Automatico)
+        const referencedPost = tile?.postReference;
 
-      <div className="grid">
-        {page.tiles?.map((tile, i) => {
-          // 1. Calcola i dati da mostrare (Override o Automatico)
-          const referencedPost = tile?.postReference;
-          
-          // Usa il dato manuale SE esiste, altrimenti usa quello del post
-          const displayCategory = tile?.category || referencedPost?.category;
-          const displayTitle = tile?.title || referencedPost?.title;
-          
-          // Calcola l'URL
-          const postHref = referencedPost?._sys?.filename
-            ? `/post/${referencedPost._sys.filename}`
-            : null;
+        // Usa il dato manuale SE esiste, altrimenti usa quello del post
+        const displayCategory = tile?.category || referencedPost?.category;
+        const displayTitle = tile?.title || referencedPost?.title;
 
-          const tileClasses = `tile ${tile?.style === 'idiom' ? 'idiom' : ''} ${tile?.style === 'joke' ? 'joke' : ''}`;
+        // Calcola l'URL
+        const postHref = referencedPost?._sys?.filename
+          ? `/post/${referencedPost._sys.filename}`
+          : null;
 
-          const TileContent = (
-            <article className={tileClasses}>
-              <div>
-                {displayCategory && <span className="tile-category">{displayCategory}</span>}
-                {displayTitle && <h3>{displayTitle}</h3>}
+        const tileClasses = `tile ${tile?.style === 'idiom' ? 'idiom' : ''} ${tile?.style === 'joke' ? 'joke' : ''}`;
 
-                <div className="tile-content">
-                  {tile?.description && <p style={{ marginBottom: "10px" }}>{tile.description}</p>}
-                  
-                  {tile?.bulletPoints && tile.bulletPoints.length > 0 && (
-                    <ul>
-                      {tile.bulletPoints.map((point, index) => (
-                        <li key={index}>{point}</li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+        const TileContent = (
+          <article className={tileClasses}>
+            <div>
+              {displayCategory && <span className="tile-category">{displayCategory}</span>}
+              {displayTitle && <h3>{displayTitle}</h3>}
+
+              <div className="tile-content">
+                {tile?.description && <p style={{ marginBottom: "10px" }}>{tile.description}</p>}
+
+                {tile?.bulletPoints && tile.bulletPoints.length > 0 && (
+                  <ul>
+                    {tile.bulletPoints.map((point, index) => (
+                      <li key={index}>{point}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
+            </div>
 
-              {/* Mostra il bottone se c'è un link O se c'è del testo manuale */}
-              <div className="read-more">
-                {tile?.buttonText || (postHref ? "Leggi l'articolo →" : "")}
-              </div>
-            </article>
+            {/* Mostra il bottone se c'è un link O se c'è del testo manuale */}
+            <div className="read-more">
+              {tile?.buttonText || (postHref ? "Leggi l'articolo →" : "")}
+            </div>
+          </article>
+        );
+
+        if (referencedPost && postHref) {
+          return (
+            <Link key={i} href={postHref} className="tile-link">
+              {TileContent}
+            </Link>
           );
+        }
 
-          if (referencedPost && postHref) {
-            return (
-              <Link key={i} href={postHref}>
-                {TileContent}
-              </Link>
-            );
-          }
-
-          return <div key={i}>{TileContent}</div>;
-        })}
-      </div>
+        return (
+          <div key={i} className="tile-link">
+            {TileContent}
+          </div>
+        );
+      })}
     </main>
   );
 }

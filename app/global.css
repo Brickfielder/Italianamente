@@ -105,6 +105,10 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   display: contents;
 }
 
+.container > .tile-link {
+  display: contents;
+}
+
 .container a {
   text-decoration: none;
   color: inherit;
