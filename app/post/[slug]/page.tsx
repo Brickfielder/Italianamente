@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 import { client } from "../../../tina/__generated__/client";
+import ScrollToTop from "./scroll-to-top";
 
 type PostPageProps = {
   params: { slug: string };
@@ -17,6 +18,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
     return (
       <main className="container">
+        <ScrollToTop />
         <article className="tile">
           <div>
             <span className="tile-category">{post.category}</span>
