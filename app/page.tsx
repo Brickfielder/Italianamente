@@ -49,7 +49,7 @@ export default async function Home() {
           
           // Calcola l'URL
           const postHref = referencedPost?._sys?.filename
-            ? `/posts/${referencedPost._sys.filename}`
+            ? `/post/${referencedPost._sys.filename}`
             : null;
 
           // 2. Costruiamo il contenuto della Card

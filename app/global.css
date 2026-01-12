@@ -18,7 +18,13 @@ body {
   line-height: 1.6;
 }
 
-a { text-decoration: none; color: inherit; transition: 0.3s; }
+/* RESET LINK GENERALE */
+a { 
+  text-decoration: none; 
+  color: inherit; 
+  transition: 0.3s; 
+}
+
 ul { list-style: none; }
 
 /* --- HEADER --- */
@@ -84,6 +90,7 @@ nav.main-nav a {
 nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var(--accent-color); }
 
 /* --- MAIN GRID LAYOUT --- */
+/* Modificato per gestire correttamente i link che avvolgono le card */
 .container {
   max-width: 1200px;
   margin: 40px auto;
@@ -91,6 +98,13 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
+}
+
+/* Questa regola serve per assicurarsi che il link occupi tutto lo spazio della griglia */
+.container > a {
+  display: flex;
+  text-decoration: none;
+  color: inherit;
 }
 
 /* --- STILE DELLE TILES (CARD) --- */
@@ -106,9 +120,11 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  width: 100%; /* Assicura che la card riempia il link */
 }
 
-.tile:hover {
+/* Effetto hover sulla card quando avvolta dal link */
+.container > a:hover .tile {
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   border-color: var(--accent-color);
@@ -171,8 +187,13 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   display: flex;
   align-items: center;
 }
+
+.tile.idiom .read-more {
+  color: var(--accent-color);
+}
+
 .read-more::after {
-  content: "↓"; 
+  content: " →"; 
   margin-left: 5px;
   font-size: 1.2rem;
 }
