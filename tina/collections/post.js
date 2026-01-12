@@ -12,6 +12,22 @@ export default {
       name: "title",
     },
     {
+      type: "string",
+      label: "Category",
+      name: "category",
+    },
+    {
+      type: "string",
+      label: "Tags",
+      name: "tags",
+      list: true,
+    },
+    {
+      type: "image",
+      label: "Image",
+      name: "image",
+    },
+    {
       type: "rich-text",
       label: "Blog Post Body",
       name: "body",

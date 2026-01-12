@@ -28,6 +28,7 @@ export default function RootLayout({
           <nav className="main-nav">
             <ul>
               <li><a href="/">Home</a></li>
+              <li><a href="/posts">Cerca</a></li>
               <li><a href="#">Grammatica</a></li>
               <li><a href="#">Cultura</a></li>
               <li><a href="#">Multimedia</a></li>
