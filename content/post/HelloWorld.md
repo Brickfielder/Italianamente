@@ -1,5 +1,6 @@
 ---
-title: 'Hello, World!!'
+title: "Hello, World!!"
+category: Grammatica
 ---
 
-Edit Me!
+Questo è il tuo primo post. Puoi aggiornarlo dal pannello Tina e aggiungere esempi, immagini o esercizi.
