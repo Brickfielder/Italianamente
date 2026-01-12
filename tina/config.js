@@ -72,6 +72,12 @@ export default defineConfig({
                 label: "Titolo Principale",
               },
               {
+                type: "reference",
+                name: "postReference",
+                label: "Post di riferimento (opzionale)",
+                collections: ["post"],
+              },
+              {
                 type: "string",
                 name: "description",
                 label: "Testo Descrittivo (Opzionale)",
