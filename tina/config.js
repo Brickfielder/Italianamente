@@ -150,7 +150,7 @@ export default defineConfig({
         ],
         ui: {
           router: ({ document }) => {
-            return `/posts/${document._sys.filename}`;
+            return `/post/${document._sys.filename}`;
           },
         },
       },

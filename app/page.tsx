@@ -52,11 +52,10 @@ export default async function Home() {
             ? `/post/${referencedPost._sys.filename}`
             : null;
 
-          // 2. Costruiamo il contenuto della Card
-          const CardContent = (
-            <article 
-              className={`tile ${tile?.style === 'idiom' ? 'idiom' : ''} ${tile?.style === 'joke' ? 'joke' : ''}`}
-            >
+          const tileClasses = `tile ${tile?.style === 'idiom' ? 'idiom' : ''} ${tile?.style === 'joke' ? 'joke' : ''}`;
+
+          const TileContent = (
+            <article className={tileClasses}>
               <div>
                 {displayCategory && <span className="tile-category">{displayCategory}</span>}
                 {displayTitle && <h3>{displayTitle}</h3>}
@@ -81,16 +80,15 @@ export default async function Home() {
             </article>
           );
 
-          // 3. SE c'è un link, avvolgi tutta la card col Link. Altrimenti mostra solo la card.
-          if (postHref) {
+          if (referencedPost && postHref) {
             return (
-              <Link key={i} href={postHref} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
-                {CardContent}
+              <Link key={i} href={postHref}>
+                {TileContent}
               </Link>
             );
           }
 
-          return <div key={i}>{CardContent}</div>;
+          return <div key={i}>{TileContent}</div>;
         })}
       </div>
     </main>
