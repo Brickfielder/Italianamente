@@ -3,6 +3,47 @@ import { defineConfig } from "tinacms";
 // Configurazione standard
 const branch = process.env.NEXT_PUBLIC_TINA_BRANCH || "main";
 
+const postFields = [
+  {
+    type: "string",
+    name: "title",
+    label: "Titolo",
+    required: true,
+    isTitle: true,
+  },
+  {
+    type: "string",
+    name: "category",
+    label: "Categoria",
+    options: [
+      "Grammatica",
+      "Prossima vacanza",
+      "Modo di dire",
+      "Barzelletta",
+      "Ricetta",
+      "Film",
+    ],
+    required: true,
+  },
+  {
+    type: "string",
+    name: "tags",
+    label: "Tag",
+    list: true,
+  },
+  {
+    type: "image",
+    name: "image",
+    label: "Immagine",
+  },
+  {
+    type: "rich-text",
+    name: "body",
+    label: "Contenuto",
+    isBody: true,
+  },
+];
+
 export default defineConfig({
   branch,
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID,
@@ -75,7 +116,7 @@ export default defineConfig({
                 type: "reference",
                 name: "postReference",
                 label: "Post di riferimento (opzionale)",
-                collections: ["post"],
+                collections: ["grammar", "culture", "multimedia"],
               },
               {
                 type: "string",
@@ -110,56 +151,38 @@ export default defineConfig({
         },
       },
       {
-        name: "post",
-        label: "Post",
-        path: "content",
-        match: {
-          include: "{grammar,culture,multimedia}/*.mdx",
-        },
+        name: "grammar",
+        label: "Grammatica",
+        path: "content/grammar",
         format: "mdx",
-        fields: [
-          {
-            type: "string",
-            name: "title",
-            label: "Titolo",
-            required: true,
-            isTitle: true,
-          },
-          {
-            type: "string",
-            name: "category",
-            label: "Categoria",
-            options: [
-              "Grammatica",
-              "Prossima vacanza",
-              "Modo di dire",
-              "Barzelletta",
-              "Ricetta",
-              "Film",
-            ],
-            required: true,
-          },
-          {
-            type: "string",
-            name: "tags",
-            label: "Tag",
-            list: true,
-          },
-          {
-            type: "image",
-            name: "image",
-            label: "Immagine",
-          },
-          {
-            type: "rich-text",
-            name: "body",
-            label: "Contenuto",
-            isBody: true,
-          },
-        ],
+        fields: postFields,
         ui: {
           router: ({ document }) => {
-            return `/post/${document._sys.filename}`;
+            return `/grammar/${document._sys.filename}`;
+          },
+        },
+      },
+      {
+        name: "culture",
+        label: "Cultura",
+        path: "content/culture",
+        format: "mdx",
+        fields: postFields,
+        ui: {
+          router: ({ document }) => {
+            return `/culture/${document._sys.filename}`;
+          },
+        },
+      },
+      {
+        name: "multimedia",
+        label: "Multimedia",
+        path: "content/multimedia",
+        format: "mdx",
+        fields: postFields,
+        ui: {
+          router: ({ document }) => {
+            return `/multimedia/${document._sys.filename}`;
           },
         },
       },
