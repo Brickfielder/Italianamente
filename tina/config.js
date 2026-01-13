@@ -3,6 +3,7 @@ import { defineConfig } from "tinacms";
 // Configurazione standard
 const branch = process.env.NEXT_PUBLIC_TINA_BRANCH || "main";
 
+// Definiamo i campi comuni una volta sola per non ripeterci
 const postFields = [
   {
     type: "string",
@@ -79,14 +80,13 @@ export default defineConfig({
             label: "Contenuto",
             isBody: true,
           },
-          // QUI INIZIA LA MAGIA DELLE TILES
+          // CONFIGURAZIONE TILES
           {
             type: "object",
             list: true,
             name: "tiles",
             label: "Griglia di Card (Tiles)",
             ui: {
-              // Questo fa vedere il titolo della card nella lista invece di "Item 1"
               itemProps: (item) => {
                 return { label: item.title || 'Nuova Card' }
               },
@@ -112,6 +112,7 @@ export default defineConfig({
                 name: "title",
                 label: "Titolo Principale",
               },
+              // QUI IL PUNTO CHIAVE: COLLEGA LE 3 NUOVE SEZIONI
               {
                 type: "reference",
                 name: "postReference",
@@ -150,6 +151,7 @@ export default defineConfig({
           },
         },
       },
+      // LE TRE NUOVE COLLEZIONI
       {
         name: "grammar",
         label: "Grammatica",
