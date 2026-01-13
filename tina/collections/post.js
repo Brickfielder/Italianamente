@@ -4,7 +4,10 @@
 export default {
   label: "Blog Posts",
   name: "post",
-  path: "content/post",
+  path: "content",
+  match: {
+    include: "{grammar,culture,multimedia}/*.mdx",
+  },
   fields: [
     {
       type: "string",
