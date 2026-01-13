@@ -25,7 +25,12 @@ export default function ClientPage(props) {
             <p className="subtitle">Impara l'italiano con Tiziana</p>
           </div>
           <nav className="mainNav">
-            <ul><li>Home</li><li>Grammatica</li><li>Cultura</li><li>Contatti</li></ul>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/grammar">Grammatica</a></li>
+              <li><a href="/culture">Cultura</a></li>
+              <li><a href="/multimedia">Multimedia</a></li>
+            </ul>
           </nav>
         </header>
 
