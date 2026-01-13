@@ -2,12 +2,9 @@
  * @type {import('tinacms').Collection}
  */
 export default {
-  label: "Blog Posts",
-  name: "post",
-  path: "content",
-  match: {
-    include: "{grammar,culture,multimedia}/*.mdx",
-  },
+  label: "Grammatica",
+  name: "grammar",
+  path: "content/grammar",
   fields: [
     {
       type: "string",
@@ -32,14 +29,14 @@ export default {
     },
     {
       type: "rich-text",
-      label: "Blog Post Body",
+      label: "Body",
       name: "body",
       isBody: true,
     },
   ],
   ui: {
     router: ({ document }) => {
-      return `/posts/${document._sys.filename}`;
+      return `/grammar/${document._sys.filename}`;
     },
   },
 };

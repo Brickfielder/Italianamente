@@ -14,7 +14,22 @@ export default async function Home() {
           bulletPoints
           buttonText
           postReference {
-            ... on Post {
+            __typename
+            ... on Grammar {
+              title
+              category
+              _sys {
+                filename
+              }
+            }
+            ... on Culture {
+              title
+              category
+              _sys {
+                filename
+              }
+            }
+            ... on Multimedia {
               title
               category
               _sys {
@@ -28,6 +43,11 @@ export default async function Home() {
   });
   
   const page = res.data.page;
+  const collectionRouteMap: Record<string, string> = {
+    Grammar: "grammar",
+    Culture: "culture",
+    Multimedia: "multimedia",
+  };
 
   return (
     <main className="container">
@@ -40,9 +60,13 @@ export default async function Home() {
         const displayTitle = tile?.title || referencedPost?.title;
 
         // Calcola l'URL
-        const postHref = referencedPost?._sys?.filename
-          ? `/post/${referencedPost._sys.filename}`
+        const collectionSlug = referencedPost?.__typename
+          ? collectionRouteMap[referencedPost.__typename]
           : null;
+        const postHref =
+          referencedPost?._sys?.filename && collectionSlug
+            ? `/${collectionSlug}/${referencedPost._sys.filename}`
+            : null;
 
         const tileClasses = `tile ${tile?.style === 'idiom' ? 'idiom' : ''} ${tile?.style === 'joke' ? 'joke' : ''}`;
 

@@ -9,6 +9,7 @@ type PostListItem = {
   tags?: string[] | null;
   body?: unknown;
   _sys?: { filename?: string | null } | null;
+  collection?: string | null;
 };
 
 type PostsPageProps = {
@@ -115,12 +116,17 @@ export default function PostsPage({ posts }: PostsPageProps) {
         )}
         {filteredPosts.map((post) => {
           const slug = post._sys?.filename;
-          if (!slug) {
+          const collection = post.collection;
+          if (!slug || !collection) {
             return null;
           }
 
           return (
-            <Link key={slug} href={`/post/${slug}`} className="tile-link">
+            <Link
+              key={`${collection}-${slug}`}
+              href={`/${collection}/${slug}`}
+              className="tile-link"
+            >
               <article className="tile">
                 <div>
                   {post.category && (

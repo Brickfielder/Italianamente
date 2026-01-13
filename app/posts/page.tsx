@@ -7,31 +7,75 @@ type PostListItem = {
   tags?: string[] | null;
   body?: unknown;
   _sys?: { filename?: string | null } | null;
+  collection?: string | null;
 };
 
 export default async function PostsRoute() {
-  const res = await client.queries.postConnection({
-    query: `query PostsPage {
-      postConnection {
-        edges {
-          node {
-            title
-            category
-            tags
-            body
-            _sys {
-              filename
+  const [grammarRes, cultureRes, multimediaRes] = await Promise.all([
+    client.queries.grammarConnection({
+      query: `query GrammarPostsPage {
+        grammarConnection {
+          edges {
+            node {
+              title
+              category
+              tags
+              body
+              _sys {
+                filename
+              }
             }
           }
         }
-      }
-    }`,
-  });
+      }`,
+    }),
+    client.queries.cultureConnection({
+      query: `query CulturePostsPage {
+        cultureConnection {
+          edges {
+            node {
+              title
+              category
+              tags
+              body
+              _sys {
+                filename
+              }
+            }
+          }
+        }
+      }`,
+    }),
+    client.queries.multimediaConnection({
+      query: `query MultimediaPostsPage {
+        multimediaConnection {
+          edges {
+            node {
+              title
+              category
+              tags
+              body
+              _sys {
+                filename
+              }
+            }
+          }
+        }
+      }`,
+    }),
+  ]);
 
-  const posts =
-    res.data.postConnection.edges
-      ?.map((edge) => edge?.node)
-      .filter(Boolean) ?? [];
+  const posts = [
+    ...(grammarRes.data.grammarConnection.edges?.map((edge) =>
+      edge?.node ? { ...edge.node, collection: "grammar" } : null
+    ) ?? []),
+    ...(cultureRes.data.cultureConnection.edges?.map((edge) =>
+      edge?.node ? { ...edge.node, collection: "culture" } : null
+    ) ?? []),
+    ...(multimediaRes.data.multimediaConnection.edges?.map((edge) =>
+      edge?.node ? { ...edge.node, collection: "multimedia" } : null
+    ) ?? []),
+  ].filter(Boolean);
 
   return <PostsPage posts={posts as PostListItem[]} />;
 }
