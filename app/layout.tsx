@@ -16,7 +16,7 @@ export default function RootLayout({
       <body>
         <header>
           <div className="top-bar">
-            <a href="#">About</a>
+            <a href="/about">About</a>
             <a href="mailto:tiziana.mazzotta25@gmail.com">Contact</a>
           </div>
 
