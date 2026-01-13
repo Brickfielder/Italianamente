@@ -19,7 +19,7 @@ export default function ClientPage(props) {
   return (
     <div className="page-wrapper">
         <header>
-          <div className="topBar"><a href="#">About</a><a href="mailto:tiziana.mazzotta25@gmail.com">Contact</a></div>
+          <div className="topBar"><a href="/about">About</a><a href="mailto:tiziana.mazzotta25@gmail.com">Contact</a></div>
           <div className="brandArea">
             <h1>ITALIANAMENTE</h1>
             <p className="subtitle">Impara l'italiano con Tiziana</p>
