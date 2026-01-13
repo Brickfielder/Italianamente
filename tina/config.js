@@ -112,7 +112,10 @@ export default defineConfig({
       {
         name: "post",
         label: "Post",
-        path: "content/post",
+        path: "content",
+        match: {
+          include: "{grammar,culture,multimedia}/*.mdx",
+        },
         format: "mdx",
         fields: [
           {
