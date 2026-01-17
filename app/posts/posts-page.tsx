@@ -2,22 +2,12 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-
-type PostListItem = {
-  title?: string | null;
-  category?: string | null;
-  tags?: string[] | null;
-  body?: unknown;
-  // FIX 1: Add breadcrumbs to the type definition
-  _sys?: {
-    filename?: string | null;
-    breadcrumbs?: string[] | null;
-    relativePath?: string | null;
-  } | null;
-};
+import type { PostListItem } from "./posts-data";
 
 type PostsPageProps = {
   posts: PostListItem[];
+  title?: string;
+  intro?: string;
 };
 
 const normalize = (value: string) => value.toLowerCase().trim();
@@ -34,7 +24,7 @@ const bodyToText = (body: unknown) => {
   }
 };
 
-export default function PostsPage({ posts }: PostsPageProps) {
+export default function PostsPage({ posts, title, intro }: PostsPageProps) {
   const [keyword, setKeyword] = useState("");
   const [activeTags, setActiveTags] = useState<string[]>([]);
 
@@ -82,6 +72,12 @@ export default function PostsPage({ posts }: PostsPageProps) {
 
   return (
     <main className="posts-page">
+      {(title || intro) && (
+        <header className="posts-header">
+          {title && <h2>{title}</h2>}
+          {intro && <p>{intro}</p>}
+        </header>
+      )}
       <section className="search-panel">
         <div className="search-panel__field">
           <label htmlFor="post-search">Cerca per parola chiave</label>
