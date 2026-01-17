@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { client } from "../tina/__generated__/client";
+import ClientHomePage from "./client-home";
 
 export default async function Home() {
-  const res = await client.queries.page({
-    relativePath: "home.mdx",
+  const tinaProps = await client.request({
     query: `query HomePage($relativePath: String!) {
       page(relativePath: $relativePath) {
         tiles {
@@ -27,75 +26,8 @@ export default async function Home() {
         }
       }
     }`,
+    variables: { relativePath: "home.mdx" },
   });
-  
-  const page = res.data.page;
 
-  return (
-    <main className="container">
-      {page.tiles?.map((tile, i) => {
-        // 1. Calcola i dati da mostrare (Override o Automatico)
-        const referencedPost = tile?.postReference;
-
-        // Usa il dato manuale SE esiste, altrimenti usa quello del post
-        const displayCategory = tile?.category || referencedPost?.category;
-        const displayTitle = tile?.title || referencedPost?.title;
-
-        // Calcola l'URL
-        const relativePath = referencedPost?._sys?.relativePath;
-        const breadcrumbs = referencedPost?._sys?.breadcrumbs;
-        const filename = referencedPost?._sys?.filename;
-        const slug = relativePath
-          ? relativePath.replace(/\.mdx$/, "")
-          : breadcrumbs && breadcrumbs.length > 0
-          ? breadcrumbs.join("/")
-          : filename
-          ? filename.replace(/\.mdx$/, "")
-          : null;
-        const postHref = slug ? `/${slug}` : null;
-
-        const tileClasses = `tile ${tile?.style === 'idiom' ? 'idiom' : ''} ${tile?.style === 'joke' ? 'joke' : ''}`;
-
-        const TileContent = (
-          <article className={tileClasses}>
-            <div>
-              {displayCategory && <span className="tile-category">{displayCategory}</span>}
-              {displayTitle && <h3>{displayTitle}</h3>}
-
-              <div className="tile-content">
-                {tile?.description && <p style={{ marginBottom: "10px" }}>{tile.description}</p>}
-
-                {tile?.bulletPoints && tile.bulletPoints.length > 0 && (
-                  <ul>
-                    {tile.bulletPoints.map((point, index) => (
-                      <li key={index}>{point}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </div>
-
-            {/* Mostra il bottone se c'è un link O se c'è del testo manuale */}
-            <div className="read-more">
-              {tile?.buttonText || (postHref ? "Leggi l'articolo →" : "")}
-            </div>
-          </article>
-        );
-
-        if (referencedPost && postHref) {
-          return (
-            <Link key={i} href={postHref} className="tile-link">
-              {TileContent}
-            </Link>
-          );
-        }
-
-        return (
-          <div key={i} className="tile-link">
-            {TileContent}
-          </div>
-        );
-      })}
-    </main>
-  );
+  return <ClientHomePage {...tinaProps} />;
 }
