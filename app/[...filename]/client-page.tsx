@@ -1,5 +1,5 @@
 'use client'
-import { useTina } from "tinacms/dist/react";
+import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Link from "next/link";
 
@@ -45,9 +45,9 @@ export default function ClientPage(props) {
           {pageTitle && resolvedTiles.length === 0 && (
             <article className="tile">
               <div>
-                <h3>{pageTitle}</h3>
+                <h3 data-tina-field={tinaField(data?.page, "title")}>{pageTitle}</h3>
                 {pageBody && (
-                  <div className="tile-content">
+                  <div className="tile-content" data-tina-field={tinaField(data?.page, "body")}>
                     <TinaMarkdown content={pageBody} />
                   </div>
                 )}
@@ -67,17 +67,27 @@ export default function ClientPage(props) {
             const CardContent = (
               <article className={`tile ${tile.style === 'idiom' ? 'idiom' : ''}`}>
                 <div>
-                  <span className="tile-category" data-tina-field={tile.category}>{tile.category}</span>
-                  <h3 data-tina-field={tile.title}>{tile.title}</h3>
+                  <span className="tile-category" data-tina-field={tinaField(tile, "category")}>{tile.category}</span>
+                  <h3 data-tina-field={tinaField(tile, "title")}>{tile.title}</h3>
                   <div className="tile-content">
                     {tile.bulletPoints && tile.bulletPoints.length > 0 ? (
-                      <ul>{tile.bulletPoints.map((p, x) => <li key={x}>{p}</li>)}</ul>
+                      <ul>
+                        {tile.bulletPoints.map((p, x) => (
+                          <li key={x} data-tina-field={tinaField(tile, "bulletPoints", x)}>
+                            {p}
+                          </li>
+                        ))}
+                      </ul>
                     ) : (
-                      <p data-tina-field={tile.description}>{tile.description}</p>
+                      <p data-tina-field={tinaField(tile, "description")}>{tile.description}</p>
                     )}
                   </div>
                 </div>
-                {tile.buttonText && <div className="read-more">{tile.buttonText} ↓</div>}
+                {tile.buttonText && (
+                  <div className="read-more" data-tina-field={tinaField(tile, "buttonText")}>
+                    {tile.buttonText} ↓
+                  </div>
+                )}
               </article>
             );
 
