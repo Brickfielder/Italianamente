@@ -1,12 +1,11 @@
 'use client'
 import { useTina } from "tinacms/dist/react";
-import Link from "next/link"; // <--- IMPORT THIS
+import Link from "next/link";
 
 export default function ClientPage(props) {
-  // Dati di Esempio (Fallback)
+  // Fallback data matched to your Schema names
   const fallbackTiles = [
-    { type: 'standard', category: 'Grammatica', title: 'Mi serve ricordare il futuro?', points: ['Quando lo uso', 'Come si forma'], linkText: 'Clicca per leggere' },
-    { type: 'idiom', category: 'Modo di dire', title: 'In bocca al lupo', content: 'Crepi il lupo!' }
+    { style: 'standard', category: 'Grammatica', title: 'Futuro Semplice', bulletPoints: ['Quando usarlo', 'Esempi'], buttonText: 'Leggi' },
   ];
 
   const { data } = useTina({
@@ -37,29 +36,31 @@ export default function ClientPage(props) {
 
         <main className="container">
           {tiles && tiles.map((tile, i) => {
-            // LOGIC: Build the URL from the postReference breadcrumbs
+            // 1. Build the Link
             let href = null;
             if (tile.postReference && tile.postReference._sys && tile.postReference._sys.breadcrumbs) {
                href = `/post/${tile.postReference._sys.breadcrumbs.join("/")}`;
             }
 
-            // Define the Card Content (so we don't repeat code)
+            // 2. Define Card Content (Using YOUR Schema names: style, description, bulletPoints)
             const CardContent = (
-              <article className={`tile ${tile.type === 'idiom' ? 'idiom' : ''}`}>
+              <article className={`tile ${tile.style === 'idiom' ? 'idiom' : ''}`}>
                 <div>
                   <span className="tileCategory" data-tina-field={tile.category}>{tile.category}</span>
                   <h3 data-tina-field={tile.title}>{tile.title}</h3>
                   <div className="tileContent">
-                    {tile.points ? (
-                      <ul>{tile.points.map((p, x) => <li key={x}>{p}</li>)}</ul>
-                    ) : (<p data-tina-field={tile.content}>{tile.content}</p>)}
+                    {tile.bulletPoints && tile.bulletPoints.length > 0 ? (
+                      <ul>{tile.bulletPoints.map((p, x) => <li key={x}>{p}</li>)}</ul>
+                    ) : (
+                      <p data-tina-field={tile.description}>{tile.description}</p>
+                    )}
                   </div>
                 </div>
-                {tile.linkText && <div className="readMore">{tile.linkText} ↓</div>}
+                {tile.buttonText && <div className="readMore">{tile.buttonText} ↓</div>}
               </article>
             );
 
-            // If we have a link, wrap the card. If not, just show the card.
+            // 3. Render Link or plain Card
             return href ? (
               <Link key={i} href={href} style={{ textDecoration: 'none', color: 'inherit' }}>
                 {CardContent}
