@@ -8,7 +8,11 @@ type PostListItem = {
   category?: string | null;
   tags?: string[] | null;
   body?: unknown;
-  _sys?: { filename?: string | null } | null;
+  // FIX 1: Add breadcrumbs to the type definition
+  _sys?: {
+    filename?: string | null;
+    breadcrumbs?: string[] | null;
+  } | null;
 };
 
 type PostsPageProps = {
@@ -114,7 +118,10 @@ export default function PostsPage({ posts }: PostsPageProps) {
           <p className="no-results">Nessun risultato trovato.</p>
         )}
         {filteredPosts.map((post) => {
-          const slug = post._sys?.filename;
+          // FIX 2: Use breadcrumbs to build the full URL path (e.g. grammar/modo-di-dire)
+          // We fallback to filename just in case breadcrumbs is missing.
+          const slug = post._sys?.breadcrumbs?.join("/") || post._sys?.filename;
+          
           if (!slug) {
             return null;
           }
