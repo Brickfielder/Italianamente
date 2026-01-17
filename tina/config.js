@@ -1,6 +1,6 @@
 import { defineConfig } from "tinacms";
 
-// Configurazione standard
+// Standard Configuration
 const branch = process.env.NEXT_PUBLIC_TINA_BRANCH || "main";
 
 export default defineConfig({
@@ -38,14 +38,13 @@ export default defineConfig({
             label: "Contenuto",
             isBody: true,
           },
-          // QUI INIZIA LA MAGIA DELLE TILES
+          // TILES CONFIGURATION
           {
             type: "object",
             list: true,
             name: "tiles",
             label: "Griglia di Card (Tiles)",
             ui: {
-              // Questo fa vedere il titolo della card nella lista invece di "Item 1"
               itemProps: (item) => {
                 return { label: item.title || 'Nuova Card' }
               },
@@ -112,9 +111,12 @@ export default defineConfig({
       {
         name: "post",
         label: "Post",
-        path: "content",
+        path: "content", // Root content folder
         match: {
-          include: "{grammar,culture,multimedia}/*.mdx",
+            // Include everything...
+            include: "**/*",
+            // BUT explicitly exclude the 'page' folder to avoid conflict!
+            exclude: "page/**/*", 
         },
         format: "mdx",
         fields: [
@@ -159,7 +161,9 @@ export default defineConfig({
         ],
         ui: {
           router: ({ document }) => {
-            return `/post/${document._sys.filename}`;
+            // CRITICAL CHANGE: Use breadcrumbs to include the subfolder (e.g. 'culture/barzelletta')
+            // This ensures the URL matches your [...slug] structure.
+            return `/post/${document._sys.breadcrumbs.join("/")}`;
           },
         },
       },
