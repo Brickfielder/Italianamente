@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import "./global.css";
 
 export const metadata = {
@@ -16,7 +17,7 @@ export default function RootLayout({
       <body>
         <header>
           <div className="top-bar">
-            <a href="/about">About</a>
+            <Link href="/about">About</Link>
             <a href="mailto:tiziana.mazzotta25@gmail.com">Contact</a>
           </div>
 
