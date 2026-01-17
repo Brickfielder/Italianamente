@@ -1,13 +1,12 @@
 import ClientPage from "./client-page";
 import { client } from "../../tina/__generated__/client";
 
-export default async function Page({ params }) {
-  // 1. Calculate the file to load. 
-  // If we are on the homepage, params.filename might be undefined, so we default to "home".
-  // If we are at /culture, it becomes "culture".
+export default async function Page({ params }: { params: { filename: string[] } }) {
+  // 1. Calculate the file to load.
   const filename = params.filename ? params.filename.join("/") : "home";
 
-  // 2. Run a custom query to get the data + the critical breadcrumbs
+  // 2. Run a custom query that handles Fragments (Polymorphism)
+  // We use "... on PageTilesStandard" to tell GraphQL which fields belong to which template.
   const tinaProps = await client.request({
     query: `query PageQuery($relativePath: String!) {
       page(relativePath: $relativePath) {
@@ -22,21 +21,36 @@ export default async function Page({ params }) {
           id
         }
         ... on Page {
-          # Fetch the content for the page
           tiles {
             __typename
-            category
-            title
-            content
-            points
-            linkText
-            type
-            # THIS IS THE KEY PART: Fetch the breadcrumbs for the link!
-            postReference {
-              ... on Post {
-                _sys {
-                  breadcrumbs
-                  filename
+            
+            # FRAGMENT 1: If it is a "Standard" tile
+            ... on PageTilesStandard {
+              category
+              title
+              points
+              linkText
+              postReference {
+                ... on Post {
+                  _sys {
+                    breadcrumbs
+                    filename
+                  }
+                }
+              }
+            }
+
+            # FRAGMENT 2: If it is an "Idiom" tile
+            ... on PageTilesIdiom {
+              category
+              title
+              content
+              postReference {
+                ... on Post {
+                  _sys {
+                    breadcrumbs
+                    filename
+                  }
                 }
               }
             }
@@ -50,7 +64,7 @@ export default async function Page({ params }) {
   return <ClientPage {...tinaProps} />;
 }
 
-// Genera le pagine statiche
+// Generate static pages
 export async function generateStaticParams() {
   const pages = await client.queries.pageConnection();
   const paths = pages.data?.pageConnection?.edges?.map((edge) => ({
