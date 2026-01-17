@@ -1,6 +1,7 @@
 'use client'
 import { useTina } from "tinacms/dist/react";
 import Link from "next/link";
+import { ABOUT_PAGE_HREF } from "../constants/routes";
 
 export default function ClientPage(props) {
   // Fallback data matched to your Schema names
@@ -38,7 +39,7 @@ export default function ClientPage(props) {
   return (
     <div className="page-wrapper">
         <header>
-          <div className="topBar"><Link href="/about">About</Link><a href="mailto:tiziana.mazzotta25@gmail.com">Contact</a></div>
+          <div className="topBar"><Link href={ABOUT_PAGE_HREF}>About</Link><a href="mailto:tiziana.mazzotta25@gmail.com">Contact</a></div>
           <div className="brandArea">
             <h1>ITALIANAMENTE</h1>
             <p className="subtitle">Impara l'italiano con Tiziana</p>
