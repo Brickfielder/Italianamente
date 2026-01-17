@@ -1,7 +1,7 @@
 'use client'
 import { useTina } from "tinacms/dist/react";
+import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Link from "next/link";
-import { ABOUT_PAGE_HREF } from "../constants/routes";
 
 export default function ClientPage(props) {
   // Fallback data matched to your Schema names
@@ -15,7 +15,10 @@ export default function ClientPage(props) {
     data: props.data,
   });
 
-  const tiles = data?.page?.tiles || fallbackTiles;
+  const pageTitle = data?.page?.title;
+  const pageBody = data?.page?.body;
+  const tiles = data?.page?.tiles;
+  const resolvedTiles = tiles && tiles.length > 0 ? tiles : (!pageBody ? fallbackTiles : []);
 
   const buildSlug = (postReference) => {
     const relativePath = postReference?._sys?.relativePath;
@@ -38,24 +41,21 @@ export default function ClientPage(props) {
 
   return (
     <div className="page-wrapper">
-        <header>
-          <div className="topBar"><Link href={ABOUT_PAGE_HREF}>About</Link><a href="mailto:tiziana.mazzotta25@gmail.com">Contact</a></div>
-          <div className="brandArea">
-            <h1>ITALIANAMENTE</h1>
-            <p className="subtitle">Impara l'italiano con Tiziana</p>
-          </div>
-          <nav className="mainNav">
-            <ul>
-              <li><a href="/">Home</a></li>
-              <li><a href="/grammar">Grammatica</a></li>
-              <li><a href="/culture">Cultura</a></li>
-              <li><a href="/multimedia">Multimedia</a></li>
-            </ul>
-          </nav>
-        </header>
-
         <main className="container">
-          {tiles && tiles.map((tile, i) => {
+          {pageTitle && resolvedTiles.length === 0 && (
+            <article className="tile">
+              <div>
+                <h3>{pageTitle}</h3>
+                {pageBody && (
+                  <div className="tile-content">
+                    <TinaMarkdown content={pageBody} />
+                  </div>
+                )}
+              </div>
+            </article>
+          )}
+
+          {resolvedTiles.length > 0 && resolvedTiles.map((tile, i) => {
             // 1. Build the Link
             let href = null;
             const slug = buildSlug(tile.postReference);
@@ -67,9 +67,9 @@ export default function ClientPage(props) {
             const CardContent = (
               <article className={`tile ${tile.style === 'idiom' ? 'idiom' : ''}`}>
                 <div>
-                  <span className="tileCategory" data-tina-field={tile.category}>{tile.category}</span>
+                  <span className="tile-category" data-tina-field={tile.category}>{tile.category}</span>
                   <h3 data-tina-field={tile.title}>{tile.title}</h3>
-                  <div className="tileContent">
+                  <div className="tile-content">
                     {tile.bulletPoints && tile.bulletPoints.length > 0 ? (
                       <ul>{tile.bulletPoints.map((p, x) => <li key={x}>{p}</li>)}</ul>
                     ) : (
@@ -77,7 +77,7 @@ export default function ClientPage(props) {
                     )}
                   </div>
                 </div>
-                {tile.buttonText && <div className="readMore">{tile.buttonText} ↓</div>}
+                {tile.buttonText && <div className="read-more">{tile.buttonText} ↓</div>}
               </article>
             );
 

@@ -18,6 +18,8 @@ export default async function Page({ params }: { params: { filename: string[] } 
           id
         }
         ... on Page {
+          title
+          body
           # Querying the "tiles" list directly (No fragments needed!)
           tiles {
             __typename
