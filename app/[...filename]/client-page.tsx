@@ -16,6 +16,25 @@ export default function ClientPage(props) {
 
   const tiles = data?.page?.tiles || fallbackTiles;
 
+  const buildSlug = (postReference) => {
+    const relativePath = postReference?._sys?.relativePath;
+    if (relativePath) {
+      return relativePath.replace(/\.mdx$/, "");
+    }
+
+    const breadcrumbs = postReference?._sys?.breadcrumbs;
+    if (breadcrumbs && breadcrumbs.length > 0) {
+      return breadcrumbs.join("/");
+    }
+
+    const filename = postReference?._sys?.filename;
+    if (filename) {
+      return filename.replace(/\.mdx$/, "");
+    }
+
+    return null;
+  };
+
   return (
     <div className="page-wrapper">
         <header>
@@ -38,8 +57,9 @@ export default function ClientPage(props) {
           {tiles && tiles.map((tile, i) => {
             // 1. Build the Link
             let href = null;
-            if (tile.postReference && tile.postReference._sys && tile.postReference._sys.breadcrumbs) {
-               href = `/post/${tile.postReference._sys.breadcrumbs.join("/")}`;
+            const slug = buildSlug(tile.postReference);
+            if (slug) {
+              href = `/${slug}`;
             }
 
             // 2. Define Card Content (Using YOUR Schema names: style, description, bulletPoints)

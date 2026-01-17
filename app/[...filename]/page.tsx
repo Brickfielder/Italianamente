@@ -34,6 +34,7 @@ export default async function Page({ params }: { params: { filename: string[] } 
                 _sys {
                   breadcrumbs
                   filename
+                  relativePath
                 }
               }
             }

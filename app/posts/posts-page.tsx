@@ -12,6 +12,7 @@ type PostListItem = {
   _sys?: {
     filename?: string | null;
     breadcrumbs?: string[] | null;
+    relativePath?: string | null;
   } | null;
 };
 
@@ -120,14 +121,17 @@ export default function PostsPage({ posts }: PostsPageProps) {
         {filteredPosts.map((post) => {
           // FIX 2: Use breadcrumbs to build the full URL path (e.g. grammar/modo-di-dire)
           // We fallback to filename just in case breadcrumbs is missing.
-          const slug = post._sys?.breadcrumbs?.join("/") || post._sys?.filename;
+          const slug =
+            post._sys?.relativePath?.replace(/\.mdx$/, "") ||
+            post._sys?.breadcrumbs?.join("/") ||
+            post._sys?.filename?.replace(/\.mdx$/, "");
           
           if (!slug) {
             return null;
           }
 
           return (
-            <Link key={slug} href={`/post/${slug}`} className="tile-link">
+            <Link key={slug} href={`/${slug}`} className="tile-link">
               <article className="tile">
                 <div>
                   {post.category && (
