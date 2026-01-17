@@ -157,6 +157,24 @@ export default defineConfig({
             name: "body",
             label: "Contenuto",
             isBody: true,
+            templates: [
+              {
+                name: "spacer",
+                label: "Spazio",
+                fields: [
+                  {
+                    type: "string",
+                    name: "size",
+                    label: "Dimensione",
+                    options: [
+                      { label: "Piccolo", value: "sm" },
+                      { label: "Medio", value: "md" },
+                      { label: "Grande", value: "lg" },
+                    ],
+                  },
+                ],
+              },
+            ],
           },
         ],
         ui: {

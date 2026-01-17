@@ -10,11 +10,23 @@ export default function PostClient(props) {
   const { data } = useTina(props);
   const post = data?.post;
   const tags = post?.tags;
+  const spacerClassMap = {
+    sm: "post-spacer--sm",
+    md: "post-spacer--md",
+    lg: "post-spacer--lg",
+  };
+
+  const Spacer = ({ size, data: spacerData }) => {
+    const spacerSize = size ?? spacerData?.size ?? "md";
+    const spacerClass = spacerClassMap[spacerSize] ?? spacerClassMap.md;
+
+    return <div className={`post-spacer ${spacerClass}`} aria-hidden="true" />;
+  };
 
   return (
     <main className="container">
       <ScrollToTop />
-      <article className="tile">
+      <article className="tile" lang="it">
         <div>
           <span className="tile-category" data-tina-field={tinaField(post, "category")}>
             {post?.category}
@@ -41,8 +53,8 @@ export default function PostClient(props) {
               />
             </div>
           )}
-          <div className="tile-content" data-tina-field={tinaField(post, "body")}>
-            <TinaMarkdown content={post?.body} />
+          <div className="tile-content post-content" data-tina-field={tinaField(post, "body")}>
+            <TinaMarkdown content={post?.body} components={{ spacer: Spacer }} />
           </div>
         </div>
       </article>
