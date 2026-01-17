@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import "./global.css";
+import { ABOUT_PAGE_HREF } from "./constants/routes";
 
 export const metadata = {
   title: "ItalianaMente",
@@ -17,7 +18,7 @@ export default function RootLayout({
       <body>
         <header>
           <div className="top-bar">
-            <Link href="/about">About</Link>
+            <Link href={ABOUT_PAGE_HREF}>About</Link>
             <a href="mailto:tiziana.mazzotta25@gmail.com">Contact</a>
           </div>
 
