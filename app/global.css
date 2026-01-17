@@ -189,6 +189,57 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   color: var(--accent-color);
 }
 
+.post-content {
+  text-align: left;
+  line-height: 1.75;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+  .post-content {
+    text-align: justify;
+  }
+}
+
+.post-content p {
+  margin: 0 0 1rem;
+}
+
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+  margin: 1.5rem 0 0.75rem;
+  line-height: 1.3;
+}
+
+.post-content ul,
+.post-content ol {
+  margin: 0 0 1rem 1.25rem;
+}
+
+.post-content li {
+  margin-bottom: 0.5rem;
+}
+
+.post-spacer {
+  width: 100%;
+}
+
+.post-spacer--sm {
+  height: 8px;
+}
+
+.post-spacer--md {
+  height: 16px;
+}
+
+.post-spacer--lg {
+  height: 32px;
+}
+
 /* Stile specifico per il Modo di Dire */
 .tile.idiom {
   background-color: var(--primary-color);
