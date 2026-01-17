@@ -6,7 +6,11 @@ type PostListItem = {
   category?: string | null;
   tags?: string[] | null;
   body?: unknown;
-  _sys?: { filename?: string | null } | null;
+  // FIX 1: Add breadcrumbs to the Type Definition
+  _sys?: { 
+    filename?: string | null;
+    breadcrumbs?: string[] | null;
+  } | null;
 };
 
 export default async function PostsRoute() {
@@ -21,6 +25,7 @@ export default async function PostsRoute() {
             body
             _sys {
               filename
+              breadcrumbs # <--- FIX 2: We must explicitly ask for this field!
             }
           }
         }
