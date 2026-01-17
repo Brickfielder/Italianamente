@@ -1,5 +1,6 @@
 'use client'
 import { useTina } from "tinacms/dist/react";
+import Link from "next/link"; // <--- IMPORT THIS
 
 export default function ClientPage(props) {
   // Dati di Esempio (Fallback)
@@ -35,20 +36,38 @@ export default function ClientPage(props) {
         </header>
 
         <main className="container">
-          {tiles && tiles.map((tile, i) => (
-            <article key={i} className={`tile ${tile.type === 'idiom' ? 'idiom' : ''}`}>
-              <div>
-                <span className="tileCategory" data-tina-field={tile.category}>{tile.category}</span>
-                <h3 data-tina-field={tile.title}>{tile.title}</h3>
-                <div className="tileContent">
-                  {tile.points ? (
-                    <ul>{tile.points.map((p, x) => <li key={x}>{p}</li>)}</ul>
-                  ) : (<p data-tina-field={tile.content}>{tile.content}</p>)}
+          {tiles && tiles.map((tile, i) => {
+            // LOGIC: Build the URL from the postReference breadcrumbs
+            let href = null;
+            if (tile.postReference && tile.postReference._sys && tile.postReference._sys.breadcrumbs) {
+               href = `/post/${tile.postReference._sys.breadcrumbs.join("/")}`;
+            }
+
+            // Define the Card Content (so we don't repeat code)
+            const CardContent = (
+              <article className={`tile ${tile.type === 'idiom' ? 'idiom' : ''}`}>
+                <div>
+                  <span className="tileCategory" data-tina-field={tile.category}>{tile.category}</span>
+                  <h3 data-tina-field={tile.title}>{tile.title}</h3>
+                  <div className="tileContent">
+                    {tile.points ? (
+                      <ul>{tile.points.map((p, x) => <li key={x}>{p}</li>)}</ul>
+                    ) : (<p data-tina-field={tile.content}>{tile.content}</p>)}
+                  </div>
                 </div>
-              </div>
-              {tile.linkText && <div className="readMore">{tile.linkText} ↓</div>}
-            </article>
-          ))}
+                {tile.linkText && <div className="readMore">{tile.linkText} ↓</div>}
+              </article>
+            );
+
+            // If we have a link, wrap the card. If not, just show the card.
+            return href ? (
+              <Link key={i} href={href} style={{ textDecoration: 'none', color: 'inherit' }}>
+                {CardContent}
+              </Link>
+            ) : (
+              <div key={i}>{CardContent}</div>
+            );
+          })}
         </main>
     </div>
   );
