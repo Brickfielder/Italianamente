@@ -1,0 +1,45 @@
+fragment PageParts on Page {
+  __typename
+  title
+  body
+  tiles {
+    __typename
+    style
+    category
+    title
+    postReference {
+      ... on Post {
+        __typename
+        title
+        category
+        tags
+        image
+        body
+      }
+      ... on Document {
+        _sys {
+          filename
+          basename
+          hasReferences
+          breadcrumbs
+          path
+          relativePath
+          extension
+        }
+        id
+      }
+    }
+    description
+    bulletPoints
+    buttonText
+  }
+}
+
+fragment PostParts on Post {
+  __typename
+  title
+  category
+  tags
+  image
+  body
+}
