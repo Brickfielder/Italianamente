@@ -19,6 +19,8 @@ export default async function Home() {
               category
               _sys {
                 filename
+                relativePath
+                breadcrumbs
               }
             }
           }
@@ -40,9 +42,17 @@ export default async function Home() {
         const displayTitle = tile?.title || referencedPost?.title;
 
         // Calcola l'URL
-        const postHref = referencedPost?._sys?.filename
-          ? `/post/${referencedPost._sys.filename}`
+        const relativePath = referencedPost?._sys?.relativePath;
+        const breadcrumbs = referencedPost?._sys?.breadcrumbs;
+        const filename = referencedPost?._sys?.filename;
+        const slug = relativePath
+          ? relativePath.replace(/\.mdx$/, "")
+          : breadcrumbs && breadcrumbs.length > 0
+          ? breadcrumbs.join("/")
+          : filename
+          ? filename.replace(/\.mdx$/, "")
           : null;
+        const postHref = slug ? `/${slug}` : null;
 
         const tileClasses = `tile ${tile?.style === 'idiom' ? 'idiom' : ''} ${tile?.style === 'joke' ? 'joke' : ''}`;
 
