@@ -8,8 +8,8 @@ export default function ClientAboutPage(props) {
   const page = data?.page;
 
   return (
-    <main className="container">
-      <article className="tile">
+    <main className="container about-page">
+      <article className="tile about-card">
         <div>
           <h3 data-tina-field={tinaField(page, "title")}>{page?.title}</h3>
           <div className="tile-content" data-tina-field={tinaField(page, "body")}>
