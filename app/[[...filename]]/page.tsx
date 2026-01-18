@@ -1,8 +1,44 @@
+import ClientHomePage from "../client-home";
 import ClientPage from "./client-page";
 import { client } from "../../tina/__generated__/client";
 
-export default async function Page({ params }: { params: { filename: string[] } }) {
-  const filename = params.filename ? params.filename.join("/") : "home";
+type PageParams = {
+  filename?: string[];
+};
+
+export default async function Page({ params }: { params?: PageParams }) {
+  const filename = params?.filename?.length ? params.filename.join("/") : "home";
+
+  if (filename === "home") {
+    const tinaProps = await client.request({
+      query: `query HomePage($relativePath: String!) {
+      page(relativePath: $relativePath) {
+        tiles {
+          style
+          category
+          title
+          description
+          bulletPoints
+          buttonText
+          postReference {
+            ... on Post {
+              title
+              category
+              _sys {
+                filename
+                relativePath
+                breadcrumbs
+              }
+            }
+          }
+        }
+      }
+    }`,
+      variables: { relativePath: "home.mdx" },
+    });
+
+    return <ClientHomePage {...tinaProps} />;
+  }
 
   const tinaProps = await client.request({
     query: `query PageQuery($relativePath: String!) {
@@ -52,8 +88,12 @@ export default async function Page({ params }: { params: { filename: string[] } 
 
 export async function generateStaticParams() {
   const pages = await client.queries.pageConnection();
-  const paths = pages.data?.pageConnection?.edges?.map((edge) => ({
-    filename: edge?.node?._sys.breadcrumbs,
-  }));
-  return paths || [];
+  const paths =
+    pages.data?.pageConnection?.edges
+      ?.filter((edge) => edge?.node?._sys?.filename !== "home")
+      .map((edge) => ({
+        filename: edge?.node?._sys?.breadcrumbs,
+      })) || [];
+
+  return paths;
 }
