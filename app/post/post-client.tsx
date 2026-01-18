@@ -6,6 +6,18 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 import ScrollToTop from "./[...slug]/scroll-to-top";
 
+const normalizeImageSrc = (src?: string) => {
+  if (!src) {
+    return src;
+  }
+
+  if (src.startsWith("http") || src.startsWith("data:")) {
+    return src;
+  }
+
+  return src.startsWith("/") ? src : `/${src}`;
+};
+
 export default function PostClient(props) {
   const { data } = useTina(props);
   const post = data?.post;
@@ -25,6 +37,8 @@ export default function PostClient(props) {
     return <div className={`post-spacer ${spacerClass}`} aria-hidden="true" />;
   };
 
+  const imageSrc = normalizeImageSrc(post?.image);
+
   return (
     <main className="container">
       <ScrollToTop />
@@ -43,10 +57,10 @@ export default function PostClient(props) {
             </div>
           )}
           <h3 data-tina-field={tinaField(post, "title")}>{post?.title}</h3>
-          {post?.image && (
+          {imageSrc && (
             <div style={{ marginBottom: "20px" }}>
               <Image
-                src={post.image}
+                src={imageSrc}
                 alt={post.title}
                 width={imageWidth}
                 height={imageHeight}
