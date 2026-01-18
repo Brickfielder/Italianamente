@@ -12,7 +12,7 @@ var config_default = defineConfig({
   media: {
     tina: {
       mediaRoot: "uploads",
-      publicFolder: "."
+      publicFolder: "public"
     }
   },
   schema: {
@@ -112,7 +112,10 @@ var config_default = defineConfig({
         path: "content",
         // Root content folder
         match: {
-          include: "{grammar,culture,multimedia}/*.mdx"
+          // Include everything...
+          include: "**/*",
+          // BUT explicitly exclude the 'page' folder to avoid conflict!
+          exclude: "page/**/*"
         },
         format: "mdx",
         fields: [
