@@ -1,45 +1,12 @@
-import ClientHomePage from "../client-home";
 import ClientPage from "./client-page";
 import { client } from "../../tina/__generated__/client";
 
 type PageParams = {
-  filename?: string[];
+  filename: string[];
 };
 
-export default async function Page({ params }: { params?: PageParams }) {
-  const filename = params?.filename?.length ? params.filename.join("/") : "home";
-
-  if (filename === "home") {
-    const tinaProps = await client.request({
-      query: `query HomePage($relativePath: String!) {
-      page(relativePath: $relativePath) {
-        tiles {
-          style
-          category
-          title
-          description
-          bulletPoints
-          buttonText
-          postReference {
-            ... on Post {
-              title
-              category
-              _sys {
-                filename
-                relativePath
-                breadcrumbs
-              }
-            }
-          }
-        }
-      }
-    }`,
-      variables: { relativePath: "home.mdx" },
-    });
-
-    return <ClientHomePage {...tinaProps} />;
-  }
-
+export default async function Page({ params }: { params: PageParams }) {
+  const filename = params.filename.join("/");
   const tinaProps = await client.request({
     query: `query PageQuery($relativePath: String!) {
       page(relativePath: $relativePath) {
