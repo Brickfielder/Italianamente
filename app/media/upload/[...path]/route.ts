@@ -22,8 +22,8 @@ const getResizeTarget = () => {
 };
 
 const resolveUploadPath = (relativePath: string) => {
-  const projectRoot = process.cwd();
-  const mediaRoot = path.join(projectRoot, "uploads");
+  const publicRoot = path.join(process.cwd(), "public");
+  const mediaRoot = path.join(publicRoot, "uploads");
   const targetPath = path.resolve(mediaRoot, relativePath);
 
   if (!targetPath.startsWith(mediaRoot)) {
