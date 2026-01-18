@@ -31,6 +31,18 @@ export default {
       name: "image",
     },
     {
+      type: "number",
+      label: "Image Width (px)",
+      name: "imageWidth",
+      description: "Optional display width for the post image.",
+    },
+    {
+      type: "number",
+      label: "Image Height (px)",
+      name: "imageHeight",
+      description: "Optional display height for the post image.",
+    },
+    {
       type: "rich-text",
       label: "Blog Post Body",
       name: "body",

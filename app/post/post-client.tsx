@@ -15,6 +15,8 @@ export default function PostClient(props) {
     md: "post-spacer--md",
     lg: "post-spacer--lg",
   };
+  const imageWidth = Number.isFinite(post?.imageWidth) ? post.imageWidth : 800;
+  const imageHeight = Number.isFinite(post?.imageHeight) ? post.imageHeight : 450;
 
   const Spacer = ({ size, data: spacerData }) => {
     const spacerSize = size ?? spacerData?.size ?? "md";
@@ -46,8 +48,8 @@ export default function PostClient(props) {
               <Image
                 src={post.image}
                 alt={post.title}
-                width={800}
-                height={450}
+                width={imageWidth}
+                height={imageHeight}
                 style={{ width: "100%", height: "auto", borderRadius: "8px" }}
                 data-tina-field={tinaField(post, "image")}
               />
