@@ -160,6 +160,8 @@ type Post implements Node & Document {
   category: String!
   tags: [String]
   image: String
+  imageWidth: Float
+  imageHeight: Float
   body: JSON
   id: ID!
   _sys: SystemInfo!
@@ -173,12 +175,32 @@ input ImageFilter {
   in: [String]
 }
 
+input NumberFilter {
+  lt: Float
+  lte: Float
+  gte: Float
+  gt: Float
+  eq: Float
+  exists: Boolean
+  in: [Float]
+}
+
+input PostBodySpacerFilter {
+  size: StringFilter
+}
+
+input PostBodyFilter {
+  spacer: PostBodySpacerFilter
+}
+
 input PostFilter {
   title: StringFilter
   category: StringFilter
   tags: StringFilter
   image: ImageFilter
-  body: RichTextFilter
+  imageWidth: NumberFilter
+  imageHeight: NumberFilter
+  body: PostBodyFilter
 }
 
 type PostConnectionEdges {
@@ -236,6 +258,8 @@ input PostMutation {
   category: String
   tags: [String]
   image: String
+  imageWidth: Float
+  imageHeight: Float
   body: JSON
 }
 

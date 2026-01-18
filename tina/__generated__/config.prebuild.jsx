@@ -152,10 +152,40 @@ var config_default = defineConfig({
             label: "Immagine"
           },
           {
+            type: "number",
+            name: "imageWidth",
+            label: "Larghezza immagine (px)",
+            description: "Facoltativo: larghezza di visualizzazione dell'immagine."
+          },
+          {
+            type: "number",
+            name: "imageHeight",
+            label: "Altezza immagine (px)",
+            description: "Facoltativo: altezza di visualizzazione dell'immagine."
+          },
+          {
             type: "rich-text",
             name: "body",
             label: "Contenuto",
-            isBody: true
+            isBody: true,
+            templates: [
+              {
+                name: "spacer",
+                label: "Spazio",
+                fields: [
+                  {
+                    type: "string",
+                    name: "size",
+                    label: "Dimensione",
+                    options: [
+                      { label: "Piccolo", value: "sm" },
+                      { label: "Medio", value: "md" },
+                      { label: "Grande", value: "lg" }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ],
         ui: {
