@@ -7,7 +7,15 @@ const nextConfig = {
   typescript: {
     // Ignora anche eventuali errori di typescript
     ignoreBuildErrors: true,
-  }
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "assets.tina.io",
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig
