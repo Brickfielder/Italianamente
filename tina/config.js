@@ -153,6 +153,18 @@ export default defineConfig({
             label: "Immagine",
           },
           {
+            type: "number",
+            name: "imageWidth",
+            label: "Larghezza immagine (px)",
+            description: "Facoltativo: larghezza di visualizzazione dell'immagine.",
+          },
+          {
+            type: "number",
+            name: "imageHeight",
+            label: "Altezza immagine (px)",
+            description: "Facoltativo: altezza di visualizzazione dell'immagine.",
+          },
+          {
             type: "rich-text",
             name: "body",
             label: "Contenuto",
