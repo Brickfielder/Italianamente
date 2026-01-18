@@ -112,10 +112,8 @@ var config_default = defineConfig({
         path: "content",
         // Root content folder
         match: {
-          // Include everything...
-          include: "**/*",
-          // BUT explicitly exclude the 'page' folder to avoid conflict!
-          exclude: "page/**/*"
+          // Limit to the post folders to avoid duplicate folder entries in Tina UI.
+          include: "{grammar,culture,multimedia}/**/*.mdx"
         },
         format: "mdx",
         fields: [
