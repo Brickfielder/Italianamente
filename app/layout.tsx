@@ -40,7 +40,7 @@ export default function RootLayout({
         {children}
 
         <footer>
-          &copy; 2024 ItalianaMente - Corso di Italiano con Tiziana
+          &copy; 2026 ItalianaMente - Corso di Italiano con Tiziana
         </footer>
       </body>
     </html>
