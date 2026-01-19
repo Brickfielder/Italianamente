@@ -5,6 +5,7 @@ import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 import ScrollToTop from "./[...slug]/scroll-to-top";
+import ContentImage from "../components/ContentImage";
 
 const normalizeImageSrc = (src?: string) => {
   if (!src) {
@@ -70,7 +71,7 @@ export default function PostClient(props) {
             </div>
           )}
           <div className="tile-content post-content" data-tina-field={tinaField(post, "body")}>
-            <TinaMarkdown content={post?.body} components={{ spacer: Spacer }} />
+            <TinaMarkdown content={post?.body} components={{ spacer: Spacer, img: ContentImage }} />
           </div>
         </div>
       </article>

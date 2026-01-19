@@ -2,6 +2,7 @@
 import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import Link from "next/link";
+import ContentImage from "../components/ContentImage";
 
 export default function ClientPage(props) {
   // Fallback data matched to your Schema names
@@ -48,7 +49,7 @@ export default function ClientPage(props) {
                 <h3 data-tina-field={tinaField(data?.page, "title")}>{pageTitle}</h3>
                 {pageBody && (
                   <div className="tile-content" data-tina-field={tinaField(data?.page, "body")}>
-                    <TinaMarkdown content={pageBody} />
+                    <TinaMarkdown content={pageBody} components={{ img: ContentImage }} />
                   </div>
                 )}
               </div>
