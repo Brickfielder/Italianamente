@@ -21,7 +21,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Building the Starter Locally (Using the hosted content API)
 
-Replace the `.env.example`, with `.env`
+Copy `.env.example` to `.env` and fill in the required values.
 
 ```
 NEXT_PUBLIC_TINA_CLIENT_ID=<get this from the project you create at app.tina.io>
@@ -34,6 +34,22 @@ Build the project:
 ```bash
 pnpm build
 ```
+
+### Tina schema change workflow
+
+When you update the Tina schema:
+
+1. Update `tina/config.js`.
+2. Regenerate Tina artifacts locally:
+   ```bash
+   pnpm build-local
+   ```
+3. Commit the updated `tina/__generated__` artifacts.
+4. Push to the branch connected to TinaCloud so indexing uses the latest schema.
+
+### Image handling
+
+See [`docs/images.md`](docs/images.md) for where originals live and how to embed images so Next.js can serve responsive sizes.
 
 ## Learn More
 

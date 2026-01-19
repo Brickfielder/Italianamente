@@ -4,22 +4,8 @@ import { Readable } from "node:stream";
 
 import busboy from "busboy";
 import { NextResponse } from "next/server";
-import sharp from "sharp";
 
 export const runtime = "nodejs";
-
-const DEFAULT_MAX_WIDTH = 1600;
-const DEFAULT_MAX_HEIGHT = 1600;
-
-const getResizeTarget = () => {
-  const maxWidth = Number(process.env.TINA_IMAGE_MAX_WIDTH ?? DEFAULT_MAX_WIDTH);
-  const maxHeight = Number(process.env.TINA_IMAGE_MAX_HEIGHT ?? DEFAULT_MAX_HEIGHT);
-
-  return {
-    maxWidth: Number.isFinite(maxWidth) ? maxWidth : DEFAULT_MAX_WIDTH,
-    maxHeight: Number.isFinite(maxHeight) ? maxHeight : DEFAULT_MAX_HEIGHT,
-  };
-};
 
 const resolveUploadPath = (relativePath: string) => {
   const publicRoot = path.join(process.cwd(), "public");
@@ -33,8 +19,6 @@ const resolveUploadPath = (relativePath: string) => {
   return { mediaRoot, targetPath };
 };
 
-const isImage = (mimeType?: string) => Boolean(mimeType?.startsWith("image/"));
-
 export async function POST(
   request: Request,
   { params }: { params: { path?: string[] } }
@@ -44,7 +28,6 @@ export async function POST(
   }
 
   const uploadPath = decodeURIComponent(params.path?.join("/") ?? "");
-  const { maxWidth, maxHeight } = getResizeTarget();
   const fileWrites: Array<Promise<void>> = [];
 
   const headers = Object.fromEntries(request.headers.entries());
@@ -67,21 +50,7 @@ export async function POST(
           await fs.mkdir(path.dirname(targetPath), { recursive: true });
 
           const fileBuffer = Buffer.concat(buffers);
-          let outputBuffer = fileBuffer;
-
-          if (isImage(info.mimeType)) {
-            outputBuffer = await sharp(fileBuffer)
-              .rotate()
-              .resize({
-                width: maxWidth,
-                height: maxHeight,
-                fit: "inside",
-                withoutEnlargement: true,
-              })
-              .toBuffer();
-          }
-
-          await fs.writeFile(targetPath, outputBuffer);
+          await fs.writeFile(targetPath, fileBuffer);
           resolve();
         } catch (error) {
           reject(error);
