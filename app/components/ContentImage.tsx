@@ -61,7 +61,7 @@ export default function ContentImage({
       width={resolvedWidth}
       height={resolvedHeight}
       sizes={sizes ?? "100vw"}
-      className={className}
+      className={["content-image", className].filter(Boolean).join(" ")}
       style={{ width: "100%", height: "auto", ...style }}
     />
   );

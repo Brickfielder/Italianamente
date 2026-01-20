@@ -228,6 +228,18 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   overflow-wrap: break-word;
 }
 
+.content-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.post-content img {
+  max-width: 100%;
+  height: auto;
+}
+
 @media (min-width: 768px) {
   .post-content {
     text-align: justify;
