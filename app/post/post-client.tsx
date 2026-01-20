@@ -65,6 +65,8 @@ export default function PostClient(props) {
                 alt={post.title}
                 width={imageWidth}
                 height={imageHeight}
+                sizes="100vw"
+                className="content-image"
                 style={{ width: "100%", height: "auto", borderRadius: "8px" }}
                 data-tina-field={tinaField(post, "image")}
               />
