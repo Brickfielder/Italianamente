@@ -144,7 +144,7 @@ export default function PostsPage({ posts, title, intro }: PostsPageProps) {
                     </div>
                   )}
                 </div>
-                <div className="read-more">Leggi l'articolo</div>
+                <div className="read-more">{"Leggi l'articolo"}</div>
               </article>
             </Link>
           );

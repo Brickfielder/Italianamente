@@ -24,7 +24,7 @@ export default function RootLayout({
 
           <div className="brand-area">
             <h1 className="logo">ITALIANAMENTE</h1>
-            <p className="subtitle">Impara l'italiano con Tiziana</p>
+            <p className="subtitle">{"Impara l'italiano con Tiziana"}</p>
           </div>
 
           <nav className="main-nav">
