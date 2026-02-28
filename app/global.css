@@ -321,6 +321,18 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   margin: 0 0 1rem;
 }
 
+.post-content a {
+  color: var(--primary-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.post-content a:hover {
+  color: #8f2f2f;
+}
+
 .post-content h2,
 .post-content h3,
 .post-content h4,

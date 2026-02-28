@@ -40,6 +40,22 @@ export default function PostClient(props) {
 
   const imageSrc = normalizeImageSrc(post?.image);
 
+  const PostLink = ({ url, title, children }) => {
+    const isExternal = typeof url === "string" && /^https?:\/\//i.test(url);
+    const hasChildren = Boolean(children);
+
+    return (
+      <a
+        href={url}
+        title={title || undefined}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+      >
+        {hasChildren ? children : url}
+      </a>
+    );
+  };
+
   return (
     <main className="container container--single">
       <ScrollToTop />
@@ -73,7 +89,7 @@ export default function PostClient(props) {
             </div>
           )}
           <div className="tile-content post-content" data-tina-field={tinaField(post, "body")}>
-            <TinaMarkdown content={post?.body} components={{ spacer: Spacer, img: ContentImage }} />
+            <TinaMarkdown content={post?.body} components={{ spacer: Spacer, img: ContentImage, a: PostLink }} />
           </div>
         </div>
       </article>
