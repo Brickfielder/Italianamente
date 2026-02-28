@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { isValidElement } from "react";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 
@@ -42,7 +43,25 @@ export default function PostClient(props) {
 
   const PostLink = ({ url, title, children }) => {
     const isExternal = typeof url === "string" && /^https?:\/\//i.test(url);
-    const hasChildren = Boolean(children);
+    const extractText = (node) => {
+      if (typeof node === "string" || typeof node === "number") {
+        return String(node);
+      }
+      if (Array.isArray(node)) {
+        return node.map(extractText).join("");
+      }
+      if (isValidElement(node)) {
+        return extractText(node.props?.children);
+      }
+      return "";
+    };
+
+    const childText = extractText(children).trim();
+    const titleText = typeof title === "string" ? title.trim() : "";
+    const hasChildText = childText.length > 0;
+    const shouldUseTitle = titleText.length > 0 && (!hasChildText || childText === url);
+    const fallbackLabel = shouldUseTitle ? titleText : url;
+    const hasRenderableChildren = hasChildText && !shouldUseTitle;
 
     return (
       <a
@@ -51,7 +70,7 @@ export default function PostClient(props) {
         target={isExternal ? "_blank" : undefined}
         rel={isExternal ? "noopener noreferrer" : undefined}
       >
-        {hasChildren ? children : url}
+        {hasRenderableChildren ? children : fallbackLabel}
       </a>
     );
   };
