@@ -136,7 +136,10 @@ var config_default = defineConfig({
               "Modo di dire",
               "Barzelletta",
               "Ricetta",
-              "Film"
+              "Film",
+              "Curiosit\xE0",
+              "Attualit\xE0",
+              "Canzoni"
             ],
             required: true
           },
