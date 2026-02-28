@@ -41,7 +41,7 @@ export default function PostClient(props) {
 
   const imageSrc = normalizeImageSrc(post?.image);
 
-  const PostLink = ({ url, title, children }) => {
+  const PostLink = ({ url, title, children, ...rest }) => {
     const isExternal = typeof url === "string" && /^https?:\/\//i.test(url);
     const extractText = (node) => {
       if (typeof node === "string" || typeof node === "number") {
@@ -57,16 +57,20 @@ export default function PostClient(props) {
     };
 
     const childText = extractText(children).trim();
-    const titleText = typeof title === "string" ? title.trim() : "";
+    const candidateLabels = [title, rest?.text, rest?.label, rest?.value, rest?.name]
+      .filter((value) => typeof value === "string")
+      .map((value) => value.trim())
+      .filter((value) => value.length > 0 && value !== url);
+    const metadataLabel = candidateLabels[0] ?? "";
     const hasChildText = childText.length > 0;
-    const shouldUseTitle = titleText.length > 0 && (!hasChildText || childText === url);
-    const fallbackLabel = shouldUseTitle ? titleText : url;
-    const hasRenderableChildren = hasChildText && !shouldUseTitle;
+    const shouldUseMetadataLabel = metadataLabel.length > 0 && (!hasChildText || childText === url);
+    const fallbackLabel = shouldUseMetadataLabel ? metadataLabel : url;
+    const hasRenderableChildren = hasChildText && !shouldUseMetadataLabel;
 
     return (
       <a
         href={url}
-        title={title || undefined}
+        title={metadataLabel || title || undefined}
         target={isExternal ? "_blank" : undefined}
         rel={isExternal ? "noopener noreferrer" : undefined}
       >
