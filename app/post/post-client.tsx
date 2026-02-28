@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { isValidElement } from "react";
 import { tinaField, useTina } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 
@@ -43,29 +42,16 @@ export default function PostClient(props) {
 
   const PostLink = ({ url, title, children, ...rest }) => {
     const isExternal = typeof url === "string" && /^https?:\/\//i.test(url);
-    const extractText = (node) => {
-      if (typeof node === "string" || typeof node === "number") {
-        return String(node);
-      }
-      if (Array.isArray(node)) {
-        return node.map(extractText).join("");
-      }
-      if (isValidElement(node)) {
-        return extractText(node.props?.children);
-      }
-      return "";
-    };
-
-    const childText = extractText(children).trim();
     const candidateLabels = [title, rest?.text, rest?.label, rest?.value, rest?.name]
       .filter((value) => typeof value === "string")
       .map((value) => value.trim())
       .filter((value) => value.length > 0 && value !== url);
     const metadataLabel = candidateLabels[0] ?? "";
-    const hasChildText = childText.length > 0;
-    const shouldUseMetadataLabel = metadataLabel.length > 0 && (!hasChildText || childText === url);
-    const fallbackLabel = shouldUseMetadataLabel ? metadataLabel : url;
-    const hasRenderableChildren = hasChildText && !shouldUseMetadataLabel;
+    const hasRenderableChildren =
+      children !== null &&
+      children !== undefined &&
+      !(Array.isArray(children) && children.length === 0);
+    const fallbackLabel = metadataLabel || url;
 
     return (
       <a
