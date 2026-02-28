@@ -41,7 +41,7 @@ export default function PostClient(props) {
   const imageSrc = normalizeImageSrc(post?.image);
 
   return (
-    <main className="container">
+    <main className="container container--single">
       <ScrollToTop />
       <article className="tile" lang="it">
         <div>

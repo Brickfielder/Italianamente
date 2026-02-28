@@ -150,6 +150,41 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   color: inherit;
 }
 
+/* --- SINGLE POST LAYOUT --- */
+.container--single {
+  display: block;
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+.container--single .tile {
+  width: 100%;
+  min-width: 0;
+  cursor: default;
+}
+
+.container--single .tile h3 {
+  font-size: clamp(1.7rem, 4.2vw, 2.4rem);
+  overflow-wrap: anywhere;
+}
+
+.container--single .tile-content,
+.container--single .post-content,
+.container--single .post-content p,
+.container--single .post-content li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.container--single .content-image,
+.container--single .post-content img {
+  display: block;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
 /* --- ABOUT PAGE --- */
 .about-page {
   display: block;
@@ -520,6 +555,25 @@ footer {
 
   nav.main-nav a:hover {
     border-bottom: 1px solid var(--light-gray);
+  }
+
+  .container--single {
+    margin: 16px auto;
+    padding: 0 10px;
+  }
+
+  .container--single .tile {
+    padding: 14px;
+  }
+
+  .container--single .tile h3 {
+    font-size: clamp(1.45rem, 8.2vw, 1.9rem);
+    line-height: 1.2;
+  }
+
+  .container--single .post-content {
+    font-size: 0.96rem;
+    line-height: 1.65;
   }
 
   .container {
