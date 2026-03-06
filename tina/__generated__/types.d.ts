@@ -199,6 +199,7 @@ export type PageTiles = {
 export type Page = Node & Document & {
   __typename?: 'Page';
   title: Scalars['String']['output'];
+  tilesLastUpdated?: Maybe<Scalars['String']['output']>;
   body?: Maybe<Scalars['JSON']['output']>;
   tiles?: Maybe<Array<Maybe<PageTiles>>>;
   id: Scalars['ID']['output'];
@@ -235,6 +236,7 @@ export type PageTilesFilter = {
 
 export type PageFilter = {
   title?: InputMaybe<StringFilter>;
+  tilesLastUpdated?: InputMaybe<StringFilter>;
   body?: InputMaybe<RichTextFilter>;
   tiles?: InputMaybe<PageTilesFilter>;
 };
@@ -407,6 +409,7 @@ export type PageTilesMutation = {
 
 export type PageMutation = {
   title?: InputMaybe<Scalars['String']['input']>;
+  tilesLastUpdated?: InputMaybe<Scalars['String']['input']>;
   body?: InputMaybe<Scalars['JSON']['input']>;
   tiles?: InputMaybe<Array<InputMaybe<PageTilesMutation>>>;
 };
@@ -421,7 +424,7 @@ export type PostMutation = {
   body?: InputMaybe<Scalars['JSON']['input']>;
 };
 
-export type PagePartsFragment = { __typename: 'Page', title: string, body?: any | null, tiles?: Array<{ __typename: 'PageTiles', style?: string | null, category?: string | null, title?: string | null, description?: string | null, bulletPoints?: Array<string | null> | null, buttonText?: string | null, postReference?: { __typename: 'Post', title: string, category: string, tags?: Array<string | null> | null, image?: string | null, imageWidth?: number | null, imageHeight?: number | null, body?: any | null, id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null };
+export type PagePartsFragment = { __typename: 'Page', title: string, tilesLastUpdated?: string | null, body?: any | null, tiles?: Array<{ __typename: 'PageTiles', style?: string | null, category?: string | null, title?: string | null, description?: string | null, bulletPoints?: Array<string | null> | null, buttonText?: string | null, postReference?: { __typename: 'Post', title: string, category: string, tags?: Array<string | null> | null, image?: string | null, imageWidth?: number | null, imageHeight?: number | null, body?: any | null, id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null };
 
 export type PostPartsFragment = { __typename: 'Post', title: string, category: string, tags?: Array<string | null> | null, image?: string | null, imageWidth?: number | null, imageHeight?: number | null, body?: any | null };
 
@@ -430,7 +433,7 @@ export type PageQueryVariables = Exact<{
 }>;
 
 
-export type PageQuery = { __typename?: 'Query', page: { __typename: 'Page', id: string, title: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, tiles?: Array<{ __typename: 'PageTiles', style?: string | null, category?: string | null, title?: string | null, description?: string | null, bulletPoints?: Array<string | null> | null, buttonText?: string | null, postReference?: { __typename: 'Post', title: string, category: string, tags?: Array<string | null> | null, image?: string | null, imageWidth?: number | null, imageHeight?: number | null, body?: any | null, id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
+export type PageQuery = { __typename?: 'Query', page: { __typename: 'Page', id: string, title: string, tilesLastUpdated?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, tiles?: Array<{ __typename: 'PageTiles', style?: string | null, category?: string | null, title?: string | null, description?: string | null, bulletPoints?: Array<string | null> | null, buttonText?: string | null, postReference?: { __typename: 'Post', title: string, category: string, tags?: Array<string | null> | null, image?: string | null, imageWidth?: number | null, imageHeight?: number | null, body?: any | null, id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } };
 
 export type PageConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -442,7 +445,7 @@ export type PageConnectionQueryVariables = Exact<{
 }>;
 
 
-export type PageConnectionQuery = { __typename?: 'Query', pageConnection: { __typename?: 'PageConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PageConnectionEdges', cursor: string, node?: { __typename: 'Page', id: string, title: string, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, tiles?: Array<{ __typename: 'PageTiles', style?: string | null, category?: string | null, title?: string | null, description?: string | null, bulletPoints?: Array<string | null> | null, buttonText?: string | null, postReference?: { __typename: 'Post', title: string, category: string, tags?: Array<string | null> | null, image?: string | null, imageWidth?: number | null, imageHeight?: number | null, body?: any | null, id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } | null } | null> | null } };
+export type PageConnectionQuery = { __typename?: 'Query', pageConnection: { __typename?: 'PageConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'PageConnectionEdges', cursor: string, node?: { __typename: 'Page', id: string, title: string, tilesLastUpdated?: string | null, body?: any | null, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, tiles?: Array<{ __typename: 'PageTiles', style?: string | null, category?: string | null, title?: string | null, description?: string | null, bulletPoints?: Array<string | null> | null, buttonText?: string | null, postReference?: { __typename: 'Post', title: string, category: string, tags?: Array<string | null> | null, image?: string | null, imageWidth?: number | null, imageHeight?: number | null, body?: any | null, id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string } } | null } | null> | null } | null } | null> | null } };
 
 export type PostQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -467,6 +470,7 @@ export const PagePartsFragmentDoc = gql`
     fragment PageParts on Page {
   __typename
   title
+  tilesLastUpdated
   body
   tiles {
     __typename

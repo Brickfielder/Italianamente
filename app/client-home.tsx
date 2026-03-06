@@ -6,9 +6,22 @@ import { tinaField, useTina } from "tinacms/dist/react";
 export default function ClientHomePage(props) {
   const { data } = useTina(props);
   const page = data?.page;
+  const lastUpdatedSource = page?.tilesLastUpdated ?? null;
+  const lastUpdatedLabel = lastUpdatedSource
+    ? new Intl.DateTimeFormat("it-IT", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(new Date(lastUpdatedSource))
+    : null;
 
   return (
     <main className="container">
+      {lastUpdatedLabel && (
+        <p className="home-metadata">
+          Ultimo aggiornamento: <time dateTime={lastUpdatedSource}>{lastUpdatedLabel}</time>
+        </p>
+      )}
       {page?.tiles?.map((tile, i) => {
         const referencedPost = tile?.postReference;
 

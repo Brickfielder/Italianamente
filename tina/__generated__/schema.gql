@@ -104,6 +104,7 @@ type PageTiles {
 
 type Page implements Node & Document {
   title: String!
+  tilesLastUpdated: String
   body: JSON
   tiles: [PageTiles]
   id: ID!
@@ -140,6 +141,7 @@ input PageTilesFilter {
 
 input PageFilter {
   title: StringFilter
+  tilesLastUpdated: StringFilter
   body: RichTextFilter
   tiles: PageTilesFilter
 }
@@ -249,6 +251,7 @@ input PageTilesMutation {
 
 input PageMutation {
   title: String
+  tilesLastUpdated: String
   body: JSON
   tiles: [PageTilesMutation]
 }

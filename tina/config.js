@@ -33,6 +33,12 @@ export default defineConfig({
             required: true,
           },
           {
+            type: "string",
+            name: "tilesLastUpdated",
+            label: "Ultimo aggiornamento tile",
+            description: "Aggiornato automaticamente quando salvi la homepage.",
+          },
+          {
             type: "rich-text",
             name: "body",
             label: "Contenuto",
@@ -46,7 +52,7 @@ export default defineConfig({
             label: "Griglia di Card (Tiles)",
             ui: {
               itemProps: (item) => {
-                return { label: item.title || 'Nuova Card' }
+                return { label: item.title || "Nuova Card" };
               },
             },
             fields: [
@@ -97,6 +103,17 @@ export default defineConfig({
           },
         ],
         ui: {
+          beforeSubmit: async ({ values }) => {
+            const nextValues = { ...values };
+
+            if (Array.isArray(values?.tiles)) {
+              nextValues.tilesLastUpdated = new Date().toISOString();
+            } else if (typeof values?.tilesLastUpdated === "string") {
+              nextValues.tilesLastUpdated = values.tilesLastUpdated;
+            }
+
+            return nextValues;
+          },
           router: ({ document }) => {
             if (document._sys.filename === "home") {
               return `/`;
@@ -113,10 +130,10 @@ export default defineConfig({
         label: "Post",
         path: "content", // Root content folder
         match: {
-            // Include everything...
-            include: "**/*",
-            // BUT explicitly exclude the 'page' folder to avoid conflict!
-            exclude: "page/**/*",
+          // Include everything...
+          include: "**/*",
+          // BUT explicitly exclude the 'page' folder to avoid conflict!
+          exclude: "page/**/*",
         },
         format: "mdx",
         fields: [

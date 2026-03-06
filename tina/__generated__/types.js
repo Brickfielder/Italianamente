@@ -9,6 +9,7 @@ export const PagePartsFragmentDoc = gql`
     fragment PageParts on Page {
   __typename
   title
+  tilesLastUpdated
   body
   tiles {
     __typename

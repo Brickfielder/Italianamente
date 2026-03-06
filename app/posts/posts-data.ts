@@ -13,28 +13,9 @@ export type PostListItem = {
 };
 
 export const fetchPosts = async () => {
-  const res = await client.queries.postConnection({
-    query: `query PostsPage {
-      postConnection {
-        edges {
-          node {
-            title
-            category
-            tags
-            body
-            _sys {
-              filename
-              breadcrumbs
-              relativePath
-            }
-          }
-        }
-      }
-    }`,
-  });
+  const res = await client.queries.postConnection();
 
   return (
-    res.data.postConnection.edges?.map((edge) => edge?.node).filter(Boolean) ??
-    []
+    res.data.postConnection.edges?.map((edge) => edge?.node).filter(Boolean) ?? []
   ) as PostListItem[];
 };

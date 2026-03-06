@@ -7,48 +7,7 @@ type PageParams = {
 
 export default async function Page({ params }: { params: PageParams }) {
   const filename = params.filename.join("/");
-  const tinaProps = await client.request({
-    query: `query PageQuery($relativePath: String!) {
-      page(relativePath: $relativePath) {
-        ... on Document {
-          _sys {
-            filename
-            breadcrumbs
-            basename
-            relativePath
-            extension
-          }
-          id
-        }
-        ... on Page {
-          title
-          body
-          # Querying the "tiles" list directly (No fragments needed!)
-          tiles {
-            __typename
-            style        # Was "type"
-            category
-            title
-            description  # Was "content"
-            bulletPoints # Was "points"
-            buttonText   # Was "linkText"
-            
-            # The Critical Link Logic
-            postReference {
-              ... on Post {
-                _sys {
-                  breadcrumbs
-                  filename
-                  relativePath
-                }
-              }
-            }
-          }
-        }
-      }
-    }`,
-    variables: { relativePath: `${filename}.mdx` },
-  });
+  const tinaProps = await client.queries.page({ relativePath: `${filename}.mdx` });
 
   return <ClientPage {...tinaProps} />;
 }

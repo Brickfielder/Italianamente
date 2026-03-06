@@ -136,6 +136,20 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   gap: 30px;
 }
 
+.home-metadata {
+  grid-column: 1 / -1;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: #666;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.home-metadata time {
+  color: var(--primary-color);
+}
+
 /* Questa regola serve per assicurarsi che il link non interrompa la griglia */
 .container > a {
   display: contents;
@@ -593,6 +607,11 @@ footer {
     padding: 0 16px;
     grid-template-columns: 1fr;
     gap: 18px;
+  }
+
+  .home-metadata {
+    font-size: 0.95rem;
+    padding-bottom: 4px;
   }
 
   .posts-page {

@@ -44,8 +44,13 @@ When you update the Tina schema:
    ```bash
    pnpm build-local
    ```
-3. Commit the updated `tina/__generated__` artifacts.
+3. Commit the updated `tina/__generated__` artifacts and `tina/tina-lock.json`.
 4. Push to the branch connected to TinaCloud so indexing uses the latest schema.
+
+If you need a full local production build against the local Tina API, run:
+```bash
+pnpm build-local-prod
+```
 
 ### Image handling
 

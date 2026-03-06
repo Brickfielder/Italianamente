@@ -31,6 +31,12 @@ var config_default = defineConfig({
             required: true
           },
           {
+            type: "string",
+            name: "tilesLastUpdated",
+            label: "Ultimo aggiornamento tile",
+            description: "Aggiornato automaticamente quando salvi la homepage."
+          },
+          {
             type: "rich-text",
             name: "body",
             label: "Contenuto",
@@ -95,6 +101,15 @@ var config_default = defineConfig({
           }
         ],
         ui: {
+          beforeSubmit: async ({ values }) => {
+            const nextValues = { ...values };
+            if (Array.isArray(values?.tiles)) {
+              nextValues.tilesLastUpdated = (/* @__PURE__ */ new Date()).toISOString();
+            } else if (typeof values?.tilesLastUpdated === "string") {
+              nextValues.tilesLastUpdated = values.tilesLastUpdated;
+            }
+            return nextValues;
+          },
           router: ({ document }) => {
             if (document._sys.filename === "home") {
               return `/`;

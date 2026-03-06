@@ -8,9 +8,10 @@
   "scripts": {
     "dev": "tinacms dev -c \"next dev\"",
     "build": "tinacms build && next build",
-    "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
+    "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks",
     "start": "tinacms build && next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build-local-prod": "node scripts/build-local-production.mjs"
   },
   "dependencies": {
     "busboy": "^1.6.0",
