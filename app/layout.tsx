@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Script from "next/script";
 import "./global.css";
 import { ABOUT_PAGE_HREF } from "./constants/routes";
 
@@ -42,6 +43,12 @@ export default function RootLayout({
         <footer>
           &copy; 2026 ItalianaMente - Corso di Italiano con Tiziana
         </footer>
+
+        <Script
+          data-goatcounter="https://italianamente.goatcounter.com/count"
+          src="https://gc.zgo.at/count.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
