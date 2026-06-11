@@ -22,6 +22,7 @@ export type StudioDocument = {
   baseSha?: string;
   previewBranch?: string;
   pullRequestNumber?: number;
+  pullRequestUrl?: string;
   previewUrl?: string | null;
   draftStatus?: string;
 };

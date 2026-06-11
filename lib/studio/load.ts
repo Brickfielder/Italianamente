@@ -5,6 +5,7 @@ import { marked } from "marked";
 import { getPage, listPosts } from "../content";
 import { hasDatabase } from "../db";
 import { publishedHtmlToEditorHtml } from "./embeds";
+import { getPullRequestUrl } from "./github";
 import { listDrafts } from "./repository";
 import type { StudioDocument } from "./types";
 
@@ -86,6 +87,9 @@ export async function loadStudioDocuments(): Promise<StudioDocument[]> {
       baseSha: draft.baseSha ?? undefined,
       previewBranch: draft.previewBranch ?? undefined,
       pullRequestNumber: draft.pullRequestNumber ?? undefined,
+      pullRequestUrl: draft.pullRequestNumber
+        ? getPullRequestUrl(draft.pullRequestNumber)
+        : undefined,
       previewUrl: draft.previewUrl ?? undefined,
       draftStatus: draft.status,
     } as StudioDocument);

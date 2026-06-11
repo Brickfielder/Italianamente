@@ -16,6 +16,11 @@ const repository = () => {
   return { owner, repo };
 };
 
+export const getPullRequestUrl = (pullRequestNumber: number) => {
+  const { owner, repo } = repository();
+  return `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}`;
+};
+
 const getOctokit = () => {
   const appId = process.env.GITHUB_APP_ID;
   const privateKey = process.env.GITHUB_APP_PRIVATE_KEY?.replace(/\\n/g, "\n");
@@ -39,7 +44,7 @@ const branchNameFor = (documentPath: string) =>
     .replace(/\//g, "-")
     .toLowerCase()}`;
 
-const getPreviewUrl = async (branch: string) => {
+export const getPreviewUrl = async (branch: string) => {
   const token = process.env.VERCEL_TOKEN;
   const projectId = process.env.VERCEL_PROJECT_ID;
   if (!token || !projectId) {
@@ -70,6 +75,9 @@ const getPreviewUrl = async (branch: string) => {
   const deployment = data.deployments?.[0];
   return deployment?.url ? `https://${deployment.url}` : null;
 };
+
+export const hasPreviewLookup = () =>
+  Boolean(process.env.VERCEL_TOKEN && process.env.VERCEL_PROJECT_ID);
 
 export async function createPreview(document: StudioDocument) {
   const octokit = getOctokit();

@@ -342,6 +342,60 @@ export default function StudioApp({
     [selectedPath]
   );
 
+  const refreshPreviewStatus = useCallback(
+    async (document: StudioDocument, options?: { silent?: boolean }) => {
+      if (!document.id || !document.pullRequestNumber || document.previewUrl) {
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/studio/preview-status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: document.id }),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.message);
+        }
+
+        setDocuments((current) =>
+          current.map((item) =>
+            item.documentPath === document.documentPath
+              ? {
+                  ...item,
+                  previewUrl: result.previewUrl,
+                  pullRequestUrl: result.pullRequestUrl ?? item.pullRequestUrl,
+                }
+              : item
+          )
+        );
+
+        if (result.previewUrl) {
+          setMessage("Anteprima pronta. Puoi aprirla ora.");
+          return;
+        }
+
+        if (!options?.silent) {
+          setMessage(
+            result.lookupEnabled
+              ? "Anteprima in preparazione. Apri la pull request per seguirla."
+              : "Pull request creata. Per vedere l'anteprima apri la pull request o il progetto Vercel."
+          );
+        }
+      } catch (error) {
+        if (!options?.silent) {
+          setMessage(
+            error instanceof Error
+              ? error.message
+              : "Impossibile controllare lo stato dell'anteprima."
+          );
+        }
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     if (editorRef.current && selected?.documentType !== "home") {
       const editableBody = publishedHtmlToEditorHtml(
@@ -361,6 +415,25 @@ export default function StudioApp({
       setPreviewMode("article");
     }
   }, [previewMode, selected?.documentType]);
+
+  useEffect(() => {
+    if (!selected?.id || !selected.pullRequestNumber || selected.previewUrl) {
+      return;
+    }
+
+    void refreshPreviewStatus(selected, { silent: true });
+    const timer = window.setInterval(() => {
+      void refreshPreviewStatus(selected, { silent: true });
+    }, 15000);
+
+    return () => window.clearInterval(timer);
+  }, [
+    refreshPreviewStatus,
+    selected?.documentPath,
+    selected?.id,
+    selected?.previewUrl,
+    selected?.pullRequestNumber,
+  ]);
 
   useEffect(() => {
     editorPanelRef.current?.scrollTo({ top: 0 });
@@ -643,11 +716,17 @@ export default function StudioApp({
         )
       );
       setSaveState("saved");
-      setMessage(
-        result.previewUrl
-          ? "Anteprima pronta."
-          : "PR creata. Vercel sta preparando l'anteprima."
-      );
+      if (result.previewUrl) {
+        setMessage("Anteprima pronta.");
+      } else if (result.pullRequestUrl) {
+        setMessage("Pull request creata. Vercel sta preparando l'anteprima.");
+        void refreshPreviewStatus(
+          { ...selected, ...result },
+          { silent: true }
+        );
+      } else {
+        setMessage("Anteprima richiesta.");
+      }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Anteprima non riuscita.");
     } finally {
@@ -1203,11 +1282,26 @@ export default function StudioApp({
             <strong>Anteprima</strong>
             <span>Controlla il risultato prima di pubblicare.</span>
           </div>
-          {selected.previewUrl && (
-            <a href={selected.previewUrl} target="_blank" rel="noreferrer">
-              Apri anteprima
-            </a>
-          )}
+          <div className="preview-header-links">
+            {selected.pullRequestUrl && (
+              <a href={selected.pullRequestUrl} target="_blank" rel="noreferrer">
+                Apri pull request
+              </a>
+            )}
+            {selected.previewUrl ? (
+              <a href={selected.previewUrl} target="_blank" rel="noreferrer">
+                Apri anteprima
+              </a>
+            ) : selected.pullRequestNumber ? (
+              <button
+                type="button"
+                className="preview-link-button"
+                onClick={() => void refreshPreviewStatus(selected)}
+              >
+                Controlla anteprima
+              </button>
+            ) : null}
+          </div>
         </div>
         <div className="preview-tabs" role="tablist" aria-label="Modalità anteprima">
           <button
