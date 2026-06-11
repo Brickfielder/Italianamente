@@ -125,13 +125,43 @@ export async function createPreview(document: StudioDocument) {
     ref: "heads/main",
   });
   const baseSha = base.data.object.sha;
-
+  const baseCommit = await octokit.git.getCommit({
+    owner,
+    repo,
+    commit_sha: baseSha,
+  });
+  const blob = await octokit.git.createBlob({
+    owner,
+    repo,
+    content: serializeStudioDocument(document),
+    encoding: "utf-8",
+  });
+  const tree = await octokit.git.createTree({
+    owner,
+    repo,
+    base_tree: baseCommit.data.tree.sha,
+    tree: [
+      {
+        path: document.documentPath,
+        mode: "100644",
+        type: "blob",
+        sha: blob.data.sha,
+      },
+    ],
+  });
+  const commit = await octokit.git.createCommit({
+    owner,
+    repo,
+    message: `content(studio): update ${document.title}`,
+    tree: tree.data.sha,
+    parents: [baseSha],
+  });
   try {
     await octokit.git.createRef({
       owner,
       repo,
       ref: `refs/heads/${branch}`,
-      sha: baseSha,
+      sha: commit.data.sha,
     });
   } catch (error) {
     if ((error as { status?: number }).status !== 422) {
@@ -141,37 +171,10 @@ export async function createPreview(document: StudioDocument) {
       owner,
       repo,
       ref: `heads/${branch}`,
-      sha: baseSha,
+      sha: commit.data.sha,
       force: true,
     });
   }
-
-  let currentSha: string | undefined;
-  try {
-    const current = await octokit.repos.getContent({
-      owner,
-      repo,
-      path: document.documentPath,
-      ref: branch,
-    });
-    if (!Array.isArray(current.data) && current.data.type === "file") {
-      currentSha = current.data.sha;
-    }
-  } catch (error) {
-    if ((error as { status?: number }).status !== 404) {
-      throw error;
-    }
-  }
-
-  await octokit.repos.createOrUpdateFileContents({
-    owner,
-    repo,
-    path: document.documentPath,
-    branch,
-    message: `content(studio): update ${document.title}`,
-    content: Buffer.from(serializeStudioDocument(document)).toString("base64"),
-    ...(currentSha ? { sha: currentSha } : {}),
-  });
 
   const existing = await octokit.pulls.list({
     owner,
