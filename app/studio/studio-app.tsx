@@ -20,6 +20,7 @@ import {
 } from "../../lib/studio/embeds";
 import type { StudioDocument } from "../../lib/studio/types";
 import {
+  applyStudioPatch,
   filterStudioPosts,
   mergeStudioDocument,
   publishingLabels,
@@ -330,11 +331,16 @@ export default function StudioApp({
   }, [homeDocument, selected]);
 
   const updateSelected = useCallback(
-    (patch: Partial<StudioDocument>) => {
+    (
+      patch: Partial<StudioDocument>,
+      options?: { invalidatePreview?: boolean }
+    ) => {
       setDocuments((current) =>
         current.map((document) =>
           document.documentPath === selectedPath
-            ? { ...document, ...patch }
+            ? options?.invalidatePreview === false
+              ? mergeStudioDocument(document, patch)
+              : applyStudioPatch(document, patch)
             : document
         )
       );
@@ -400,7 +406,7 @@ export default function StudioApp({
       );
       editorRef.current.innerHTML = editableBody;
       if (editableBody !== selected?.body) {
-        updateSelected({ body: editableBody });
+        updateSelected({ body: editableBody }, { invalidatePreview: false });
       }
     }
     // The editor owns body changes after a document is selected.

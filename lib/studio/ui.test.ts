@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { StudioDocument } from "./types";
 import {
+  applyStudioPatch,
   filterStudioPosts,
   mergeStudioDocument,
   publishingLabels,
@@ -89,6 +90,50 @@ describe("studio UI helpers", () => {
         { ...post, previewUrl: null }
       ).previewUrl
     ).toBeNull();
+  });
+
+  it("clears stale preview metadata after a real content edit", () => {
+    expect(
+      applyStudioPatch(
+        {
+          ...post,
+          baseSha: "abc123",
+          previewBranch: "studio/content-culture-felicita",
+          pullRequestNumber: 42,
+          pullRequestUrl:
+            "https://github.com/Brickfielder/Italianamente/pull/42",
+          previewUrl: "https://ready-preview.vercel.app",
+          draftStatus: "published",
+        },
+        { title: "Titolo aggiornato" }
+      )
+    ).toMatchObject({
+      title: "Titolo aggiornato",
+      draftStatus: "draft",
+    });
+  });
+
+  it("keeps preview metadata for non-content bookkeeping updates", () => {
+    expect(
+      applyStudioPatch(
+        {
+          ...post,
+          baseSha: "abc123",
+          previewBranch: "studio/content-culture-felicita",
+          pullRequestNumber: 42,
+          pullRequestUrl:
+            "https://github.com/Brickfielder/Italianamente/pull/42",
+          previewUrl: "https://ready-preview.vercel.app",
+          draftStatus: "preview",
+        },
+        { contentOrigin: "repository" }
+      )
+    ).toMatchObject({
+      previewBranch: "studio/content-culture-felicita",
+      pullRequestNumber: 42,
+      previewUrl: "https://ready-preview.vercel.app",
+      draftStatus: "preview",
+    });
   });
 
   it("finds the latest GitHub preview deployment and waits for READY", () => {

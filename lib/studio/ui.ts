@@ -1,6 +1,24 @@
 import type { HomeTile } from "../content/types";
 import type { StudioDocument } from "./types";
 
+const PREVIEW_INVALIDATING_FIELDS: Array<keyof StudioDocument> = [
+  "title",
+  "excerpt",
+  "category",
+  "tags",
+  "image",
+  "imageWidth",
+  "imageHeight",
+  "imageDisplayWidth",
+  "status",
+  "body",
+  "tiles",
+  "tilesLastUpdated",
+];
+
+const changed = (left: unknown, right: unknown) =>
+  JSON.stringify(left) !== JSON.stringify(right);
+
 const normalized = (value: string) =>
   value
     .normalize("NFD")
@@ -84,5 +102,29 @@ export function mergeStudioDocument(
     previewUrl:
       incoming.previewUrl === undefined ? current.previewUrl : incoming.previewUrl,
     draftStatus: incoming.draftStatus ?? current.draftStatus,
+  };
+}
+
+export function applyStudioPatch(
+  current: StudioDocument,
+  patch: Partial<StudioDocument>
+): StudioDocument {
+  const merged = mergeStudioDocument(current, patch);
+  const invalidatesPreview = PREVIEW_INVALIDATING_FIELDS.some(
+    (field) => field in patch && changed(current[field], patch[field])
+  );
+
+  if (!invalidatesPreview) {
+    return merged;
+  }
+
+  return {
+    ...merged,
+    baseSha: undefined,
+    previewBranch: undefined,
+    pullRequestNumber: undefined,
+    pullRequestUrl: undefined,
+    previewUrl: undefined,
+    draftStatus: "draft",
   };
 }
