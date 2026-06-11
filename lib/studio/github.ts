@@ -35,6 +35,19 @@ export const getPullRequestUrl = (pullRequestNumber: number) => {
   return `https://github.com/${owner}/${repo}/pull/${pullRequestNumber}`;
 };
 
+const getPullRequest = async (pullRequestNumber: number) => {
+  const octokit = getOctokit();
+  const { owner, repo } = repository();
+  return octokit.pulls.get({
+    owner,
+    repo,
+    pull_number: pullRequestNumber,
+  });
+};
+
+export const getPullRequestHeadSha = async (pullRequestNumber: number) =>
+  (await getPullRequest(pullRequestNumber)).data.head.sha;
+
 const getOctokit = () => {
   const appId = process.env.GITHUB_APP_ID;
   const privateKey = process.env.GITHUB_APP_PRIVATE_KEY?.replace(/\\n/g, "\n");
@@ -65,12 +78,31 @@ const deploymentBranch = (deployment: VercelDeployment) =>
   deployment.meta?.bitbucketCommitRef ||
   null;
 
+const deploymentCommitSha = (deployment: VercelDeployment) =>
+  deployment.meta?.githubCommitSha ||
+  deployment.meta?.gitCommitSha ||
+  deployment.meta?.commitSha ||
+  deployment.meta?.gitlabCommitSha ||
+  deployment.meta?.bitbucketCommitSha ||
+  null;
+
 export const selectPreviewDeployment = (
   deployments: VercelDeployment[],
-  branch: string
+  branch: string,
+  expectedCommitSha?: string
 ): PreviewLookupResult => {
   const deployment = deployments
-    .filter((item) => deploymentBranch(item) === branch)
+    .filter((item) => {
+      if (deploymentBranch(item) !== branch) {
+        return false;
+      }
+
+      if (!expectedCommitSha) {
+        return true;
+      }
+
+      return deploymentCommitSha(item) === expectedCommitSha;
+    })
     .sort((left, right) => (right.createdAt ?? 0) - (left.createdAt ?? 0))[0];
 
   if (!deployment?.url) {
@@ -82,7 +114,10 @@ export const selectPreviewDeployment = (
     : { ready: false, url: null };
 };
 
-export const getPreviewUrl = async (branch: string) => {
+export const getPreviewUrl = async (
+  branch: string,
+  expectedCommitSha?: string
+) => {
   const token = process.env.VERCEL_TOKEN;
   const projectId = process.env.VERCEL_PROJECT_ID;
   if (!token || !projectId) {
@@ -109,7 +144,11 @@ export const getPreviewUrl = async (branch: string) => {
   const data = (await response.json()) as {
     deployments?: VercelDeployment[];
   };
-  return selectPreviewDeployment(data.deployments ?? [], branch);
+  return selectPreviewDeployment(
+    data.deployments ?? [],
+    branch,
+    expectedCommitSha
+  );
 };
 
 export const hasPreviewLookup = () =>
@@ -195,13 +234,14 @@ export async function createPreview(document: StudioDocument) {
         body: "Created by Italianamente Studio. Review the Vercel preview before publishing.",
       })
     ).data;
+  const previewCommitSha = commit.data.sha;
 
   return {
     branch,
     baseSha,
     pullRequestNumber: pullRequest.number,
     pullRequestUrl: pullRequest.html_url,
-    previewUrl: (await getPreviewUrl(branch)).url,
+    previewUrl: (await getPreviewUrl(branch, previewCommitSha)).url,
   };
 }
 

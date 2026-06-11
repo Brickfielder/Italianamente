@@ -148,12 +148,16 @@ describe("studio UI helpers", () => {
           },
           {
             createdAt: 20,
-            meta: { githubCommitRef: "studio/content-page-home" },
+            meta: {
+              githubCommitRef: "studio/content-page-home",
+              githubCommitSha: "abc123",
+            },
             readyState: "READY",
             url: "ready-preview.vercel.app",
           },
         ],
-        "studio/content-page-home"
+        "studio/content-page-home",
+        "abc123"
       )
     ).toEqual({
       ready: true,
@@ -167,12 +171,48 @@ describe("studio UI helpers", () => {
         [
           {
             createdAt: 20,
-            meta: { githubCommitRef: "studio/content-page-home" },
+            meta: {
+              githubCommitRef: "studio/content-page-home",
+              githubCommitSha: "abc123",
+            },
             readyState: "BUILDING",
             url: "building-preview.vercel.app",
           },
         ],
-        "studio/content-page-home"
+        "studio/content-page-home",
+        "abc123"
+      )
+    ).toEqual({
+      ready: false,
+      url: null,
+    });
+  });
+
+  it("ignores an older ready deployment from the same branch", () => {
+    expect(
+      selectPreviewDeployment(
+        [
+          {
+            createdAt: 10,
+            meta: {
+              githubCommitRef: "studio/content-page-home",
+              githubCommitSha: "oldsha",
+            },
+            readyState: "READY",
+            url: "old-preview.vercel.app",
+          },
+          {
+            createdAt: 20,
+            meta: {
+              githubCommitRef: "studio/content-page-home",
+              githubCommitSha: "newsha",
+            },
+            readyState: "BUILDING",
+            url: "new-preview.vercel.app",
+          },
+        ],
+        "studio/content-page-home",
+        "newsha"
       )
     ).toEqual({
       ready: false,

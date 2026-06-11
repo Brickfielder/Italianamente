@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { hasPreviewLookup, getPreviewUrl, getPullRequestUrl } from "../../../../lib/studio/github";
+import {
+  hasPreviewLookup,
+  getPreviewUrl,
+  getPullRequestHeadSha,
+  getPullRequestUrl,
+} from "../../../../lib/studio/github";
 import { getDraft, updateDraftPublishing } from "../../../../lib/studio/repository";
 import { requireStudioUser } from "../../../../lib/studio/session";
 
@@ -30,7 +35,10 @@ export async function POST(request: Request) {
       });
     }
 
-    const preview = await getPreviewUrl(draft.previewBranch);
+    const previewCommitSha = draft.pullRequestNumber
+      ? await getPullRequestHeadSha(draft.pullRequestNumber)
+      : undefined;
+    const preview = await getPreviewUrl(draft.previewBranch, previewCommitSha);
     if (preview.url && preview.url !== draft.previewUrl) {
       await updateDraftPublishing(
         id,
