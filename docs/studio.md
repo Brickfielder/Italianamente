@@ -13,6 +13,8 @@ Studio is the private editor at `/studio`. Published content remains in
    Grant `Contents: Read and write` and `Pull requests: Read and write`.
 5. Add the variables documented in `.env.example` to Vercel Production,
    Preview, and Development environments.
+   `AUTH_ALLOWED_EMAIL` can be a comma-separated allowlist when multiple
+   editors need access.
 6. Rotate the old Tina token because a generated client previously contained
    it in repository history.
 

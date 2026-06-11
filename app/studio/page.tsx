@@ -6,6 +6,14 @@ import StudioApp from "./studio-app";
 
 export const dynamic = "force-dynamic";
 
+const allowedEmails = () =>
+  new Set(
+    (process.env.AUTH_ALLOWED_EMAIL || "")
+      .split(",")
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean)
+  );
+
 export default async function StudioPage() {
   const demoMode =
     process.env.NODE_ENV !== "production" &&
@@ -59,10 +67,7 @@ export default async function StudioPage() {
     );
   }
 
-  if (
-    session.user.email.toLowerCase() !==
-    process.env.AUTH_ALLOWED_EMAIL?.trim().toLowerCase()
-  ) {
+  if (!allowedEmails().has(session.user.email.toLowerCase())) {
     redirect("/");
   }
 

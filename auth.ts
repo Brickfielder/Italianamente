@@ -10,6 +10,17 @@ import {
   verificationTokens,
 } from "./lib/db/schema";
 
+const allowedEmails = () =>
+  new Set(
+    (process.env.AUTH_ALLOWED_EMAIL || "")
+      .split(",")
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean)
+  );
+
+const isAllowedEmail = (email?: string | null) =>
+  Boolean(email && allowedEmails().has(email.trim().toLowerCase()));
+
 export const isStudioConfigured = () =>
   hasDatabase() &&
   Boolean(process.env.AUTH_SECRET) &&
@@ -40,15 +51,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     signIn({ user }) {
-      const allowed = process.env.AUTH_ALLOWED_EMAIL?.trim().toLowerCase();
-      return Boolean(allowed && user.email?.toLowerCase() === allowed);
+      return isAllowedEmail(user.email);
     },
     authorized({ auth: session }) {
-      const allowed = process.env.AUTH_ALLOWED_EMAIL?.trim().toLowerCase();
-      return Boolean(
-        allowed && session?.user?.email?.toLowerCase() === allowed
-      );
+      return isAllowedEmail(session?.user?.email);
     },
   },
 });
-
