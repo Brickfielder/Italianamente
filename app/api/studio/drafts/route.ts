@@ -24,7 +24,7 @@ const documentSchema = z.object({
   baseSha: z.string().optional(),
   previewBranch: z.string().optional(),
   pullRequestNumber: z.number().optional(),
-  previewUrl: z.string().url().optional(),
+  previewUrl: z.string().url().nullable().optional(),
   draftStatus: z.string().optional(),
 });
 

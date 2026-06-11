@@ -22,6 +22,6 @@ export type StudioDocument = {
   baseSha?: string;
   previewBranch?: string;
   pullRequestNumber?: number;
-  previewUrl?: string;
+  previewUrl?: string | null;
   draftStatus?: string;
 };
