@@ -30,6 +30,7 @@ import {
 type SaveState = "saved" | "saving" | "dirty" | "error";
 type InsertDialog = "link" | "image" | "video" | "audio" | null;
 type PreviewMode = "article" | "card" | "mobile";
+const MESSAGE_DURATION_MS = 4000;
 
 const CATEGORIES = [
   "Grammatica",
@@ -285,6 +286,7 @@ export default function StudioApp({
   const editorPanelRef = useRef<HTMLElement>(null);
   const previewStageRef = useRef<HTMLDivElement>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const messageTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const selectionRef = useRef<Range | null>(null);
 
   const selected = useMemo(
@@ -349,6 +351,18 @@ export default function StudioApp({
     [selectedPath]
   );
 
+  const showMessage = useCallback((value: string) => {
+    window.clearTimeout(messageTimer.current);
+    setMessage(value);
+    if (!value) {
+      return;
+    }
+    messageTimer.current = window.setTimeout(() => {
+      setMessage("");
+      messageTimer.current = undefined;
+    }, MESSAGE_DURATION_MS);
+  }, []);
+
   const refreshPreviewStatus = useCallback(
     async (document: StudioDocument, options?: { silent?: boolean }) => {
       if (!document.id || !document.pullRequestNumber || document.previewUrl) {
@@ -379,16 +393,16 @@ export default function StudioApp({
         );
 
         if (result.previewUrl) {
-          setMessage("Anteprima pronta. Puoi aprirla ora.");
+          showMessage("Anteprima pronta. Puoi aprirla ora.");
           return;
         }
 
         if (!options?.silent) {
-          setMessage("Anteprima in preparazione. La troverai qui appena pronta.");
+          showMessage("Anteprima in preparazione. La troverai qui appena pronta.");
         }
       } catch (error) {
         if (!options?.silent) {
-          setMessage(
+          showMessage(
             error instanceof Error
               ? error.message
               : "Impossibile controllare lo stato dell'anteprima."
@@ -396,7 +410,7 @@ export default function StudioApp({
         }
       }
     },
-    []
+    [showMessage]
   );
 
   useEffect(() => {
@@ -480,6 +494,13 @@ export default function StudioApp({
     }, 1200);
     return () => clearTimeout(saveTimer.current);
   }, [save, saveState, selected]);
+
+  useEffect(
+    () => () => {
+      window.clearTimeout(messageTimer.current);
+    },
+    []
+  );
 
   const runCommand = (command: string, value?: string) => {
     editorRef.current?.focus();
@@ -606,7 +627,7 @@ export default function StudioApp({
       setInsertDialog(null);
       setInsertUrl("");
     } catch {
-      setMessage(
+      showMessage(
         insertDialog === "video"
           ? "Video non valido. Usa un link YouTube, Vimeo, Spotify o SoundCloud."
           : "URL non valido."
@@ -620,13 +641,13 @@ export default function StudioApp({
     asCover = false
   ) => {
     if (demoMode) {
-      setMessage(
+      showMessage(
         "Gli upload locali richiedono Vercel Blob e sono disattivati nella demo."
       );
       return;
     }
     setBusy(true);
-    setMessage(`Caricamento ${kind === "image" ? "immagine" : kind}...`);
+    showMessage(`Caricamento ${kind === "image" ? "immagine" : kind}...`);
     try {
       const blob = await upload(file.name, file, {
         access: "public",
@@ -652,9 +673,9 @@ export default function StudioApp({
         );
       }
       setInsertDialog(null);
-      setMessage("File caricato.");
+      showMessage("File caricato.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Upload non riuscito.");
+      showMessage(error instanceof Error ? error.message : "Upload non riuscito.");
     } finally {
       setBusy(false);
     }
@@ -690,7 +711,7 @@ export default function StudioApp({
     setDocuments((current) => [...current, document]);
     setSelectedPath(document.documentPath);
     setSaveState("dirty");
-    setMessage("");
+    showMessage("");
     requestAnimationFrame(() => {
       titleInputRef.current?.focus();
       titleInputRef.current?.select();
@@ -700,11 +721,11 @@ export default function StudioApp({
   const createPreview = async () => {
     if (!selected) return;
     if (demoMode) {
-      setMessage("Collega i servizi per creare una vera anteprima Vercel.");
+      showMessage("Collega i servizi per creare una vera anteprima Vercel.");
       return;
     }
     setBusy(true);
-    setMessage("Creazione dell'anteprima Vercel...");
+    showMessage("Creazione dell'anteprima Vercel...");
     try {
       const response = await fetch("/api/studio/preview", {
         method: "POST",
@@ -722,18 +743,18 @@ export default function StudioApp({
       );
       setSaveState("saved");
       if (result.previewUrl) {
-        setMessage("Anteprima pronta.");
+        showMessage("Anteprima pronta.");
       } else if (result.pullRequestNumber) {
-        setMessage("Anteprima richiesta. La troverai qui appena pronta.");
+        showMessage("Anteprima richiesta. La troverai qui appena pronta.");
         void refreshPreviewStatus(
           { ...selected, ...result },
           { silent: true }
         );
       } else {
-        setMessage("Anteprima richiesta.");
+        showMessage("Anteprima richiesta.");
       }
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Anteprima non riuscita.");
+      showMessage(error instanceof Error ? error.message : "Anteprima non riuscita.");
     } finally {
       setBusy(false);
     }
@@ -743,7 +764,7 @@ export default function StudioApp({
     if (!selected?.id || !selected.pullRequestNumber) return;
     if (!window.confirm("Pubblicare questa anteprima sul sito?")) return;
     setBusy(true);
-    setMessage("Pubblicazione in corso...");
+    showMessage("Pubblicazione in corso...");
     try {
       const response = await fetch("/api/studio/publish", {
         method: "POST",
@@ -756,9 +777,9 @@ export default function StudioApp({
         contentOrigin: "repository",
         draftStatus: "published",
       });
-      setMessage("Pubblicato. Vercel sta aggiornando il sito.");
+      showMessage("Pubblicato. Vercel sta aggiornando il sito.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Pubblicazione non riuscita.");
+      showMessage(error instanceof Error ? error.message : "Pubblicazione non riuscita.");
     } finally {
       setBusy(false);
     }
