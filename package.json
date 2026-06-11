@@ -6,26 +6,44 @@
     "node": "20.x"
   },
   "scripts": {
-    "dev": "tinacms dev -c \"next dev\"",
-    "build": "tinacms build && next build",
+    "dev": "next dev",
+    "dev:tina": "tinacms dev -c \"next dev\"",
+    "build": "next build",
     "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks",
-    "start": "tinacms build && next start",
+    "start": "next start",
+    "test": "vitest run",
     "lint": "next lint",
     "build-local-prod": "node scripts/build-local-production.mjs"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.11.2",
+    "@neondatabase/serverless": "^1.1.0",
+    "@octokit/auth-app": "^8.2.0",
+    "@octokit/rest": "^22.0.1",
+    "@vercel/blob": "^2.4.0",
     "busboy": "^1.6.0",
+    "drizzle-orm": "^0.45.2",
+    "gray-matter": "^4.0.3",
+    "marked": "^18.0.5",
     "next": "^14.2.35",
+    "next-auth": "5.0.0-beta.31",
+    "next-mdx-remote": "^6.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "remark-gfm": "^4.0.1",
+    "resend": "^6.12.4",
+    "sanitize-html": "^2.17.4",
     "tinacms": "^3.3.1",
-    "typescript": "5.5.2"
+    "typescript": "5.5.2",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tinacms/cli": "^2.1.1",
     "@types/node": "^22.18.12",
     "@types/react": "19.2.8",
+    "@types/sanitize-html": "^2.16.1",
     "eslint": "^8.57.1",
-    "eslint-config-next": "^14.2.33"
+    "eslint-config-next": "^14.2.33",
+    "vitest": "^0.34.6"
   }
 }

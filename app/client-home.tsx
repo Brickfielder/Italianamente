@@ -1,12 +1,9 @@
-"use client";
-
 import Link from "next/link";
-import { tinaField, useTina } from "tinacms/dist/react";
 
-export default function ClientHomePage(props) {
-  const { data } = useTina(props);
-  const page = data?.page;
-  const lastUpdatedSource = page?.tilesLastUpdated ?? null;
+import type { PageDocument } from "../lib/content/types";
+
+export default function ClientHomePage({ page }: { page: PageDocument }) {
+  const lastUpdatedSource = page.tilesLastUpdated ?? null;
   const lastUpdatedLabel = lastUpdatedSource
     ? new Intl.DateTimeFormat("it-IT", {
         day: "numeric",
@@ -19,75 +16,53 @@ export default function ClientHomePage(props) {
     <main className="container">
       {lastUpdatedLabel && (
         <p className="home-metadata">
-          Ultimo aggiornamento: <time dateTime={lastUpdatedSource}>{lastUpdatedLabel}</time>
+          Ultimo aggiornamento:{" "}
+          <time dateTime={lastUpdatedSource ?? undefined}>{lastUpdatedLabel}</time>
         </p>
       )}
-      {page?.tiles?.map((tile, i) => {
-        const referencedPost = tile?.postReference;
-
-        const displayCategory = tile?.category || referencedPost?.category;
-        const displayTitle = tile?.title || referencedPost?.title;
-
-        const relativePath = referencedPost?._sys?.relativePath;
-        const breadcrumbs = referencedPost?._sys?.breadcrumbs;
-        const filename = referencedPost?._sys?.filename;
-        const slug = relativePath
-          ? relativePath.replace(/\.mdx$/, "")
-          : breadcrumbs && breadcrumbs.length > 0
-          ? breadcrumbs.join("/")
-          : filename
-          ? filename.replace(/\.mdx$/, "")
-          : null;
+      {page.tiles?.map((tile, index) => {
+        const referencedPost = tile.referencedPost;
+        const displayCategory = tile.category || referencedPost?.category;
+        const displayTitle = tile.title || referencedPost?.title;
+        const slug = referencedPost?._sys.relativePath.replace(/\.mdx$/, "");
         const postHref = slug ? `/${slug}` : null;
+        const tileClasses = `tile ${
+          tile.style === "idiom" ? "idiom" : ""
+        } ${tile.style === "joke" ? "joke" : ""}`;
 
-        const tileClasses = `tile ${tile?.style === "idiom" ? "idiom" : ""} ${tile?.style === "joke" ? "joke" : ""}`;
-
-        const TileContent = (
+        const tileContent = (
           <article className={tileClasses}>
             <div>
               {displayCategory && (
-                <span className="tile-category" data-tina-field={tinaField(tile, "category")}>
-                  {displayCategory}
-                </span>
+                <span className="tile-category">{displayCategory}</span>
               )}
-              {displayTitle && <h3 data-tina-field={tinaField(tile, "title")}>{displayTitle}</h3>}
-
+              {displayTitle && <h3>{displayTitle}</h3>}
               <div className="tile-content">
-                {tile?.description && (
-                  <p style={{ marginBottom: "10px" }} data-tina-field={tinaField(tile, "description")}>
-                    {tile.description}
-                  </p>
+                {tile.description && (
+                  <p style={{ marginBottom: "10px" }}>{tile.description}</p>
                 )}
-
-                {tile?.bulletPoints && tile.bulletPoints.length > 0 && (
+                {tile.bulletPoints && tile.bulletPoints.length > 0 && (
                   <ul>
-                    {tile.bulletPoints.map((point, index) => (
-                      <li key={index} data-tina-field={tinaField(tile, "bulletPoints", index)}>
-                        {point}
-                      </li>
+                    {tile.bulletPoints.map((point) => (
+                      <li key={point}>{point}</li>
                     ))}
                   </ul>
                 )}
               </div>
             </div>
-
-            <div className="read-more" data-tina-field={tinaField(tile, "buttonText")}>
-              {tile?.buttonText || (postHref ? "Leggi l'articolo →" : "")}
+            <div className="read-more">
+              {tile.buttonText || (postHref ? "Leggi l'articolo" : "")}
             </div>
           </article>
         );
 
-        if (referencedPost && postHref) {
-          return (
-            <Link key={i} href={postHref} className="tile-link">
-              {TileContent}
-            </Link>
-          );
-        }
-
-        return (
-          <div key={i} className="tile-link">
-            {TileContent}
+        return referencedPost && postHref ? (
+          <Link key={postHref} href={postHref} className="tile-link">
+            {tileContent}
+          </Link>
+        ) : (
+          <div key={`${displayTitle}-${index}`} className="tile-link">
+            {tileContent}
           </div>
         );
       })}

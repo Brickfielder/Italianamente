@@ -1,4 +1,7 @@
-This is a [Tina CMS](https://tina.io/) project.
+Italianamente is a Next.js site with Git-backed MDX content.
+
+The private custom editor is available at `/studio`. Setup and publishing
+details are in [`docs/studio.md`](docs/studio.md).
 
 ## Local Development
 
@@ -19,7 +22,15 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Building the Starter Locally (Using the hosted content API)
+### Temporary Tina rollback
+
+Tina remains available during the Studio validation period:
+
+```bash
+pnpm dev:tina
+```
+
+### Building the previous Tina workflow
 
 Copy `.env.example` to `.env` and fill in the required values.
 

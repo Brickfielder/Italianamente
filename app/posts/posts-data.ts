@@ -1,21 +1,6 @@
-import { client } from "../../tina/__generated__/client";
+import { listPosts } from "../../lib/content";
+import type { PostDocument } from "../../lib/content/types";
 
-export type PostListItem = {
-  title?: string | null;
-  category?: string | null;
-  tags?: string[] | null;
-  body?: unknown;
-  _sys?: {
-    filename?: string | null;
-    breadcrumbs?: string[] | null;
-    relativePath?: string | null;
-  } | null;
-};
+export type PostListItem = PostDocument;
 
-export const fetchPosts = async () => {
-  const res = await client.queries.postConnection();
-
-  return (
-    res.data.postConnection.edges?.map((edge) => edge?.node).filter(Boolean) ?? []
-  ) as PostListItem[];
-};
+export const fetchPosts = async () => listPosts();

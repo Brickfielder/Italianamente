@@ -34,4 +34,8 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Tina can regenerate these locally. Never commit generated credentials.
+/tina/__generated__/client.js
+/tina/__generated__/client.d.ts
+
 .yarn

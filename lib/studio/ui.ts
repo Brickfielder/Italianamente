@@ -1,0 +1,70 @@
+import type { HomeTile } from "../content/types";
+import type { StudioDocument } from "./types";
+
+const normalized = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("it");
+
+export function filterStudioPosts(
+  documents: StudioDocument[],
+  query: string,
+  category: string
+) {
+  const search = normalized(query.trim());
+
+  return documents.filter((document) => {
+    if (document.documentType !== "post") {
+      return false;
+    }
+    if (category && document.category !== category) {
+      return false;
+    }
+    if (!search) {
+      return true;
+    }
+
+    return normalized(
+      [
+        document.title,
+        document.category,
+        document.tags?.join(" "),
+        document.excerpt,
+      ]
+        .filter(Boolean)
+        .join(" ")
+    ).includes(search);
+  });
+}
+
+export function seedTileFromPost(
+  tile: HomeTile,
+  post: StudioDocument | undefined
+): HomeTile {
+  if (!post) {
+    return tile;
+  }
+
+  return {
+    ...tile,
+    title: !tile.title || tile.title === "Nuova card" ? post.title : tile.title,
+    category: tile.category || post.category,
+    description: tile.description || post.excerpt,
+  };
+}
+
+export function publishingLabels(document: StudioDocument) {
+  const kind =
+    document.documentType === "post"
+      ? "articolo"
+      : document.documentType === "home"
+        ? "homepage"
+        : "pagina";
+  const isNew = document.contentOrigin === "new";
+
+  return {
+    status: isNew ? "Nuovo contenuto" : "Già pubblicato",
+    action: isNew ? `Pubblica nuovo ${kind}` : `Aggiorna ${kind}`,
+  };
+}

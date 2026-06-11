@@ -53,6 +53,7 @@ export default function ContentImage({
   const resolvedWidth = resolveDimension(width, DEFAULT_WIDTH);
   const resolvedHeight = resolveDimension(height, DEFAULT_HEIGHT);
   const resolvedAlt = alt ?? "";
+  const isRemote = /^https?:\/\//i.test(resolvedSrc);
 
   return (
     <Image
@@ -63,6 +64,7 @@ export default function ContentImage({
       sizes={sizes ?? "100vw"}
       className={["content-image", className].filter(Boolean).join(" ")}
       style={{ width: "100%", height: "auto", ...style }}
+      unoptimized={isRemote}
     />
   );
 }

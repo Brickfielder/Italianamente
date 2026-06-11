@@ -1,7 +1,13 @@
-import { client } from "../../tina/__generated__/client";
+import { notFound } from "next/navigation";
+
+import { getPage } from "../../lib/content";
 import ClientAboutPage from "./client-about";
 
 export default async function AboutPage() {
-  const tinaProps = await client.queries.page({ relativePath: "about.mdx" });
-  return <ClientAboutPage {...tinaProps} />;
+  const page = await getPage("about");
+  if (!page) {
+    notFound();
+  }
+
+  return <ClientAboutPage page={page} />;
 }

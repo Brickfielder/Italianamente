@@ -1,104 +1,58 @@
-"use client";
-
 import Image from "next/image";
-import { tinaField, useTina } from "tinacms/dist/react";
-import { TinaMarkdown } from "tinacms/dist/rich-text";
 
+import type { PostDocument } from "../../lib/content/types";
+import RichContent from "../components/RichContent";
 import ScrollToTop from "./[...slug]/scroll-to-top";
-import ContentImage from "../components/ContentImage";
 
 const normalizeImageSrc = (src?: string) => {
-  if (!src) {
-    return src;
-  }
-
-  if (src.startsWith("http") || src.startsWith("data:")) {
+  if (!src || src.startsWith("http") || src.startsWith("data:")) {
     return src;
   }
 
   return src.startsWith("/") ? src : `/${src}`;
 };
 
-export default function PostClient(props) {
-  const { data } = useTina(props);
-  const post = data?.post;
-  const tags = post?.tags;
-  const spacerClassMap = {
-    sm: "post-spacer--sm",
-    md: "post-spacer--md",
-    lg: "post-spacer--lg",
-  };
-  const imageWidth = Number.isFinite(post?.imageWidth) ? post.imageWidth : 800;
-  const imageHeight = Number.isFinite(post?.imageHeight) ? post.imageHeight : 450;
-
-  const Spacer = ({ size, data: spacerData }) => {
-    const spacerSize = size ?? spacerData?.size ?? "md";
-    const spacerClass = spacerClassMap[spacerSize] ?? spacerClassMap.md;
-
-    return <div className={`post-spacer ${spacerClass}`} aria-hidden="true" />;
-  };
-
-  const imageSrc = normalizeImageSrc(post?.image);
-
-  const PostLink = ({ url, title, children, ...rest }) => {
-    const isExternal = typeof url === "string" && /^https?:\/\//i.test(url);
-    const candidateLabels = [title, rest?.text, rest?.label, rest?.value, rest?.name]
-      .filter((value) => typeof value === "string")
-      .map((value) => value.trim())
-      .filter((value) => value.length > 0 && value !== url);
-    const metadataLabel = candidateLabels[0] ?? "";
-    const hasRenderableChildren =
-      children !== null &&
-      children !== undefined &&
-      !(Array.isArray(children) && children.length === 0);
-    const fallbackLabel = metadataLabel || url;
-
-    return (
-      <a
-        href={url}
-        title={metadataLabel || title || undefined}
-        target={isExternal ? "_blank" : undefined}
-        rel={isExternal ? "noopener noreferrer" : undefined}
-      >
-        {hasRenderableChildren ? children : fallbackLabel}
-      </a>
-    );
-  };
+export default function PostClient({ post }: { post: PostDocument }) {
+  const imageSrc = normalizeImageSrc(post.image);
 
   return (
     <main className="container container--single">
       <ScrollToTop />
       <article className="tile" lang="it">
         <div>
-          <span className="tile-category" data-tina-field={tinaField(post, "category")}>
-            {post?.category}
-          </span>
-          {tags && tags.length > 0 && (
+          <span className="tile-category">{post.category}</span>
+          {post.tags.length > 0 && (
             <div className="post-tags">
-              {tags.map((tag, index) => (
-                <span key={tag} className="tag-pill" data-tina-field={tinaField(post, "tags", index)}>
+              {post.tags.map((tag) => (
+                <span key={tag} className="tag-pill">
                   {tag}
                 </span>
               ))}
             </div>
           )}
-          <h3 data-tina-field={tinaField(post, "title")}>{post?.title}</h3>
+          <h3>{post.title}</h3>
           {imageSrc && (
-            <div style={{ marginBottom: "20px" }}>
+            <div
+              className="post-cover-image"
+              style={{
+                maxWidth: `${
+                  post.imageDisplayWidth ?? post.imageWidth ?? 1200
+                }px`,
+              }}
+            >
               <Image
                 src={imageSrc}
                 alt={post.title}
-                width={imageWidth}
-                height={imageHeight}
+                width={post.imageWidth ?? 800}
+                height={post.imageHeight ?? 450}
                 sizes="100vw"
                 className="content-image"
                 style={{ width: "100%", height: "auto", borderRadius: "8px" }}
-                data-tina-field={tinaField(post, "image")}
               />
             </div>
           )}
-          <div className="tile-content post-content" data-tina-field={tinaField(post, "body")}>
-            <TinaMarkdown content={post?.body} components={{ spacer: Spacer, img: ContentImage, a: PostLink }} />
+          <div className="tile-content post-content">
+            <RichContent source={post.body} />
           </div>
         </div>
       </article>
