@@ -4,6 +4,20 @@ import { Octokit } from "@octokit/rest";
 import { serializeStudioDocument } from "./serialize";
 import type { StudioDocument } from "./types";
 
+type DeploymentMeta = Record<string, string | undefined>;
+
+type VercelDeployment = {
+  createdAt?: number;
+  meta?: DeploymentMeta;
+  readyState?: string;
+  url?: string;
+};
+
+type PreviewLookupResult = {
+  ready: boolean;
+  url: string | null;
+};
+
 const repository = () => {
   const [owner, repo] = (
     process.env.GITHUB_REPOSITORY || "Brickfielder/Italianamente"
@@ -44,18 +58,41 @@ const branchNameFor = (documentPath: string) =>
     .replace(/\//g, "-")
     .toLowerCase()}`;
 
+const deploymentBranch = (deployment: VercelDeployment) =>
+  deployment.meta?.githubCommitRef ||
+  deployment.meta?.gitBranch ||
+  deployment.meta?.gitlabCommitRef ||
+  deployment.meta?.bitbucketCommitRef ||
+  null;
+
+export const selectPreviewDeployment = (
+  deployments: VercelDeployment[],
+  branch: string
+): PreviewLookupResult => {
+  const deployment = deployments
+    .filter((item) => deploymentBranch(item) === branch)
+    .sort((left, right) => (right.createdAt ?? 0) - (left.createdAt ?? 0))[0];
+
+  if (!deployment?.url) {
+    return { ready: false, url: null };
+  }
+
+  return deployment.readyState === "READY"
+    ? { ready: true, url: `https://${deployment.url}` }
+    : { ready: false, url: null };
+};
+
 export const getPreviewUrl = async (branch: string) => {
   const token = process.env.VERCEL_TOKEN;
   const projectId = process.env.VERCEL_PROJECT_ID;
   if (!token || !projectId) {
-    return null;
+    return { ready: false, url: null };
   }
 
   const params = new URLSearchParams({
     projectId,
-    limit: "1",
+    limit: "20",
     target: "preview",
-    "meta-gitBranch": branch,
   });
   if (process.env.VERCEL_TEAM_ID) {
     params.set("teamId", process.env.VERCEL_TEAM_ID);
@@ -66,14 +103,13 @@ export const getPreviewUrl = async (branch: string) => {
     { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" }
   );
   if (!response.ok) {
-    return null;
+    return { ready: false, url: null };
   }
 
   const data = (await response.json()) as {
-    deployments?: Array<{ url?: string; readyState?: string }>;
+    deployments?: VercelDeployment[];
   };
-  const deployment = data.deployments?.[0];
-  return deployment?.url ? `https://${deployment.url}` : null;
+  return selectPreviewDeployment(data.deployments ?? [], branch);
 };
 
 export const hasPreviewLookup = () =>
@@ -162,7 +198,7 @@ export async function createPreview(document: StudioDocument) {
     baseSha,
     pullRequestNumber: pullRequest.number,
     pullRequestUrl: pullRequest.html_url,
-    previewUrl: await getPreviewUrl(branch),
+    previewUrl: (await getPreviewUrl(branch)).url,
   };
 }
 

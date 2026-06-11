@@ -378,11 +378,7 @@ export default function StudioApp({
         }
 
         if (!options?.silent) {
-          setMessage(
-            result.lookupEnabled
-              ? "Anteprima in preparazione. Apri la pull request per seguirla."
-              : "Pull request creata. Per vedere l'anteprima apri la pull request o il progetto Vercel."
-          );
+          setMessage("Anteprima in preparazione. La troverai qui appena pronta.");
         }
       } catch (error) {
         if (!options?.silent) {
@@ -721,8 +717,8 @@ export default function StudioApp({
       setSaveState("saved");
       if (result.previewUrl) {
         setMessage("Anteprima pronta.");
-      } else if (result.pullRequestUrl) {
-        setMessage("Pull request creata. Vercel sta preparando l'anteprima.");
+      } else if (result.pullRequestNumber) {
+        setMessage("Anteprima richiesta. La troverai qui appena pronta.");
         void refreshPreviewStatus(
           { ...selected, ...result },
           { silent: true }
@@ -1286,23 +1282,12 @@ export default function StudioApp({
             <span>Controlla il risultato prima di pubblicare.</span>
           </div>
           <div className="preview-header-links">
-            {selected.pullRequestUrl && (
-              <a href={selected.pullRequestUrl} target="_blank" rel="noreferrer">
-                Apri pull request
-              </a>
-            )}
             {selected.previewUrl ? (
               <a href={selected.previewUrl} target="_blank" rel="noreferrer">
                 Apri anteprima
               </a>
             ) : selected.pullRequestNumber ? (
-              <button
-                type="button"
-                className="preview-link-button"
-                onClick={() => void refreshPreviewStatus(selected)}
-              >
-                Controlla anteprima
-              </button>
+              <span className="preview-pending-label">Anteprima in preparazione...</span>
             ) : null}
           </div>
         </div>

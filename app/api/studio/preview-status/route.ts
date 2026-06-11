@@ -30,15 +30,15 @@ export async function POST(request: Request) {
       });
     }
 
-    const previewUrl = await getPreviewUrl(draft.previewBranch);
-    if (previewUrl && previewUrl !== draft.previewUrl) {
+    const preview = await getPreviewUrl(draft.previewBranch);
+    if (preview.url && preview.url !== draft.previewUrl) {
       await updateDraftPublishing(
         id,
         {
           baseSha: draft.baseSha ?? undefined,
           previewBranch: draft.previewBranch,
           pullRequestNumber: draft.pullRequestNumber ?? undefined,
-          previewUrl,
+          previewUrl: preview.url,
           status: draft.status,
         },
         user.id
@@ -46,9 +46,9 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      previewUrl: previewUrl ?? draft.previewUrl ?? null,
+      previewUrl: preview.url ?? draft.previewUrl ?? null,
       pullRequestUrl,
-      ready: Boolean(previewUrl ?? draft.previewUrl),
+      ready: preview.ready || Boolean(draft.previewUrl),
       lookupEnabled: true,
     });
   } catch (error) {

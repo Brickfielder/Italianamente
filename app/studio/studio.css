@@ -1314,6 +1314,12 @@
   font-weight: 700;
 }
 
+.preview-pending-label {
+  color: #8a8279;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+}
+
 .preview-tabs {
   display: flex;
   min-height: 42px;

@@ -7,6 +7,7 @@ import {
   publishingLabels,
   seedTileFromPost,
 } from "./ui";
+import { selectPreviewDeployment } from "./github";
 
 const post: StudioDocument = {
   documentPath: "content/culture/felicita.mdx",
@@ -88,5 +89,49 @@ describe("studio UI helpers", () => {
         { ...post, previewUrl: null }
       ).previewUrl
     ).toBeNull();
+  });
+
+  it("finds the latest GitHub preview deployment and waits for READY", () => {
+    expect(
+      selectPreviewDeployment(
+        [
+          {
+            createdAt: 10,
+            meta: { githubCommitRef: "studio/content-page-home" },
+            readyState: "BUILDING",
+            url: "old-preview.vercel.app",
+          },
+          {
+            createdAt: 20,
+            meta: { githubCommitRef: "studio/content-page-home" },
+            readyState: "READY",
+            url: "ready-preview.vercel.app",
+          },
+        ],
+        "studio/content-page-home"
+      )
+    ).toEqual({
+      ready: true,
+      url: "https://ready-preview.vercel.app",
+    });
+  });
+
+  it("keeps polling when the matching deployment is not ready yet", () => {
+    expect(
+      selectPreviewDeployment(
+        [
+          {
+            createdAt: 20,
+            meta: { githubCommitRef: "studio/content-page-home" },
+            readyState: "BUILDING",
+            url: "building-preview.vercel.app",
+          },
+        ],
+        "studio/content-page-home"
+      )
+    ).toEqual({
+      ready: false,
+      url: null,
+    });
   });
 });
