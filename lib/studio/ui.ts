@@ -68,3 +68,21 @@ export function publishingLabels(document: StudioDocument) {
     action: isNew ? `Pubblica nuovo ${kind}` : `Aggiorna ${kind}`,
   };
 }
+
+export function mergeStudioDocument(
+  current: StudioDocument,
+  incoming: Partial<StudioDocument>
+): StudioDocument {
+  return {
+    ...current,
+    ...incoming,
+    id: incoming.id ?? current.id,
+    baseSha: incoming.baseSha ?? current.baseSha,
+    previewBranch: incoming.previewBranch ?? current.previewBranch,
+    pullRequestNumber: incoming.pullRequestNumber ?? current.pullRequestNumber,
+    pullRequestUrl: incoming.pullRequestUrl ?? current.pullRequestUrl,
+    previewUrl:
+      incoming.previewUrl === undefined ? current.previewUrl : incoming.previewUrl,
+    draftStatus: incoming.draftStatus ?? current.draftStatus,
+  };
+}

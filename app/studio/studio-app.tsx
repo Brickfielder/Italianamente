@@ -21,6 +21,7 @@ import {
 import type { StudioDocument } from "../../lib/studio/types";
 import {
   filterStudioPosts,
+  mergeStudioDocument,
   publishingLabels,
   seedTileFromPost,
 } from "../../lib/studio/ui";
@@ -451,18 +452,20 @@ export default function StudioApp({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(document),
     });
-    const result = await response.json();
-    if (!response.ok) {
-      setSaveState("error");
-      throw new Error(result.message || "Salvataggio non riuscito.");
-    }
-    setDocuments((current) =>
-      current.map((item) =>
-        item.documentPath === document.documentPath ? result : item
-      )
-    );
-    setSaveState("saved");
-    return result as StudioDocument;
+      const result = await response.json();
+      if (!response.ok) {
+        setSaveState("error");
+        throw new Error(result.message || "Salvataggio non riuscito.");
+      }
+      setDocuments((current) =>
+        current.map((item) =>
+          item.documentPath === document.documentPath
+            ? mergeStudioDocument(item, result as StudioDocument)
+            : item
+        )
+      );
+      setSaveState("saved");
+      return result as StudioDocument;
   }, [demoMode]);
 
   useEffect(() => {
@@ -711,7 +714,7 @@ export default function StudioApp({
       setDocuments((current) =>
         current.map((item) =>
           item.documentPath === selected.documentPath
-            ? { ...item, ...result }
+            ? mergeStudioDocument(item, result)
             : item
         )
       );

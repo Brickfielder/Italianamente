@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { StudioDocument } from "./types";
 import {
   filterStudioPosts,
+  mergeStudioDocument,
   publishingLabels,
   seedTileFromPost,
 } from "./ui";
@@ -45,5 +46,47 @@ describe("studio UI helpers", () => {
       publishingLabels({ ...post, contentOrigin: "new" }).action
     ).toBe("Pubblica nuovo articolo");
     expect(publishingLabels(post).action).toBe("Aggiorna articolo");
+  });
+
+  it("preserves preview metadata when a stale save response arrives", () => {
+    expect(
+      mergeStudioDocument(
+        {
+          ...post,
+          id: "5d14ad32-7e9c-4be2-9f9b-5f6e8ad1b9ce",
+          baseSha: "abc123",
+          previewBranch: "studio/content-culture-felicita",
+          pullRequestNumber: 42,
+          pullRequestUrl:
+            "https://github.com/Brickfielder/Italianamente/pull/42",
+          previewUrl: "https://italianamente-git-studio-test.vercel.app",
+          draftStatus: "preview",
+        },
+        {
+          ...post,
+          body: "<p>Testo aggiornato</p>",
+        }
+      )
+    ).toMatchObject({
+      body: "<p>Testo aggiornato</p>",
+      previewBranch: "studio/content-culture-felicita",
+      pullRequestNumber: 42,
+      pullRequestUrl:
+        "https://github.com/Brickfielder/Italianamente/pull/42",
+      previewUrl: "https://italianamente-git-studio-test.vercel.app",
+      draftStatus: "preview",
+    });
+  });
+
+  it("allows explicit preview url clearing", () => {
+    expect(
+      mergeStudioDocument(
+        {
+          ...post,
+          previewUrl: "https://italianamente-git-studio-test.vercel.app",
+        },
+        { ...post, previewUrl: null }
+      ).previewUrl
+    ).toBeNull();
   });
 });
