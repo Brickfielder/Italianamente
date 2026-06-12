@@ -30,6 +30,7 @@ import {
 type SaveState = "saved" | "saving" | "dirty" | "error";
 type InsertDialog = "link" | "image" | "video" | "audio" | null;
 type PreviewMode = "article" | "card" | "mobile";
+type MobileWorkspace = "content" | "edit" | "preview";
 const MESSAGE_DURATION_MS = 4000;
 
 const CATEGORIES = [
@@ -78,12 +79,15 @@ const postReferenceToHref = (postReference?: string) =>
 
 type StudioIconName =
   | "audio"
+  | "content"
   | "divider"
+  | "edit"
   | "image"
   | "justify"
   | "link"
   | "list"
   | "numberedList"
+  | "preview"
   | "quote"
   | "table"
   | "video";
@@ -97,10 +101,22 @@ function StudioIcon({ name }: { name: StudioIconName }) {
         <circle cx="16" cy="16" r="3" />
       </>
     ),
+    content: (
+      <>
+        <path d="M4 6h16M4 12h16M4 18h16" />
+        <path d="M7 3v6M7 9l-2-2M7 9l2-2" />
+      </>
+    ),
     divider: (
       <>
         <path d="M4 12h16" />
         <path d="m8 8-2 4 2 4M16 8l2 4-2 4" />
+      </>
+    ),
+    edit: (
+      <>
+        <path d="M4 20h4l11-11-4-4L4 16z" />
+        <path d="m13.5 6.5 4 4" />
       </>
     ),
     image: (
@@ -133,6 +149,12 @@ function StudioIcon({ name }: { name: StudioIconName }) {
       <>
         <path d="M10 6h11M10 12h11M10 18h11" />
         <path d="M4 4v4M3 5l1-1h1M3 11h2l-2 3h2M3 17h2l-2 3h2" />
+      </>
+    ),
+    preview: (
+      <>
+        <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z" />
+        <circle cx="12" cy="12" r="2.5" />
       </>
     ),
     quote: (
@@ -281,12 +303,14 @@ export default function StudioApp({
   const [articleSearch, setArticleSearch] = useState("");
   const [articleCategory, setArticleCategory] = useState("");
   const [previewMode, setPreviewMode] = useState<PreviewMode>("article");
+  const [mobileWorkspace, setMobileWorkspace] =
+    useState<MobileWorkspace>("content");
   const editorRef = useRef<HTMLDivElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const editorPanelRef = useRef<HTMLElement>(null);
   const previewStageRef = useRef<HTMLDivElement>(null);
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const messageTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const saveTimer = useRef<number | undefined>(undefined);
+  const messageTimer = useRef<number | undefined>(undefined);
   const selectionRef = useRef<Range | null>(null);
 
   const selected = useMemo(
@@ -435,6 +459,21 @@ export default function StudioApp({
   }, [previewMode, selected?.documentType]);
 
   useEffect(() => {
+    const updateSelection = () => {
+      const selection = window.getSelection();
+      if (
+        selection?.rangeCount &&
+        editorRef.current?.contains(selection.anchorNode)
+      ) {
+        selectionRef.current = selection.getRangeAt(0).cloneRange();
+      }
+    };
+
+    document.addEventListener("selectionchange", updateSelection);
+    return () => document.removeEventListener("selectionchange", updateSelection);
+  }, []);
+
+  useEffect(() => {
     if (!selected?.id || !selected.pullRequestNumber || selected.previewUrl) {
       return;
     }
@@ -489,11 +528,11 @@ export default function StudioApp({
     if (!selected || saveState !== "dirty") {
       return;
     }
-    clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
+    window.clearTimeout(saveTimer.current);
+    saveTimer.current = window.setTimeout(() => {
       void save(selected).catch((error) => setMessage(error.message));
     }, 1200);
-    return () => clearTimeout(saveTimer.current);
+    return () => window.clearTimeout(saveTimer.current);
   }, [save, saveState, selected]);
 
   useEffect(
@@ -711,6 +750,7 @@ export default function StudioApp({
     };
     setDocuments((current) => [...current, document]);
     setSelectedPath(document.documentPath);
+    setMobileWorkspace("edit");
     setSaveState("dirty");
     showMessage("");
     requestAnimationFrame(() => {
@@ -762,7 +802,9 @@ export default function StudioApp({
   };
 
   const publish = async () => {
-    if (!selected?.id || !selected.pullRequestNumber) return;
+    if (!selected?.id || !selected.pullRequestNumber || !selected.previewUrl) {
+      return;
+    }
     if (!window.confirm("Pubblicare questa anteprima sul sito?")) return;
     setBusy(true);
     showMessage("Pubblicazione in corso...");
@@ -790,8 +832,29 @@ export default function StudioApp({
     return <main className="studio-shell">Nessun contenuto disponibile.</main>;
   }
 
+  const selectDocument = (documentPath: string) => {
+    setSelectedPath(documentPath);
+    setMobileWorkspace("edit");
+  };
+  const saveStateLabel =
+    saveState === "saved"
+      ? "Salvato automaticamente"
+      : saveState === "saving"
+        ? "Salvataggio in corso..."
+        : saveState === "error"
+          ? "Errore di salvataggio"
+          : "Modifiche non salvate";
+  const mobileSaveStateLabel =
+    saveState === "saved"
+      ? "Salvato"
+      : saveState === "saving"
+        ? "Salvataggio..."
+        : saveState === "error"
+          ? "Errore"
+          : "Da salvare";
+
   return (
-    <main className="studio-shell">
+    <main className={`studio-shell studio-shell--${mobileWorkspace}`}>
       <header className="studio-topbar">
         <div className="studio-brand">
           <strong>Italianamente Studio</strong>
@@ -799,13 +862,10 @@ export default function StudioApp({
         </div>
         <div className="studio-actions">
           <span className={`save-state save-state--${saveState}`}>
-            {saveState === "saved"
-              ? "Salvato automaticamente"
-              : saveState === "saving"
-              ? "Salvataggio in corso..."
-              : saveState === "error"
-              ? "Errore di salvataggio"
-              : "Modifiche non salvate"}
+            <span className="save-state-label--desktop">{saveStateLabel}</span>
+            <span className="save-state-label--mobile">
+              {mobileSaveStateLabel}
+            </span>
           </span>
           <span className="publishing-status">{publishing?.status}</span>
           <button
@@ -817,21 +877,65 @@ export default function StudioApp({
           </button>
           <button
             className="primary"
-            disabled={busy || demoMode || !selected.pullRequestNumber}
+            disabled={busy || demoMode || !selected.previewUrl}
             onClick={publish}
             title={
-              selected.pullRequestNumber
+              selected.previewUrl
                 ? publishing?.action
-                : "Crea prima un'anteprima per abilitare la pubblicazione"
+                : selected.pullRequestNumber
+                  ? "Attendi che l'anteprima sia pronta"
+                  : "Crea prima un'anteprima per abilitare la pubblicazione"
             }
           >
             {publishing?.action}
           </button>
-          {!selected.pullRequestNumber && (
-            <span className="publish-hint">Prima crea l&apos;anteprima</span>
+          {!selected.previewUrl && (
+            <span className="publish-hint">
+              {selected.pullRequestNumber
+                ? "Attendi l'anteprima"
+                : "Prima crea l'anteprima"}
+            </span>
           )}
         </div>
       </header>
+
+      <section className="mobile-document-bar" aria-label="Contenuto selezionato">
+        <button
+          className="mobile-content-trigger"
+          type="button"
+          onClick={() => setMobileWorkspace("content")}
+          aria-label="Apri contenuti"
+        >
+          <StudioIcon name="content" />
+        </button>
+        <div className="mobile-document-title">
+          <small>
+            {selected.documentType === "post"
+              ? selected.category
+              : selected.documentType === "home"
+                ? "Homepage"
+                : "Pagina"}
+          </small>
+          <strong>{selected.title}</strong>
+        </div>
+        <div className="mobile-document-actions">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={createPreview}
+          >
+            Crea anteprima
+          </button>
+          <button
+            type="button"
+            className="primary"
+            disabled={busy || demoMode || !selected.previewUrl}
+            onClick={publish}
+          >
+            Pubblica
+          </button>
+        </div>
+      </section>
 
       <aside className="studio-sidebar">
         <button
@@ -856,7 +960,7 @@ export default function StudioApp({
           <nav className="sidebar-list" aria-label="Pagine">
             <button
               className={selected.documentType === "home" ? "active" : ""}
-              onClick={() => setSelectedPath("content/page/home.mdx")}
+              onClick={() => selectDocument("content/page/home.mdx")}
             >
               <span>Homepage</span>
               <small>Pagina</small>
@@ -867,7 +971,7 @@ export default function StudioApp({
                   ? "active"
                   : ""
               }
-              onClick={() => setSelectedPath("content/page/about.mdx")}
+              onClick={() => selectDocument("content/page/about.mdx")}
             >
               <span>Chi sono</span>
               <small>Pagina</small>
@@ -917,7 +1021,7 @@ export default function StudioApp({
                 className={
                   document.documentPath === selectedPath ? "active" : ""
                 }
-                onClick={() => setSelectedPath(document.documentPath)}
+                onClick={() => selectDocument(document.documentPath)}
               >
                 <span>{document.title}</span>
                 <small>
@@ -1175,7 +1279,7 @@ export default function StudioApp({
                   defaultValue=""
                   aria-label="Dimensione del carattere"
                   title="Dimensione del carattere"
-                  onMouseDown={rememberSelection}
+                  onPointerDown={rememberSelection}
                   onChange={(event) => {
                     if (event.target.value) {
                       runCommand("fontSize", event.target.value);
@@ -1197,7 +1301,7 @@ export default function StudioApp({
                   defaultValue=""
                   aria-label="Tipo di carattere"
                   title="Tipo di carattere"
-                  onMouseDown={rememberSelection}
+                  onPointerDown={rememberSelection}
                   onChange={(event) => {
                     if (event.target.value) {
                       runCommand("fontName", event.target.value);
@@ -1221,7 +1325,7 @@ export default function StudioApp({
                 <label
                   className="toolbar-color"
                   title="Colore del testo"
-                  onMouseDown={rememberSelection}
+                  onPointerDown={rememberSelection}
                 >
                   <span className="sr-only">Colore del testo</span>
                   <input
@@ -1241,10 +1345,10 @@ export default function StudioApp({
                 <button className="toolbar-button toolbar-button--letter" title="Grassetto" aria-label="Grassetto" onClick={() => runCommand("bold")}><strong>B</strong></button>
                 <button className="toolbar-button toolbar-button--letter" title="Corsivo" aria-label="Corsivo" onClick={() => runCommand("italic")}><em>I</em></button>
                 <button className="toolbar-button toolbar-button--letter" title="Sottolineato" aria-label="Sottolineato" onClick={() => runCommand("underline")}><u>U</u></button>
-                <button className="toolbar-button" title="Aggiungi link" aria-label="Aggiungi link" onMouseDown={rememberSelection} onClick={() => openInsertDialog("link")}><StudioIcon name="link" /></button>
+                <button className="toolbar-button" title="Aggiungi link" aria-label="Aggiungi link" onPointerDown={rememberSelection} onClick={() => openInsertDialog("link")}><StudioIcon name="link" /></button>
                 <button
                   className="toolbar-button"
-                  onMouseDown={rememberSelection}
+                  onPointerDown={rememberSelection}
                   onClick={toggleQuote}
                   title="Attiva o rimuovi citazione"
                   aria-label="Citazione"
@@ -1253,7 +1357,7 @@ export default function StudioApp({
                 </button>
                 <button
                   className="toolbar-button"
-                  onMouseDown={rememberSelection}
+                  onPointerDown={rememberSelection}
                   onClick={toggleJustify}
                   title="Attiva o rimuovi testo giustificato"
                   aria-label="Giustifica testo"
@@ -1285,9 +1389,9 @@ export default function StudioApp({
               <div className="toolbar-separator" aria-hidden="true" />
 
               <div className="toolbar-group toolbar-group--media" aria-label="Media">
-                <button className="toolbar-button toolbar-button--media" onMouseDown={rememberSelection} onClick={() => openInsertDialog("image")}><StudioIcon name="image" /><span>Immagine</span></button>
-                <button className="toolbar-button toolbar-button--media" onMouseDown={rememberSelection} onClick={() => openInsertDialog("video")}><StudioIcon name="video" /><span>Video</span></button>
-                <button className="toolbar-button toolbar-button--media" onMouseDown={rememberSelection} onClick={() => openInsertDialog("audio")}><StudioIcon name="audio" /><span>Audio</span></button>
+                <button className="toolbar-button toolbar-button--media" onPointerDown={rememberSelection} onClick={() => openInsertDialog("image")}><StudioIcon name="image" /><span>Immagine</span></button>
+                <button className="toolbar-button toolbar-button--media" onPointerDown={rememberSelection} onClick={() => openInsertDialog("video")}><StudioIcon name="video" /><span>Video</span></button>
+                <button className="toolbar-button toolbar-button--media" onPointerDown={rememberSelection} onClick={() => openInsertDialog("audio")}><StudioIcon name="audio" /><span>Audio</span></button>
               </div>
             </div>
             <div
@@ -1371,6 +1475,41 @@ export default function StudioApp({
         </div>
         {message && <p className="studio-message">{message}</p>}
       </aside>
+
+      {message && <p className="mobile-studio-message">{message}</p>}
+
+      <nav className="mobile-workspace-nav" aria-label="Area di lavoro">
+        <button
+          type="button"
+          className={mobileWorkspace === "content" ? "active" : ""}
+          aria-current={mobileWorkspace === "content" ? "page" : undefined}
+          onClick={() => setMobileWorkspace("content")}
+        >
+          <StudioIcon name="content" />
+          <span>Contenuti</span>
+        </button>
+        <button
+          type="button"
+          className={mobileWorkspace === "edit" ? "active" : ""}
+          aria-current={mobileWorkspace === "edit" ? "page" : undefined}
+          onClick={() => setMobileWorkspace("edit")}
+        >
+          <StudioIcon name="edit" />
+          <span>Modifica</span>
+        </button>
+        <button
+          type="button"
+          className={mobileWorkspace === "preview" ? "active" : ""}
+          aria-current={mobileWorkspace === "preview" ? "page" : undefined}
+          onClick={() => {
+            setPreviewMode("mobile");
+            setMobileWorkspace("preview");
+          }}
+        >
+          <StudioIcon name="preview" />
+          <span>Anteprima</span>
+        </button>
+      </nav>
 
       {insertDialog && (
         <div className="studio-dialog-backdrop" role="presentation">
