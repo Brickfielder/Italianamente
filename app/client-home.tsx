@@ -50,7 +50,7 @@ export default function ClientHomePage({ page }: { page: PageDocument }) {
                 )}
               </div>
             </div>
-            <div className="read-more">
+            <div className="read-more home-card-cta">
               {tile.buttonText || (postHref ? "Leggi l'articolo" : "")}
             </div>
           </article>

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { StudioDocument } from "./types";
 import {
   applyStudioPatch,
+  createHomeTileForPost,
   filterStudioPosts,
   mergeStudioDocument,
   publishingLabels,
@@ -41,6 +42,16 @@ describe("studio UI helpers", () => {
     expect(seedTileFromPost({ title: "Nuova card" }, post).title).toBe(
       "La felicità"
     );
+  });
+
+  it("creates a homepage card linked to its full article", () => {
+    expect(createHomeTileForPost(post)).toMatchObject({
+      title: "La felicità",
+      category: "Curiosità",
+      description: "Una giornata speciale",
+      postReference: "content/culture/felicita.mdx",
+      buttonText: "Leggi l'articolo",
+    });
   });
 
   it("distinguishes publishing a new article from updating one", () => {

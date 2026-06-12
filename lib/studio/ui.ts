@@ -72,6 +72,19 @@ export function seedTileFromPost(
   };
 }
 
+export function createHomeTileForPost(post: StudioDocument): HomeTile {
+  return seedTileFromPost(
+    {
+      style: "standard",
+      title: "Nuova card",
+      description: "",
+      postReference: post.documentPath,
+      buttonText: "Leggi l'articolo",
+    },
+    post
+  );
+}
+
 export function publishingLabels(document: StudioDocument) {
   const kind =
     document.documentType === "post"

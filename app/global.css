@@ -487,6 +487,16 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   color: var(--accent-color);
 }
 
+.home-card-cta,
+.tile.idiom .home-card-cta {
+  width: fit-content;
+  border-radius: 4px;
+  background: #fff;
+  padding: 6px 9px;
+  color: var(--primary-color);
+  font-style: italic;
+}
+
 .read-more::after {
   content: " →"; 
   margin-left: 5px;
