@@ -1,0 +1,183 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "About" [ref=e4] [cursor=pointer]:
+        - /url: /about
+      - link "Contact" [ref=e5] [cursor=pointer]:
+        - /url: mailto:tiziana.mazzotta25@gmail.com
+    - generic [ref=e6]:
+      - heading "ITALIANAMENTE" [level=1] [ref=e7]
+      - paragraph [ref=e8]: Impara l'italiano con Tiziana
+    - navigation [ref=e9]:
+      - list [ref=e10]:
+        - listitem [ref=e11]:
+          - link "Home" [ref=e12] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e13]:
+          - link "Grammatica" [ref=e14] [cursor=pointer]:
+            - /url: /grammar
+        - listitem [ref=e15]:
+          - link "Cultura" [ref=e16] [cursor=pointer]:
+            - /url: /culture
+        - listitem [ref=e17]:
+          - link "Multimedia" [ref=e18] [cursor=pointer]:
+            - /url: /multimedia
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - strong [ref=e22]: Italianamente Studio
+        - generic [ref=e23]: demo locale
+      - generic [ref=e24]:
+        - generic [ref=e25]: Modificato
+        - button "Crea anteprima" [ref=e26] [cursor=pointer]
+        - button "Pubblica" [disabled] [ref=e27]
+    - complementary [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e30]: Contenuti
+        - button "+" [ref=e31] [cursor=pointer]
+      - button "Homepage Pagina" [ref=e32] [cursor=pointer]:
+        - generic [ref=e33]: Homepage
+        - generic [ref=e34]: Pagina
+      - button "Chi sono Pagina" [ref=e35] [cursor=pointer]:
+        - generic [ref=e36]: Chi sono
+        - generic [ref=e37]: Pagina
+      - paragraph [ref=e38]: Articoli
+      - button "Chiedimi se sono felice Film" [ref=e39] [cursor=pointer]:
+        - generic [ref=e40]: Chiedimi se sono felice
+        - generic [ref=e41]: Film
+      - button "Il colmo per un matematico Barzelletta" [ref=e42] [cursor=pointer]:
+        - generic [ref=e43]: Il colmo per un matematico
+        - generic [ref=e44]: Barzelletta
+      - button "Il dialetto e Vicenza Curiosità" [ref=e45] [cursor=pointer]:
+        - generic [ref=e46]: Il dialetto e Vicenza
+        - generic [ref=e47]: Curiosità
+      - button "Il primo maggio, tradizioni italiane Attualità" [ref=e48] [cursor=pointer]:
+        - generic [ref=e49]: Il primo maggio, tradizioni italiane
+        - generic [ref=e50]: Attualità
+      - button "Il verbo pronominale ANDARSENE Grammatica" [ref=e51] [cursor=pointer]:
+        - generic [ref=e52]: Il verbo pronominale ANDARSENE
+        - generic [ref=e53]: Grammatica
+      - 'button "La barzelletta della Settimana Enigmistica: un disegno divertente! Barzelletta" [ref=e54] [cursor=pointer]':
+        - generic [ref=e55]: "La barzelletta della Settimana Enigmistica: un disegno divertente!"
+        - generic [ref=e56]: Barzelletta
+      - button "La Festa della Donna e la mimosa Ricetta" [ref=e57] [cursor=pointer]:
+        - generic [ref=e58]: La Festa della Donna e la mimosa
+        - generic [ref=e59]: Ricetta
+      - button "La Grande Bellezza Film del mese" [ref=e60] [cursor=pointer]:
+        - generic [ref=e61]: La Grande Bellezza
+        - generic [ref=e62]: Film del mese
+      - button "Mi serve ricordare il futuro? Grammatica" [ref=e63] [cursor=pointer]:
+        - generic [ref=e64]: Mi serve ricordare il futuro?
+        - generic [ref=e65]: Grammatica
+      - button "Natale con i tuoi, Pasqua con chi vuoi Modo di dire" [ref=e66] [cursor=pointer]:
+        - generic [ref=e67]: Natale con i tuoi, Pasqua con chi vuoi
+        - generic [ref=e68]: Modo di dire
+      - button "Non avere peli sulla lingua Modo di dire" [ref=e69] [cursor=pointer]:
+        - generic [ref=e70]: Non avere peli sulla lingua
+        - generic [ref=e71]: Modo di dire
+      - 'button "Sanremo 2026: nessuno guarda Sanremo? Attualità" [ref=e72] [cursor=pointer]':
+        - generic [ref=e73]: "Sanremo 2026: nessuno guarda Sanremo?"
+        - generic [ref=e74]: Attualità
+      - button "Tiramisù Classico Ricetta del mese" [ref=e75] [cursor=pointer]:
+        - generic [ref=e76]: Tiramisù Classico
+        - generic [ref=e77]: Ricetta del mese
+      - button "Un gioco di comprensione Grammatica" [ref=e78] [cursor=pointer]:
+        - generic [ref=e79]: Un gioco di comprensione
+        - generic [ref=e80]: Grammatica
+      - button "Visita Padova Prossima vacanza a..." [ref=e81] [cursor=pointer]:
+        - generic [ref=e82]: Visita Padova
+        - generic [ref=e83]: Prossima vacanza a...
+    - generic [ref=e84]:
+      - generic [ref=e85]:
+        - generic [ref=e86]:
+          - text: Titolo
+          - textbox "Titolo" [ref=e87]: Il dialetto e Vicenza
+        - generic [ref=e349]:
+          - text: Categoria
+          - combobox "Categoria" [ref=e350]:
+            - option "Grammatica"
+            - option "Prossima vacanza"
+            - option "Modo di dire"
+            - option "Barzelletta"
+            - option "Ricetta"
+            - option "Film"
+            - option "Curiosità" [selected]
+            - option "Attualità"
+            - option "Canzoni"
+        - generic [ref=e351]:
+          - text: Tag
+          - textbox "Tag" [ref=e352]
+        - generic [ref=e353]:
+          - text: Stato
+          - combobox "Stato" [ref=e354]:
+            - option "Pubblicato" [selected]
+            - option "Archiviato"
+        - generic [ref=e355]:
+          - text: Immagine di copertina
+          - textbox "Immagine di copertina" [ref=e356]:
+            - /placeholder: URL immagine
+            - text: /uploads/IMG_20260321_221529.jpg
+      - toolbar "Formattazione" [ref=e357]:
+        - button "Testo" [ref=e358] [cursor=pointer]
+        - button "Titolo 2" [ref=e359] [cursor=pointer]
+        - button "B" [ref=e360] [cursor=pointer]:
+          - strong [ref=e361]: B
+        - button "I" [ref=e362] [cursor=pointer]:
+          - emphasis [ref=e363]: I
+        - button "U" [ref=e364] [cursor=pointer]
+        - button "Link" [ref=e365] [cursor=pointer]
+        - button "Elenco" [ref=e366] [cursor=pointer]
+        - button "Numeri" [ref=e367] [cursor=pointer]
+        - button "Citazione" [ref=e368] [cursor=pointer]
+        - generic [ref=e369] [cursor=pointer]: Immagine
+        - button "Video" [ref=e370] [cursor=pointer]
+        - button "Audio" [ref=e371] [cursor=pointer]
+        - button "Tabella" [ref=e372] [cursor=pointer]
+        - button "Divisore" [ref=e373] [cursor=pointer]
+      - generic [active] [ref=e374]:
+        - iframe [ref=e420]:
+          - generic "YouTube Video Player" [ref=f1e3]:
+            - alert [ref=f1e4]:
+              - generic [ref=f1e5]:
+                - generic [ref=f1e6]:
+                  - img
+                - generic [ref=f1e7]:
+                  - generic [ref=f1e8]: Video unavailable
+                  - link "Watch on YouTube" [ref=f1e11] [cursor=pointer]:
+                    - /url: http://www.youtube.com/watch?v=dQw4w9WgXcQ
+              - link "Visit YouTube to search for more videos" [ref=f1e12] [cursor=pointer]:
+                - /url: https://www.youtube.com
+                - img
+        - paragraph
+        - paragraph [ref=e375]: C’era una volta il dialetto come lingua dominante della vita quotidiana. Oggi quel tempo sembra essere lontano. A certificarlo è il nuovo rapporto ISTAT “L’uso della lingua italiana, dei dialetti e delle lingue straniere, anno 2024”, che racconta un’Italia sempre più orientata verso l’uso esclusivo dell’italiano e, in parallelo, sempre più aperta alle lingue straniere. I dialetti resistono, ma arretrano, eppure non ovunque allo stesso modo.
+        - paragraph [ref=e376]:
+          - link "https://www.siciliafan.it/dialetto-sicilia-regioni-italiane-istat/?refresh_ce" [ref=e377]:
+            - /url: https://www.siciliafan.it/dialetto-sicilia-regioni-italiane-istat/?refresh_ce
+        - paragraph [ref=e378]: Le regioni italiane in cui il dialetto è più diffuso sono principalmente quelle del Sud, con Campania, Sicilia e Calabria in testa. Secondo i dati, la Campania guida l'uso del dialetto (circa 61%), seguita da Sicilia (61,5% in alcune rilevazioni) e Calabria, mentre il Veneto rappresenta un'eccezione con alta vitalità al Nord.
+        - paragraph [ref=e379]: "Il mio ultimo viaggio a Vicenza conferma questa statistica, la mia foto ne e` una conferma! Era davanti a un bar: riesci a capire cosa c'e` scritto?"
+        - paragraph [ref=e380]:
+          - strong [ref=e381]: Vicenza
+          - text: ", situata nel cuore del Veneto, è una città che incanta per la sua eleganza discreta e la ricchezza artistica. Conosciuta principalmente per l’opera dell’architetto Andrea Palladio, Vicenza è un vero e proprio museo a cielo aperto: le sue ville e i suoi palazzi, tra cui la celebre Basilica Palladiana e il Teatro Olimpico, sono Patrimonio dell’Umanità UNESCO e testimoni di un passato glorioso. La città è circondata da dolci colline, vigneti e paesaggi che invitano alla scoperta, magari con una passeggiata sul Monte Berico da cui si gode una vista spettacolare sulla città."
+        - paragraph [ref=e382]: "Vicenza è anche famosa per la sua gastronomia, un trionfo di sapori veneti: il baccalà alla vicentina, i bigoli e i vini locali sono solo alcune delle specialità che si possono gustare nei ristoranti tipici. La popolazione, orgogliosa delle proprie radici, mantiene vivo il dialetto e le tradizioni, che si riflettono nelle numerose feste e celebrazioni popolari."
+        - paragraph [ref=e383]: Come si dice da queste parti, “Vicenza xe bela sempre”, e non si può che essere d’accordo.
+    - complementary [ref=e306]:
+      - generic [ref=e308]: Anteprima live
+      - article [ref=e309]:
+        - text: Curiosità
+        - heading "Il dialetto e Vicenza" [level=1] [ref=e384]
+        - generic [ref=e385]:
+          - iframe [ref=e421]
+          - paragraph
+          - paragraph [ref=e422]: C’era una volta il dialetto come lingua dominante della vita quotidiana. Oggi quel tempo sembra essere lontano. A certificarlo è il nuovo rapporto ISTAT “L’uso della lingua italiana, dei dialetti e delle lingue straniere, anno 2024”, che racconta un’Italia sempre più orientata verso l’uso esclusivo dell’italiano e, in parallelo, sempre più aperta alle lingue straniere. I dialetti resistono, ma arretrano, eppure non ovunque allo stesso modo.
+          - paragraph [ref=e423]:
+            - link "https://www.siciliafan.it/dialetto-sicilia-regioni-italiane-istat/?refresh_ce" [ref=e424] [cursor=pointer]:
+              - /url: https://www.siciliafan.it/dialetto-sicilia-regioni-italiane-istat/?refresh_ce
+          - paragraph [ref=e425]: Le regioni italiane in cui il dialetto è più diffuso sono principalmente quelle del Sud, con Campania, Sicilia e Calabria in testa. Secondo i dati, la Campania guida l'uso del dialetto (circa 61%), seguita da Sicilia (61,5% in alcune rilevazioni) e Calabria, mentre il Veneto rappresenta un'eccezione con alta vitalità al Nord.
+          - paragraph [ref=e426]: "Il mio ultimo viaggio a Vicenza conferma questa statistica, la mia foto ne e` una conferma! Era davanti a un bar: riesci a capire cosa c'e` scritto?"
+          - paragraph [ref=e427]:
+            - strong [ref=e428]: Vicenza
+            - text: ", situata nel cuore del Veneto, è una città che incanta per la sua eleganza discreta e la ricchezza artistica. Conosciuta principalmente per l’opera dell’architetto Andrea Palladio, Vicenza è un vero e proprio museo a cielo aperto: le sue ville e i suoi palazzi, tra cui la celebre Basilica Palladiana e il Teatro Olimpico, sono Patrimonio dell’Umanità UNESCO e testimoni di un passato glorioso. La città è circondata da dolci colline, vigneti e paesaggi che invitano alla scoperta, magari con una passeggiata sul Monte Berico da cui si gode una vista spettacolare sulla città."
+          - paragraph [ref=e429]: "Vicenza è anche famosa per la sua gastronomia, un trionfo di sapori veneti: il baccalà alla vicentina, i bigoli e i vini locali sono solo alcune delle specialità che si possono gustare nei ristoranti tipici. La popolazione, orgogliosa delle proprie radici, mantiene vivo il dialetto e le tradizioni, che si riflettono nelle numerose feste e celebrazioni popolari."
+          - paragraph [ref=e430]: Come si dice da queste parti, “Vicenza xe bela sempre”, e non si può che essere d’accordo.
+  - contentinfo [ref=e347]: © 2026 ItalianaMente - Corso di Italiano con Tiziana
+  - alert [ref=e348]

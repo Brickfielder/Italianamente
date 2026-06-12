@@ -1,0 +1,663 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "About" [ref=e4] [cursor=pointer]:
+        - /url: /about
+      - link "Contact" [ref=e5] [cursor=pointer]:
+        - /url: mailto:tiziana.mazzotta25@gmail.com
+    - generic [ref=e6]:
+      - heading "ITALIANAMENTE" [level=1] [ref=e7]
+      - paragraph [ref=e8]: Impara l'italiano con Tiziana
+    - navigation [ref=e9]:
+      - list [ref=e10]:
+        - listitem [ref=e11]:
+          - link "Home" [ref=e12] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e13]:
+          - link "Grammatica" [ref=e14] [cursor=pointer]:
+            - /url: /grammar
+        - listitem [ref=e15]:
+          - link "Cultura" [ref=e16] [cursor=pointer]:
+            - /url: /culture
+        - listitem [ref=e17]:
+          - link "Multimedia" [ref=e18] [cursor=pointer]:
+            - /url: /multimedia
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - strong [ref=e22]: Italianamente Studio
+        - generic [ref=e23]: demo locale
+      - generic [ref=e24]:
+        - generic [ref=e25]: Salvato
+        - button "Crea anteprima" [ref=e26] [cursor=pointer]
+        - button "Pubblica" [disabled] [ref=e27]
+    - complementary [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e30]: Contenuti
+        - button "+" [ref=e31] [cursor=pointer]
+      - button "Homepage Pagina" [ref=e32] [cursor=pointer]:
+        - generic [ref=e33]: Homepage
+        - generic [ref=e34]: Pagina
+      - button "Chi sono Pagina" [ref=e35] [cursor=pointer]:
+        - generic [ref=e36]: Chi sono
+        - generic [ref=e37]: Pagina
+      - paragraph [ref=e38]: Articoli
+      - button "Chiedimi se sono felice Film" [ref=e39] [cursor=pointer]:
+        - generic [ref=e40]: Chiedimi se sono felice
+        - generic [ref=e41]: Film
+      - button "Il colmo per un matematico Barzelletta" [ref=e42] [cursor=pointer]:
+        - generic [ref=e43]: Il colmo per un matematico
+        - generic [ref=e44]: Barzelletta
+      - button "Il dialetto e Vicenza Curiosità" [ref=e45] [cursor=pointer]:
+        - generic [ref=e46]: Il dialetto e Vicenza
+        - generic [ref=e47]: Curiosità
+      - button "Il primo maggio, tradizioni italiane Attualità" [ref=e48] [cursor=pointer]:
+        - generic [ref=e49]: Il primo maggio, tradizioni italiane
+        - generic [ref=e50]: Attualità
+      - button "Il verbo pronominale ANDARSENE Grammatica" [ref=e51] [cursor=pointer]:
+        - generic [ref=e52]: Il verbo pronominale ANDARSENE
+        - generic [ref=e53]: Grammatica
+      - 'button "La barzelletta della Settimana Enigmistica: un disegno divertente! Barzelletta" [ref=e54] [cursor=pointer]':
+        - generic [ref=e55]: "La barzelletta della Settimana Enigmistica: un disegno divertente!"
+        - generic [ref=e56]: Barzelletta
+      - button "La Festa della Donna e la mimosa Ricetta" [ref=e57] [cursor=pointer]:
+        - generic [ref=e58]: La Festa della Donna e la mimosa
+        - generic [ref=e59]: Ricetta
+      - button "La Grande Bellezza Film del mese" [ref=e60] [cursor=pointer]:
+        - generic [ref=e61]: La Grande Bellezza
+        - generic [ref=e62]: Film del mese
+      - button "Mi serve ricordare il futuro? Grammatica" [ref=e63] [cursor=pointer]:
+        - generic [ref=e64]: Mi serve ricordare il futuro?
+        - generic [ref=e65]: Grammatica
+      - button "Natale con i tuoi, Pasqua con chi vuoi Modo di dire" [ref=e66] [cursor=pointer]:
+        - generic [ref=e67]: Natale con i tuoi, Pasqua con chi vuoi
+        - generic [ref=e68]: Modo di dire
+      - button "Non avere peli sulla lingua Modo di dire" [ref=e69] [cursor=pointer]:
+        - generic [ref=e70]: Non avere peli sulla lingua
+        - generic [ref=e71]: Modo di dire
+      - 'button "Sanremo 2026: nessuno guarda Sanremo? Attualità" [ref=e72] [cursor=pointer]':
+        - generic [ref=e73]: "Sanremo 2026: nessuno guarda Sanremo?"
+        - generic [ref=e74]: Attualità
+      - button "Tiramisù Classico Ricetta del mese" [ref=e75] [cursor=pointer]:
+        - generic [ref=e76]: Tiramisù Classico
+        - generic [ref=e77]: Ricetta del mese
+      - button "Un gioco di comprensione Grammatica" [ref=e78] [cursor=pointer]:
+        - generic [ref=e79]: Un gioco di comprensione
+        - generic [ref=e80]: Grammatica
+      - button "Visita Padova Prossima vacanza a..." [ref=e81] [cursor=pointer]:
+        - generic [ref=e82]: Visita Padova
+        - generic [ref=e83]: Prossima vacanza a...
+    - generic [ref=e84]:
+      - generic [ref=e86]:
+        - text: Titolo
+        - textbox "Titolo" [ref=e87]: Home Page
+      - generic [ref=e88]:
+        - generic [ref=e89]:
+          - generic [ref=e90]:
+            - strong [ref=e91]: Card 1
+            - button "↑" [ref=e92] [cursor=pointer]
+            - button "↓" [ref=e93] [cursor=pointer]
+            - button "Rimuovi" [ref=e94] [cursor=pointer]
+          - generic [ref=e95]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e96]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE" [selected]
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e97]:
+            - text: Stile
+            - combobox "Stile" [ref=e98]:
+              - option "Standard" [selected]
+              - option "Modo di dire"
+              - option "Barzelletta"
+          - generic [ref=e99]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e100]: Il verbo pronominale ANDARSENE
+          - generic [ref=e101]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e102]: Grammatica
+          - generic [ref=e103]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e104]: "\"Basta! Me ne vado!\" Probabilmente avrai gia` sentito questa frase durante il tuo viaggio nell'italiano. Ma cosa significa e come si usa? Questo post puo` darti un po' di chiarezza!"
+          - generic [ref=e105]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e106]: Come si usa?
+        - generic [ref=e107]:
+          - generic [ref=e108]:
+            - strong [ref=e109]: Card 2
+            - button "↑" [ref=e110] [cursor=pointer]
+            - button "↓" [ref=e111] [cursor=pointer]
+            - button "Rimuovi" [ref=e112] [cursor=pointer]
+          - generic [ref=e113]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e114]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane" [selected]
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e115]:
+            - text: Stile
+            - combobox "Stile" [ref=e116]:
+              - option "Standard" [selected]
+              - option "Modo di dire"
+              - option "Barzelletta"
+          - generic [ref=e117]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e118]: Il primo maggio, tradizioni italiane
+          - generic [ref=e119]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e120]
+          - generic [ref=e121]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e122]: Comincia il mese di maggio che porta la voglia di viaggiare! Cosa sai del "Primo Maggio - festa dei lavoratori"? Sei pronto per una vacanza in Italia?
+          - generic [ref=e123]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e124]: Vieni con me
+        - generic [ref=e125]:
+          - generic [ref=e126]:
+            - strong [ref=e127]: Card 3
+            - button "↑" [ref=e128] [cursor=pointer]
+            - button "↓" [ref=e129] [cursor=pointer]
+            - button "Rimuovi" [ref=e130] [cursor=pointer]
+          - generic [ref=e131]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e132]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi" [selected]
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e133]:
+            - text: Stile
+            - combobox "Stile" [ref=e134]:
+              - option "Standard"
+              - option "Modo di dire" [selected]
+              - option "Barzelletta"
+          - generic [ref=e135]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e136]: Natale con i tuoi e Pasqua con chi vuoi
+          - generic [ref=e137]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e138]: Modo di dire
+          - generic [ref=e139]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e140]: "Quando la primavera e` vicina, non vuoi perderne nemmeno un momento!"
+          - generic [ref=e141]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e142]: Esplora!
+        - generic [ref=e143]:
+          - generic [ref=e144]:
+            - strong [ref=e145]: Card 4
+            - button "↑" [ref=e146] [cursor=pointer]
+            - button "↓" [ref=e147] [cursor=pointer]
+            - button "Rimuovi" [ref=e148] [cursor=pointer]
+          - generic [ref=e149]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e150]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza" [selected]
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e151]:
+            - text: Stile
+            - combobox "Stile" [ref=e152]:
+              - option "Standard" [selected]
+              - option "Modo di dire"
+              - option "Barzelletta"
+          - generic [ref=e153]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e154]: Il dialetto e Vicenza
+          - generic [ref=e155]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e156]: Cultura
+          - generic [ref=e157]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e158]: "Recentemente ho fatto un viaggio a Vicenza in Veneto per passare un fine settimana. Durante una passeggiata per le vie della citta` mi sono imbattuta in un cartello che mi ha fatto chiedere: \"Quanto dialetto si parla ancora in Veneto?\""
+          - generic [ref=e159]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e160]: Scoprilo con me!
+        - generic [ref=e161]:
+          - generic [ref=e162]:
+            - strong [ref=e163]: Card 5
+            - button "↑" [ref=e164] [cursor=pointer]
+            - button "↓" [ref=e165] [cursor=pointer]
+            - button "Rimuovi" [ref=e166] [cursor=pointer]
+          - generic [ref=e167]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e168]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice" [selected]
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e169]:
+            - text: Stile
+            - combobox "Stile" [ref=e170]:
+              - option "Standard" [selected]
+              - option "Modo di dire"
+              - option "Barzelletta"
+          - generic [ref=e171]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e172]: Chiedimi se sono felice
+          - generic [ref=e173]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e174]: Film
+          - generic [ref=e175]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e176]: "Oggi e` la giornata internazionale della felicita`: cosa c'e` di piu` bello che guardare un film in Italiano per essere piu` felici?"
+          - generic [ref=e177]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e178]: Buona visione!
+        - generic [ref=e179]:
+          - generic [ref=e180]:
+            - strong [ref=e181]: Card 6
+            - button "↑" [ref=e182] [cursor=pointer]
+            - button "↓" [ref=e183] [cursor=pointer]
+            - button "Rimuovi" [ref=e184] [cursor=pointer]
+          - generic [ref=e185]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e186]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa" [selected]
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e187]:
+            - text: Stile
+            - combobox "Stile" [ref=e188]:
+              - option "Standard" [selected]
+              - option "Modo di dire"
+              - option "Barzelletta"
+          - generic [ref=e189]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e190]: La Festa della Donna e la mimosa
+          - generic [ref=e191]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e192]: Ricetta
+          - generic [ref=e193]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e194]: Brindiamo insieme a tutte le donne con la ricetta di un cocktail molto semplice da provare subito a casa!
+          - generic [ref=e195]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e196]: Salute!
+        - generic [ref=e197]:
+          - generic [ref=e198]:
+            - strong [ref=e199]: Card 7
+            - button "↑" [ref=e200] [cursor=pointer]
+            - button "↓" [ref=e201] [cursor=pointer]
+            - button "Rimuovi" [ref=e202] [cursor=pointer]
+          - generic [ref=e203]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e204]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?" [selected]'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e205]:
+            - text: Stile
+            - combobox "Stile" [ref=e206]:
+              - option "Standard" [selected]
+              - option "Modo di dire"
+              - option "Barzelletta"
+          - generic [ref=e207]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e208]: "Sanremo 2026: nessuno guarda Sanremo?"
+          - generic [ref=e209]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e210]: "Attualita`"
+          - generic [ref=e211]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e212]: "Ma perché, nonostante il suo successo, nessun italiano ammette mai di guardare il Festival di Sanremo? La risposta è una frase che e` quasi un proverbio: “Chi non guarda Sanremo, mente!”"
+          - generic [ref=e213]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e214]: Leggi di più
+        - generic [ref=e215]:
+          - generic [ref=e216]:
+            - strong [ref=e217]: Card 8
+            - button "↑" [ref=e218] [cursor=pointer]
+            - button "↓" [ref=e219] [cursor=pointer]
+            - button "Rimuovi" [ref=e220] [cursor=pointer]
+          - generic [ref=e221]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e222]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua" [selected]
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e223]:
+            - text: Stile
+            - combobox "Stile" [ref=e224]:
+              - option "Standard"
+              - option "Modo di dire" [selected]
+              - option "Barzelletta"
+          - generic [ref=e225]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e226]: "\"Non avere peli sulla lingua\""
+          - generic [ref=e227]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e228]: Modo di dire
+          - generic [ref=e229]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e230]: "Significato: Essere molto schietti e sinceri, dire tutto ciò che si pensa."
+          - generic [ref=e231]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e232]
+        - generic [ref=e233]:
+          - generic [ref=e234]:
+            - strong [ref=e235]: Card 9
+            - button "↑" [ref=e236] [cursor=pointer]
+            - button "↓" [ref=e237] [cursor=pointer]
+            - button "Rimuovi" [ref=e238] [cursor=pointer]
+          - generic [ref=e239]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e240]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico" [selected]
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e241]:
+            - text: Stile
+            - combobox "Stile" [ref=e242]:
+              - option "Standard" [selected]
+              - option "Modo di dire"
+              - option "Barzelletta"
+          - generic [ref=e243]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e244]: Tiramisù Classico
+          - generic [ref=e245]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e246]: Ricetta del mese
+          - generic [ref=e247]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e248]: Il dolce italiano più famoso al mondo.
+          - generic [ref=e249]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e250]: Leggi la ricetta
+        - generic [ref=e251]:
+          - generic [ref=e252]:
+            - strong [ref=e253]: Card 10
+            - button "↑" [ref=e254] [cursor=pointer]
+            - button "↓" [ref=e255] [cursor=pointer]
+            - button "Rimuovi" [ref=e256] [cursor=pointer]
+          - generic [ref=e257]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e258]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza" [selected]
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e259]:
+            - text: Stile
+            - combobox "Stile" [ref=e260]:
+              - option "Standard" [selected]
+              - option "Modo di dire"
+              - option "Barzelletta"
+          - generic [ref=e261]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e262]: La Grande Bellezza
+          - generic [ref=e263]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e264]: Film del mese
+          - generic [ref=e265]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e266]: La Grande Bellezza
+          - generic [ref=e267]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e268]: Guarda il trailer
+        - generic [ref=e269]:
+          - generic [ref=e270]:
+            - strong [ref=e271]: Card 11
+            - button "↑" [ref=e272] [cursor=pointer]
+            - button "↓" [ref=e273] [cursor=pointer]
+            - button "Rimuovi" [ref=e274] [cursor=pointer]
+          - generic [ref=e275]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e276]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico"
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!" [selected]'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e277]:
+            - text: Stile
+            - combobox "Stile" [ref=e278]:
+              - option "Standard"
+              - option "Modo di dire"
+              - option "Barzelletta" [selected]
+          - generic [ref=e279]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e280]: "La barzelletta della Settimana Enigmistica: un disegno divertente!"
+          - generic [ref=e281]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e282]: Barzelletta
+          - generic [ref=e283]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e284]: "La barzelletta della settimana e` un disegno!"
+          - generic [ref=e285]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e286]
+        - generic [ref=e287]:
+          - generic [ref=e288]:
+            - strong [ref=e289]: Card 12
+            - button "↑" [ref=e290] [cursor=pointer]
+            - button "↓" [ref=e291] [cursor=pointer]
+            - button "Rimuovi" [ref=e292] [cursor=pointer]
+          - generic [ref=e293]:
+            - text: Articolo
+            - combobox "Articolo" [ref=e294]:
+              - option "Nessun articolo"
+              - option "Chiedimi se sono felice"
+              - option "Il colmo per un matematico" [selected]
+              - option "Il dialetto e Vicenza"
+              - option "Il primo maggio, tradizioni italiane"
+              - option "Il verbo pronominale ANDARSENE"
+              - 'option "La barzelletta della Settimana Enigmistica: un disegno divertente!"'
+              - option "La Festa della Donna e la mimosa"
+              - option "La Grande Bellezza"
+              - option "Mi serve ricordare il futuro?"
+              - option "Natale con i tuoi, Pasqua con chi vuoi"
+              - option "Non avere peli sulla lingua"
+              - 'option "Sanremo 2026: nessuno guarda Sanremo?"'
+              - option "Tiramisù Classico"
+              - option "Un gioco di comprensione"
+              - option "Visita Padova"
+          - generic [ref=e295]:
+            - text: Stile
+            - combobox "Stile" [ref=e296]:
+              - option "Standard"
+              - option "Modo di dire"
+              - option "Barzelletta" [selected]
+          - generic [ref=e297]:
+            - text: Titolo
+            - textbox "Titolo" [ref=e298]: Il colmo per un matematico?
+          - generic [ref=e299]:
+            - text: Categoria
+            - textbox "Categoria" [ref=e300]: Barzelletta
+          - generic [ref=e301]:
+            - text: Descrizione
+            - textbox "Descrizione" [ref=e302]: "\"Abitare in una frazione!\""
+          - generic [ref=e303]:
+            - text: Testo pulsante
+            - textbox "Testo pulsante" [ref=e304]: Ridi ancora
+        - button "+ Aggiungi card" [ref=e305] [cursor=pointer]
+    - complementary [ref=e306]:
+      - generic [ref=e308]: Anteprima live
+      - article [ref=e309]:
+        - generic [ref=e310]:
+          - generic [ref=e311]:
+            - text: Grammatica
+            - heading "Il verbo pronominale ANDARSENE" [level=2] [ref=e312]
+            - paragraph [ref=e313]: "\"Basta! Me ne vado!\" Probabilmente avrai gia` sentito questa frase durante il tuo viaggio nell'italiano. Ma cosa significa e come si usa? Questo post puo` darti un po' di chiarezza!"
+          - generic [ref=e314]:
+            - heading "Il primo maggio, tradizioni italiane" [level=2] [ref=e315]
+            - paragraph [ref=e316]: Comincia il mese di maggio che porta la voglia di viaggiare! Cosa sai del "Primo Maggio - festa dei lavoratori"? Sei pronto per una vacanza in Italia?
+          - generic [ref=e317]:
+            - text: Modo di dire
+            - heading "Natale con i tuoi e Pasqua con chi vuoi" [level=2] [ref=e318]
+            - paragraph [ref=e319]: "Quando la primavera e` vicina, non vuoi perderne nemmeno un momento!"
+          - generic [ref=e320]:
+            - text: Cultura
+            - heading "Il dialetto e Vicenza" [level=2] [ref=e321]
+            - paragraph [ref=e322]: "Recentemente ho fatto un viaggio a Vicenza in Veneto per passare un fine settimana. Durante una passeggiata per le vie della citta` mi sono imbattuta in un cartello che mi ha fatto chiedere: \"Quanto dialetto si parla ancora in Veneto?\""
+          - generic [ref=e323]:
+            - text: Film
+            - heading "Chiedimi se sono felice" [level=2] [ref=e324]
+            - paragraph [ref=e325]: "Oggi e` la giornata internazionale della felicita`: cosa c'e` di piu` bello che guardare un film in Italiano per essere piu` felici?"
+          - generic [ref=e326]:
+            - text: Ricetta
+            - heading "La Festa della Donna e la mimosa" [level=2] [ref=e327]
+            - paragraph [ref=e328]: Brindiamo insieme a tutte le donne con la ricetta di un cocktail molto semplice da provare subito a casa!
+          - generic [ref=e329]:
+            - text: "Attualita`"
+            - 'heading "Sanremo 2026: nessuno guarda Sanremo?" [level=2] [ref=e330]'
+            - paragraph [ref=e331]: "Ma perché, nonostante il suo successo, nessun italiano ammette mai di guardare il Festival di Sanremo? La risposta è una frase che e` quasi un proverbio: “Chi non guarda Sanremo, mente!”"
+          - generic [ref=e332]:
+            - text: Modo di dire
+            - heading "\"Non avere peli sulla lingua\"" [level=2] [ref=e333]
+            - paragraph [ref=e334]: "Significato: Essere molto schietti e sinceri, dire tutto ciò che si pensa."
+          - generic [ref=e335]:
+            - text: Ricetta del mese
+            - heading "Tiramisù Classico" [level=2] [ref=e336]
+            - paragraph [ref=e337]: Il dolce italiano più famoso al mondo.
+          - generic [ref=e338]:
+            - text: Film del mese
+            - heading "La Grande Bellezza" [level=2] [ref=e339]
+            - paragraph [ref=e340]: La Grande Bellezza
+          - generic [ref=e341]:
+            - text: Barzelletta
+            - 'heading "La barzelletta della Settimana Enigmistica: un disegno divertente!" [level=2] [ref=e342]'
+            - paragraph [ref=e343]: "La barzelletta della settimana e` un disegno!"
+          - generic [ref=e344]:
+            - text: Barzelletta
+            - heading "Il colmo per un matematico?" [level=2] [ref=e345]
+            - paragraph [ref=e346]: "\"Abitare in una frazione!\""
+  - contentinfo [ref=e347]: © 2026 ItalianaMente - Corso di Italiano con Tiziana

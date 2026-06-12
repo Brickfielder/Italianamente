@@ -54,9 +54,9 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      previewUrl: preview.url ?? draft.previewUrl ?? null,
+      previewUrl: preview.ready ? preview.url : null,
       pullRequestUrl,
-      ready: preview.ready || Boolean(draft.previewUrl),
+      ready: preview.ready,
       lookupEnabled: true,
     });
   } catch (error) {

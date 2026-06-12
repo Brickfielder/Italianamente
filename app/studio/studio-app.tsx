@@ -380,19 +380,20 @@ export default function StudioApp({
           throw new Error(result.message);
         }
 
+        const previewUrl = result.ready ? result.previewUrl : null;
         setDocuments((current) =>
           current.map((item) =>
             item.documentPath === document.documentPath
               ? {
                   ...item,
-                  previewUrl: result.previewUrl,
+                  previewUrl,
                   pullRequestUrl: result.pullRequestUrl ?? item.pullRequestUrl,
                 }
               : item
           )
         );
 
-        if (result.previewUrl) {
+        if (previewUrl) {
           showMessage("Anteprima pronta. Puoi aprirla ora.");
           return;
         }

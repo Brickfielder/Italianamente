@@ -77,7 +77,6 @@ export async function updateDraftPublishing(
     .update(drafts)
     .set({
       ...values,
-      previewUrl: values.previewUrl ?? undefined,
       userId,
       updatedAt: new Date(),
     })
@@ -93,4 +92,3 @@ export async function updateDraftPublishing(
 
   return updated;
 }
-
