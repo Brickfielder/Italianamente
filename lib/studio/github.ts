@@ -1,5 +1,6 @@
 import { createAppAuth } from "@octokit/auth-app";
 import { Octokit } from "@octokit/rest";
+import matter from "gray-matter";
 
 import { serializeStudioDocument } from "./serialize";
 import type { StudioDocument } from "./types";
@@ -70,6 +71,33 @@ const branchNameFor = (documentPath: string) =>
     .replace(/[^a-zA-Z0-9/_-]/g, "-")
     .replace(/\//g, "-")
     .toLowerCase()}`;
+
+export const removeHomeReferences = (
+  source: string,
+  documentPath: string
+) => {
+  const parsed = matter(source);
+  const tiles = Array.isArray(parsed.data.tiles) ? parsed.data.tiles : [];
+  const filteredTiles = tiles.filter(
+    (tile) =>
+      !tile ||
+      typeof tile !== "object" ||
+      (tile as { postReference?: string }).postReference !== documentPath
+  );
+
+  if (filteredTiles.length === tiles.length) {
+    return source;
+  }
+
+  return matter.stringify(parsed.content, {
+    ...parsed.data,
+    tilesLastUpdated: new Date().toISOString(),
+    tiles: filteredTiles,
+  });
+};
+
+const decodeRepositoryContent = (content: string) =>
+  Buffer.from(content.replace(/\n/g, ""), "base64").toString("utf8");
 
 const deploymentBranch = (deployment: VercelDeployment) =>
   deployment.meta?.githubCommitRef ||
@@ -276,4 +304,107 @@ export async function publishPreview(input: {
   }
 
   return { sha: result.data.sha };
+}
+
+export async function deleteStudioDocument(document: StudioDocument) {
+  if (document.documentType !== "post") {
+    throw new Error("Only articles can be deleted from Studio.");
+  }
+
+  const octokit = getOctokit();
+  const { owner, repo } = repository();
+  const main = await octokit.git.getRef({
+    owner,
+    repo,
+    ref: "heads/main",
+  });
+  const baseSha = main.data.object.sha;
+  const baseCommit = await octokit.git.getCommit({
+    owner,
+    repo,
+    commit_sha: baseSha,
+  });
+  const treeEntries: Array<{
+    path: string;
+    mode: "100644";
+    type: "blob";
+    sha: string | null;
+  }> = [
+    {
+      path: document.documentPath,
+      mode: "100644",
+      type: "blob",
+      sha: null,
+    },
+  ];
+
+  const homeResponse = await octokit.repos.getContent({
+    owner,
+    repo,
+    path: "content/page/home.mdx",
+    ref: baseSha,
+  });
+  if (!Array.isArray(homeResponse.data) && "content" in homeResponse.data) {
+    const homeSource = decodeRepositoryContent(homeResponse.data.content);
+    const updatedHome = removeHomeReferences(
+      homeSource,
+      document.documentPath
+    );
+    if (updatedHome !== homeSource) {
+      const homeBlob = await octokit.git.createBlob({
+        owner,
+        repo,
+        content: updatedHome,
+        encoding: "utf-8",
+      });
+      treeEntries.push({
+        path: "content/page/home.mdx",
+        mode: "100644",
+        type: "blob",
+        sha: homeBlob.data.sha,
+      });
+    }
+  }
+
+  const tree = await octokit.git.createTree({
+    owner,
+    repo,
+    base_tree: baseCommit.data.tree.sha,
+    tree: treeEntries,
+  });
+  const commit = await octokit.git.createCommit({
+    owner,
+    repo,
+    message: `content(studio): delete ${document.title}`,
+    tree: tree.data.sha,
+    parents: [baseSha],
+  });
+  await octokit.git.updateRef({
+    owner,
+    repo,
+    ref: "heads/main",
+    sha: commit.data.sha,
+  });
+
+  if (document.pullRequestNumber) {
+    await octokit.pulls
+      .update({
+        owner,
+        repo,
+        pull_number: document.pullRequestNumber,
+        state: "closed",
+      })
+      .catch(() => undefined);
+  }
+  if (document.previewBranch) {
+    await octokit.git
+      .deleteRef({
+        owner,
+        repo,
+        ref: `heads/${document.previewBranch}`,
+      })
+      .catch(() => undefined);
+  }
+
+  return { sha: commit.data.sha };
 }

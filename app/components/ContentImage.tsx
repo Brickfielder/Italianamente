@@ -1,6 +1,11 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 
+import {
+  isRemoteImageSrc,
+  normalizeImageSrc,
+} from "../../lib/content/images";
+
 type ContentImageProps = {
   src?: string;
   alt?: string;
@@ -13,18 +18,6 @@ type ContentImageProps = {
 
 const DEFAULT_WIDTH = 1200;
 const DEFAULT_HEIGHT = 800;
-
-const normalizeImageSrc = (src?: string) => {
-  if (!src) {
-    return src;
-  }
-
-  if (src.startsWith("http") || src.startsWith("data:")) {
-    return src;
-  }
-
-  return src.startsWith("/") ? src : `/${src}`;
-};
 
 const resolveDimension = (value: number | string | undefined, fallback: number) => {
   const numericValue = typeof value === "string" ? Number(value) : value;
@@ -53,7 +46,7 @@ export default function ContentImage({
   const resolvedWidth = resolveDimension(width, DEFAULT_WIDTH);
   const resolvedHeight = resolveDimension(height, DEFAULT_HEIGHT);
   const resolvedAlt = alt ?? "";
-  const isRemote = /^https?:\/\//i.test(resolvedSrc);
+  const isRemote = isRemoteImageSrc(resolvedSrc);
 
   return (
     <Image

@@ -7,6 +7,7 @@ import {
   normalizeEmbedUrl,
   publishedHtmlToEditorHtml,
 } from "./embeds";
+import { removeHomeReferences } from "./github";
 import { serializeStudioDocument } from "./serialize";
 
 describe("studio embeds", () => {
@@ -183,5 +184,27 @@ describe("serializeStudioDocument", () => {
       },
     ]);
     expect(parsed.data.tilesLastUpdated).toBeTypeOf("string");
+  });
+});
+
+describe("removeHomeReferences", () => {
+  it("removes homepage cards linked to a deleted article", () => {
+    const source = `---
+title: Home Page
+tiles:
+  - title: Keep
+    postReference: content/culture/keep.mdx
+  - title: Delete
+    postReference: content/culture/delete.mdx
+---
+`;
+
+    const output = removeHomeReferences(
+      source,
+      "content/culture/delete.mdx"
+    );
+
+    expect(output).toContain("content/culture/keep.mdx");
+    expect(output).not.toContain("content/culture/delete.mdx");
   });
 });

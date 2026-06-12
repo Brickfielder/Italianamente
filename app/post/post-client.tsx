@@ -1,16 +1,12 @@
 import Image from "next/image";
 
+import {
+  isRemoteImageSrc,
+  normalizeImageSrc,
+} from "../../lib/content/images";
 import type { PostDocument } from "../../lib/content/types";
 import RichContent from "../components/RichContent";
 import ScrollToTop from "./[...slug]/scroll-to-top";
-
-const normalizeImageSrc = (src?: string) => {
-  if (!src || src.startsWith("http") || src.startsWith("data:")) {
-    return src;
-  }
-
-  return src.startsWith("/") ? src : `/${src}`;
-};
 
 export default function PostClient({ post }: { post: PostDocument }) {
   const imageSrc = normalizeImageSrc(post.image);
@@ -48,6 +44,7 @@ export default function PostClient({ post }: { post: PostDocument }) {
                 sizes="100vw"
                 className="content-image"
                 style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+                unoptimized={isRemoteImageSrc(imageSrc)}
               />
             </div>
           )}

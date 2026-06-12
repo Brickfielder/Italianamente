@@ -714,6 +714,30 @@
   line-height: 1.4;
 }
 
+.article-delete-dialog p {
+  margin: 0 0 12px;
+  color: #625d56;
+  line-height: 1.5;
+}
+
+.article-delete-dialog p strong {
+  color: #292521;
+  font-family: "Playfair Display", serif;
+  font-size: 1.05rem;
+}
+
+.studio-dialog button.danger {
+  border-color: #a92f2f;
+  background: #b63737;
+  color: #fff;
+  font-weight: 700;
+}
+
+.studio-dialog button.danger:hover {
+  border-color: #8e2626;
+  background: #9f2d2d;
+}
+
 .tile-editor {
   display: grid;
   gap: 14px;
@@ -999,6 +1023,12 @@
 .sidebar-list--articles {
   overflow-y: auto;
   padding: 0 2px 18px;
+}
+
+.sidebar-list--articles > button {
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .sidebar-list > button {

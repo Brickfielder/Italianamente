@@ -1,5 +1,6 @@
 import matter from "gray-matter";
 
+import { normalizeImageSrc } from "../content/images";
 import { sanitizeEditorHtml } from "../content/sanitize";
 import { editorHtmlToPublishedHtml } from "./embeds";
 import type { StudioDocument } from "./types";
@@ -28,7 +29,7 @@ export function serializeStudioDocument(document: StudioDocument) {
       frontmatter.tags = document.tags.filter(Boolean);
     }
     if (document.image) {
-      frontmatter.image = document.image;
+      frontmatter.image = normalizeImageSrc(document.image);
     }
     if (document.imageWidth) {
       frontmatter.imageWidth = document.imageWidth;

@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { ReactNode } from "react";
 
+import { normalizeImageSrc } from "../../lib/content/images";
 import type { HomeTile } from "../../lib/content/types";
 import {
   createEditorEmbedPlaceholder,
@@ -32,6 +33,7 @@ type InsertDialog = "link" | "image" | "video" | "audio" | null;
 type PreviewMode = "article" | "card" | "mobile";
 type MobileWorkspace = "content" | "edit" | "preview";
 const MESSAGE_DURATION_MS = 4000;
+const LONG_PRESS_DURATION_MS = 650;
 
 const CATEGORIES = [
   "Grammatica",
@@ -234,6 +236,8 @@ function PreviewTileCard({
 }
 
 function DocumentPreview({ document }: { document: StudioDocument }) {
+  const imageSrc = normalizeImageSrc(document.image);
+
   if (document.documentType === "home") {
     return (
       <div className="preview-grid">
@@ -254,7 +258,7 @@ function DocumentPreview({ document }: { document: StudioDocument }) {
           <span className="preview-accent" aria-hidden="true" />
         </>
       )}
-      {document.image && (
+      {imageSrc && (
         <div
           className="preview-cover-image"
           style={{
@@ -264,7 +268,7 @@ function DocumentPreview({ document }: { document: StudioDocument }) {
           }}
         >
           <Image
-            src={document.image}
+            src={imageSrc}
             alt=""
             width={document.imageWidth ?? 800}
             height={document.imageHeight ?? 450}
@@ -305,12 +309,17 @@ export default function StudioApp({
   const [previewMode, setPreviewMode] = useState<PreviewMode>("article");
   const [mobileWorkspace, setMobileWorkspace] =
     useState<MobileWorkspace>("content");
+  const [deleteCandidate, setDeleteCandidate] =
+    useState<StudioDocument | null>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const editorPanelRef = useRef<HTMLElement>(null);
   const previewStageRef = useRef<HTMLDivElement>(null);
   const saveTimer = useRef<number | undefined>(undefined);
   const messageTimer = useRef<number | undefined>(undefined);
+  const longPressTimer = useRef<number | undefined>(undefined);
+  const longPressOrigin = useRef<{ x: number; y: number } | null>(null);
+  const suppressArticleClick = useRef<string | null>(null);
   const selectionRef = useRef<Range | null>(null);
 
   const selected = useMemo(
@@ -643,7 +652,11 @@ export default function StudioApp({
       if (insertDialog === "link") {
         runCommand("createLink", raw);
       } else if (insertDialog === "image") {
-        const url = new URL(raw);
+        const normalizedSrc = normalizeImageSrc(raw);
+        if (!normalizedSrc) {
+          throw new Error("Missing image URL");
+        }
+        const url = new URL(normalizedSrc);
         if (!["http:", "https:"].includes(url.protocol)) {
           throw new Error("Unsupported URL");
         }
@@ -757,6 +770,91 @@ export default function StudioApp({
       titleInputRef.current?.focus();
       titleInputRef.current?.select();
     });
+  };
+
+  const cancelLongPress = () => {
+    window.clearTimeout(longPressTimer.current);
+    longPressTimer.current = undefined;
+    longPressOrigin.current = null;
+  };
+
+  const requestArticleDelete = (document: StudioDocument) => {
+    cancelLongPress();
+    setDeleteCandidate(document);
+  };
+
+  const deleteArticle = async () => {
+    if (!deleteCandidate) {
+      return;
+    }
+
+    const documentPath = deleteCandidate.documentPath;
+    const fallbackPath =
+      documents.find(
+        (document) =>
+          document.documentType === "home" &&
+          document.documentPath !== documentPath
+      )?.documentPath ??
+      documents.find((document) => document.documentPath !== documentPath)
+        ?.documentPath ??
+      "";
+
+    window.clearTimeout(saveTimer.current);
+    setBusy(true);
+    setSaveState("saving");
+    try {
+      if (!demoMode) {
+        const response = await fetch("/api/studio/documents", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            documentPath,
+            documentType: deleteCandidate.documentType,
+            contentOrigin: deleteCandidate.contentOrigin,
+            title: deleteCandidate.title,
+            previewBranch: deleteCandidate.previewBranch,
+            pullRequestNumber: deleteCandidate.pullRequestNumber,
+          }),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.message || "Eliminazione non riuscita.");
+        }
+      }
+
+      setDocuments((current) =>
+        current
+          .filter((document) => document.documentPath !== documentPath)
+          .map((document) =>
+            document.documentType === "home"
+              ? {
+                  ...document,
+                  tiles: document.tiles?.filter(
+                    (tile) => tile.postReference !== documentPath
+                  ),
+                }
+              : document
+          )
+      );
+      if (selectedPath === documentPath) {
+        setSelectedPath(fallbackPath);
+      }
+      setDeleteCandidate(null);
+      setMobileWorkspace("content");
+      setSaveState("saved");
+      showMessage(
+        demoMode
+          ? "Articolo rimosso dalla demo."
+          : "Articolo eliminato dal sito."
+      );
+    } catch (error) {
+      setSaveState("dirty");
+      showMessage(
+        error instanceof Error ? error.message : "Eliminazione non riuscita."
+      );
+    } finally {
+      setBusy(false);
+    }
   };
 
   const createPreview = async () => {
@@ -1021,7 +1119,46 @@ export default function StudioApp({
                 className={
                   document.documentPath === selectedPath ? "active" : ""
                 }
-                onClick={() => selectDocument(document.documentPath)}
+                onClick={() => {
+                  if (suppressArticleClick.current === document.documentPath) {
+                    suppressArticleClick.current = null;
+                    return;
+                  }
+                  selectDocument(document.documentPath);
+                }}
+                onContextMenu={(event) => {
+                  event.preventDefault();
+                  requestArticleDelete(document);
+                }}
+                onPointerDown={(event) => {
+                  if (event.pointerType === "mouse") {
+                    return;
+                  }
+                  cancelLongPress();
+                  longPressOrigin.current = {
+                    x: event.clientX,
+                    y: event.clientY,
+                  };
+                  longPressTimer.current = window.setTimeout(() => {
+                    suppressArticleClick.current = document.documentPath;
+                    requestArticleDelete(document);
+                  }, LONG_PRESS_DURATION_MS);
+                }}
+                onPointerUp={cancelLongPress}
+                onPointerCancel={cancelLongPress}
+                onPointerLeave={cancelLongPress}
+                onPointerMove={(event) => {
+                  const origin = longPressOrigin.current;
+                  if (
+                    origin &&
+                    Math.hypot(
+                      event.clientX - origin.x,
+                      event.clientY - origin.y
+                    ) > 10
+                  ) {
+                    cancelLongPress();
+                  }
+                }}
               >
                 <span>{document.title}</span>
                 <small>
@@ -1152,7 +1289,11 @@ export default function StudioApp({
                 <div className="cover-input-row">
                 <input
                   value={selected.image ?? ""}
-                  onChange={(event) => updateSelected({ image: event.target.value })}
+                  onChange={(event) =>
+                    updateSelected({
+                      image: normalizeImageSrc(event.target.value),
+                    })
+                  }
                   placeholder="URL immagine"
                 />
                   <label className="cover-upload-button">
@@ -1595,6 +1736,44 @@ export default function StudioApp({
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {deleteCandidate && (
+        <div className="studio-dialog-backdrop" role="presentation">
+          <section
+            className="studio-dialog article-delete-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-article-title"
+          >
+            <h2 id="delete-article-title">Eliminare questo articolo?</h2>
+            <p>
+              <strong>{deleteCandidate.title}</strong>
+            </p>
+            <p>
+              {deleteCandidate.contentOrigin === "new"
+                ? "La bozza verrà rimossa definitivamente."
+                : "L'articolo verrà rimosso dal sito. Anche le card della homepage collegate a questo articolo verranno eliminate."}
+            </p>
+            <div>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => setDeleteCandidate(null)}
+              >
+                Annulla
+              </button>
+              <button
+                type="button"
+                className="danger"
+                disabled={busy}
+                onClick={() => void deleteArticle()}
+              >
+                {busy ? "Eliminazione..." : "Elimina articolo"}
+              </button>
+            </div>
+          </section>
         </div>
       )}
 

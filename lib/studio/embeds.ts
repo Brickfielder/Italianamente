@@ -1,3 +1,5 @@
+import { normalizeImageSrc } from "../content/images";
+
 const EMBED_HOSTS = new Set([
   "www.youtube.com",
   "youtube.com",
@@ -117,8 +119,17 @@ const standaloneEmbedLinksToEditorHtml = (html: string) =>
       }
     );
 
+const normalizeHtmlImageSources = (html: string) =>
+  html.replace(
+    /(<img\b[^>]*\bsrc=["'])([^"']+)(["'][^>]*>)/gi,
+    (_match, beforeSrc: string, encodedSrc: string, afterSrc: string) => {
+      const normalizedSrc = normalizeImageSrc(decodeAttribute(encodedSrc));
+      return `${beforeSrc}${escapeAttribute(normalizedSrc ?? "")}${afterSrc}`;
+    }
+  );
+
 export function editorHtmlToPublishedHtml(html: string) {
-  return standaloneEmbedLinksToPublishedHtml(html).replace(
+  return normalizeHtmlImageSources(standaloneEmbedLinksToPublishedHtml(html)).replace(
     /<div\b([^>]*)>[\s\S]*?<\/div>/gi,
     (match, attributes: string) => {
       const className = attributes.match(/\bclass=["']([^"']+)["']/i)?.[1];
@@ -146,7 +157,7 @@ export function editorHtmlToPublishedHtml(html: string) {
 }
 
 export function publishedHtmlToEditorHtml(html: string) {
-  return standaloneEmbedLinksToEditorHtml(html).replace(
+  return normalizeHtmlImageSources(standaloneEmbedLinksToEditorHtml(html)).replace(
     /<figure\b[^>]*class=["'][^"']*\bstudio-embed-frame\b[^"']*["'][^>]*>[\s\S]*?<iframe\b[^>]*src=["']([^"']+)["'][^>]*>[\s\S]*?<\/figure>/gi,
     (_match, encodedUrl: string) => {
       const embedUrl = decodeAttribute(encodedUrl);

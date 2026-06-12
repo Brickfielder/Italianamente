@@ -62,6 +62,29 @@ export async function getDraft(id: string) {
   return draft;
 }
 
+export async function deleteDraftByPath(
+  documentPath: string,
+  userId?: string
+) {
+  const [draft] = await getDb()
+    .select()
+    .from(drafts)
+    .where(eq(drafts.documentPath, documentPath))
+    .limit(1);
+
+  if (!draft) {
+    return;
+  }
+
+  await getDb().insert(auditEvents).values({
+    draftId: draft.id,
+    userId,
+    action: "draft.deleted",
+    metadata: { documentPath },
+  });
+  await getDb().delete(drafts).where(eq(drafts.id, draft.id));
+}
+
 export async function updateDraftPublishing(
   id: string,
   values: {
