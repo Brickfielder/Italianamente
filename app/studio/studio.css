@@ -797,12 +797,6 @@
   flex: 0 0 auto;
 }
 
-.add-tile-note {
-  margin: -6px 0 0;
-  color: #817970;
-  font-size: 0.78rem;
-}
-
 .studio-gate {
   position: fixed;
   inset: 0;

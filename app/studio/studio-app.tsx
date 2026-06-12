@@ -1795,9 +1795,6 @@ function TileEditor({
   const update = (index: number, patch: Partial<HomeTile>) =>
     onChange(tiles.map((tile, i) => (i === index ? { ...tile, ...patch } : tile)));
   const [newTilePostPath, setNewTilePostPath] = useState("");
-  const linkablePosts = posts.filter(
-    (post) => post.contentOrigin !== "new"
-  );
   const move = (index: number, direction: -1 | 1) => {
     const next = [...tiles];
     const target = index + direction;
@@ -1816,9 +1813,10 @@ function TileEditor({
             onChange={(event) => setNewTilePostPath(event.target.value)}
           >
             <option value="">Scegli un articolo...</option>
-            {linkablePosts.map((post) => (
+            {posts.map((post) => (
               <option key={post.documentPath} value={post.documentPath}>
                 {post.title}
+                {post.contentOrigin === "new" ? " (nuovo)" : ""}
               </option>
             ))}
           </select>
@@ -1827,7 +1825,7 @@ function TileEditor({
           type="button"
           disabled={!newTilePostPath}
           onClick={() => {
-            const post = linkablePosts.find(
+            const post = posts.find(
               (item) => item.documentPath === newTilePostPath
             );
             if (!post) {
@@ -1840,12 +1838,6 @@ function TileEditor({
           + Aggiungi card
         </button>
       </div>
-      {posts.some((post) => post.contentOrigin === "new") && (
-        <p className="add-tile-note">
-          I nuovi articoli diventano collegabili alla homepage dopo la
-          pubblicazione.
-        </p>
-      )}
       {tiles.map((tile, index) => (
         <section key={index}>
           <div className="tile-editor__top">
@@ -1877,9 +1869,10 @@ function TileEditor({
               }}
             >
               <option value="">Scegli un articolo...</option>
-              {linkablePosts.map((post) => (
+              {posts.map((post) => (
                 <option key={post.documentPath} value={post.documentPath}>
                   {post.title}
+                  {post.contentOrigin === "new" ? " (nuovo)" : ""}
                 </option>
               ))}
             </select>
