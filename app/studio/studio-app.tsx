@@ -1320,14 +1320,6 @@ export default function StudioApp({
         </div>
         <div className="preview-tabs" role="tablist" aria-label="Modalità anteprima">
           <button
-            className={previewMode === "article" ? "active" : ""}
-            onClick={() => setPreviewMode("article")}
-            role="tab"
-            aria-selected={previewMode === "article"}
-          >
-            {selected.documentType === "post" ? "Articolo" : "Pagina"}
-          </button>
-          <button
             className={previewMode === "card" ? "active" : ""}
             onClick={() => setPreviewMode("card")}
             role="tab"
@@ -1335,6 +1327,14 @@ export default function StudioApp({
             disabled={selected.documentType !== "post"}
           >
             Card homepage
+          </button>
+          <button
+            className={previewMode === "article" ? "active" : ""}
+            onClick={() => setPreviewMode("article")}
+            role="tab"
+            aria-selected={previewMode === "article"}
+          >
+            {selected.documentType === "post" ? "Articolo" : "Pagina"}
           </button>
           <button
             className={previewMode === "mobile" ? "active" : ""}
