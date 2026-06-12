@@ -85,6 +85,28 @@ export function createHomeTileForPost(post: StudioDocument): HomeTile {
   );
 }
 
+export function linkedNewPosts(
+  document: StudioDocument,
+  candidates: StudioDocument[]
+) {
+  if (document.documentType !== "home") {
+    return [];
+  }
+
+  const referencedPaths = new Set(
+    document.tiles
+      ?.map((tile) => tile.postReference)
+      .filter((path): path is string => Boolean(path)) ?? []
+  );
+
+  return candidates.filter(
+    (candidate) =>
+      candidate.documentType === "post" &&
+      candidate.contentOrigin === "new" &&
+      referencedPaths.has(candidate.documentPath)
+  );
+}
+
 export function previewDocumentUrl(document: StudioDocument) {
   if (!document.previewUrl) {
     return null;

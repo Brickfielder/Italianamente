@@ -182,10 +182,21 @@ export const getPreviewUrl = async (
 export const hasPreviewLookup = () =>
   Boolean(process.env.VERCEL_TOKEN && process.env.VERCEL_PROJECT_ID);
 
-export async function createPreview(document: StudioDocument) {
+export async function createPreview(
+  document: StudioDocument,
+  relatedDocuments: StudioDocument[] = []
+) {
   const octokit = getOctokit();
   const { owner, repo } = repository();
   const branch = document.previewBranch || branchNameFor(document.documentPath);
+  const previewDocuments = Array.from(
+    new Map(
+      [document, ...relatedDocuments].map((item) => [
+        item.documentPath,
+        item,
+      ])
+    ).values()
+  );
   const base = await octokit.git.getRef({
     owner,
     repo,
@@ -197,24 +208,27 @@ export async function createPreview(document: StudioDocument) {
     repo,
     commit_sha: baseSha,
   });
-  const blob = await octokit.git.createBlob({
-    owner,
-    repo,
-    content: serializeStudioDocument(document),
-    encoding: "utf-8",
-  });
+  const blobs = await Promise.all(
+    previewDocuments.map(async (item) => ({
+      documentPath: item.documentPath,
+      blob: await octokit.git.createBlob({
+        owner,
+        repo,
+        content: serializeStudioDocument(item),
+        encoding: "utf-8",
+      }),
+    }))
+  );
   const tree = await octokit.git.createTree({
     owner,
     repo,
     base_tree: baseCommit.data.tree.sha,
-    tree: [
-      {
-        path: document.documentPath,
-        mode: "100644",
-        type: "blob",
-        sha: blob.data.sha,
-      },
-    ],
+    tree: blobs.map(({ documentPath, blob }) => ({
+      path: documentPath,
+      mode: "100644",
+      type: "blob",
+      sha: blob.data.sha,
+    })),
   });
   const commit = await octokit.git.createCommit({
     owner,
@@ -271,6 +285,31 @@ export async function createPreview(document: StudioDocument) {
     pullRequestUrl: pullRequest.html_url,
     previewUrl: (await getPreviewUrl(branch, previewCommitSha)).url,
   };
+}
+
+export async function closeDocumentPreview(document: StudioDocument) {
+  const octokit = getOctokit();
+  const { owner, repo } = repository();
+
+  if (document.pullRequestNumber) {
+    await octokit.pulls
+      .update({
+        owner,
+        repo,
+        pull_number: document.pullRequestNumber,
+        state: "closed",
+      })
+      .catch(() => undefined);
+  }
+  if (document.previewBranch) {
+    await octokit.git
+      .deleteRef({
+        owner,
+        repo,
+        ref: `heads/${document.previewBranch}`,
+      })
+      .catch(() => undefined);
+  }
 }
 
 export async function publishPreview(input: {

@@ -917,10 +917,26 @@ export default function StudioApp({
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message);
-      updateSelected({
-        contentOrigin: "repository",
-        draftStatus: "published",
-      });
+      const publishedDocumentPaths = new Set<string>(
+        result.publishedDocumentPaths ?? [selected.documentPath]
+      );
+      setDocuments((current) =>
+        current.map((document) =>
+          publishedDocumentPaths.has(document.documentPath)
+            ? {
+                ...document,
+                contentOrigin: "repository",
+                baseSha: undefined,
+                previewBranch: undefined,
+                pullRequestNumber: undefined,
+                pullRequestUrl: undefined,
+                previewUrl: undefined,
+                draftStatus: "published",
+                bundledDocumentPaths: undefined,
+              }
+            : document
+        )
+      );
       showMessage("Pubblicato. Vercel sta aggiornando il sito.");
     } catch (error) {
       showMessage(error instanceof Error ? error.message : "Pubblicazione non riuscita.");

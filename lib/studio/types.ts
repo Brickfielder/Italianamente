@@ -25,4 +25,5 @@ export type StudioDocument = {
   pullRequestUrl?: string;
   previewUrl?: string | null;
   draftStatus?: string;
+  bundledDocumentPaths?: string[];
 };

@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 
-import { publishPreview } from "../../../../lib/studio/github";
 import {
+  closeDocumentPreview,
+  publishPreview,
+} from "../../../../lib/studio/github";
+import {
+  completeDraftPublishing,
   getDraft,
-  updateDraftPublishing,
+  listDraftDocuments,
 } from "../../../../lib/studio/repository";
 import { requireStudioUser } from "../../../../lib/studio/session";
+import type { StudioDocument } from "../../../../lib/studio/types";
 
 export async function POST(request: Request) {
   try {
@@ -19,16 +24,41 @@ export async function POST(request: Request) {
     if (!draft?.pullRequestNumber) {
       throw new Error("Create a preview before publishing.");
     }
+    const document = {
+      ...(draft.payload as StudioDocument),
+      id: draft.id,
+    };
+    const bundledDocumentPaths = new Set(
+      document.bundledDocumentPaths ?? []
+    );
+    const relatedDocuments = (await listDraftDocuments()).filter(
+      (candidate) =>
+        candidate.documentType === "post" &&
+        bundledDocumentPaths.has(candidate.documentPath)
+    );
 
     const result = await publishPreview({
       pullRequestNumber: draft.pullRequestNumber,
       baseSha: draft.baseSha,
     });
-    await updateDraftPublishing(id, { status: "published" }, user.id);
-    return NextResponse.json(result);
+    await completeDraftPublishing(id, user.id);
+    await Promise.all(
+      relatedDocuments.map(async (relatedDocument) => {
+        await closeDocumentPreview(relatedDocument);
+        if (relatedDocument.id) {
+          await completeDraftPublishing(relatedDocument.id, user.id);
+        }
+      })
+    );
+    return NextResponse.json({
+      ...result,
+      publishedDocumentPaths: [
+        document.documentPath,
+        ...relatedDocuments.map((item) => item.documentPath),
+      ],
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to publish.";
     return NextResponse.json({ message }, { status: 400 });
   }
 }
-

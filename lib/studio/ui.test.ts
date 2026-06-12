@@ -5,6 +5,7 @@ import {
   applyStudioPatch,
   createHomeTileForPost,
   filterStudioPosts,
+  linkedNewPosts,
   mergeStudioDocument,
   previewDocumentUrl,
   publishingLabels,
@@ -53,6 +54,30 @@ describe("studio UI helpers", () => {
       postReference: "content/culture/felicita.mdx",
       buttonText: "Leggi l'articolo",
     });
+  });
+
+  it("includes linked new articles in a homepage preview", () => {
+    const linkedPost = { ...post, contentOrigin: "new" as const };
+    const unrelatedPost = {
+      ...linkedPost,
+      documentPath: "content/culture/altro.mdx",
+    };
+    const existingPost = {
+      ...post,
+      documentPath: "content/culture/pubblicato.mdx",
+    };
+    const home: StudioDocument = {
+      documentPath: "content/page/home.mdx",
+      documentType: "home",
+      title: "Home Page",
+      body: "",
+      tiles: [{ title: "Card", postReference: linkedPost.documentPath }],
+    };
+
+    expect(
+      linkedNewPosts(home, [linkedPost, unrelatedPost, existingPost])
+    ).toEqual([linkedPost]);
+    expect(linkedNewPosts(post, [linkedPost])).toEqual([]);
   });
 
   it("opens an article preview at the article route", () => {

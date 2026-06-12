@@ -53,6 +53,20 @@ export async function listDrafts() {
   return getDb().select().from(drafts);
 }
 
+export async function listDraftDocuments(): Promise<StudioDocument[]> {
+  const rows = await listDrafts();
+
+  return rows.map((draft) => ({
+    ...(draft.payload as StudioDocument),
+    id: draft.id,
+    baseSha: draft.baseSha ?? undefined,
+    previewBranch: draft.previewBranch ?? undefined,
+    pullRequestNumber: draft.pullRequestNumber ?? undefined,
+    previewUrl: draft.previewUrl ?? undefined,
+    draftStatus: draft.status,
+  }));
+}
+
 export async function getDraft(id: string) {
   const [draft] = await getDb()
     .select()
@@ -92,14 +106,26 @@ export async function updateDraftPublishing(
     previewBranch?: string;
     pullRequestNumber?: number;
     previewUrl?: string | null;
+    bundledDocumentPaths?: string[];
     status: string;
   },
   userId?: string
 ) {
+  const { bundledDocumentPaths, ...publishingValues } = values;
+  const draft =
+    bundledDocumentPaths === undefined ? undefined : await getDraft(id);
   const [updated] = await getDb()
     .update(drafts)
     .set({
-      ...values,
+      ...publishingValues,
+      ...(draft
+        ? {
+            payload: {
+              ...(draft.payload as StudioDocument),
+              bundledDocumentPaths,
+            },
+          }
+        : {}),
       userId,
       updatedAt: new Date(),
     })
@@ -111,6 +137,51 @@ export async function updateDraftPublishing(
     userId,
     action: `draft.${values.status}`,
     metadata: values,
+  });
+
+  return updated;
+}
+
+export async function completeDraftPublishing(
+  id: string,
+  userId?: string
+) {
+  const draft = await getDraft(id);
+  if (!draft) {
+    return;
+  }
+
+  const payload = {
+    ...(draft.payload as StudioDocument),
+    contentOrigin: "repository" as const,
+    baseSha: undefined,
+    previewBranch: undefined,
+    pullRequestNumber: undefined,
+    pullRequestUrl: undefined,
+    previewUrl: undefined,
+    draftStatus: "published",
+    bundledDocumentPaths: undefined,
+  };
+  const [updated] = await getDb()
+    .update(drafts)
+    .set({
+      payload,
+      baseSha: null,
+      previewBranch: null,
+      pullRequestNumber: null,
+      previewUrl: null,
+      status: "published",
+      userId,
+      updatedAt: new Date(),
+    })
+    .where(eq(drafts.id, id))
+    .returning();
+
+  await getDb().insert(auditEvents).values({
+    draftId: id,
+    userId,
+    action: "draft.published",
+    metadata: { documentPath: draft.documentPath },
   });
 
   return updated;
