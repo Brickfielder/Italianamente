@@ -85,6 +85,25 @@ export function createHomeTileForPost(post: StudioDocument): HomeTile {
   );
 }
 
+export function previewDocumentUrl(document: StudioDocument) {
+  if (!document.previewUrl) {
+    return null;
+  }
+
+  const pathname =
+    document.documentType === "home"
+      ? "/"
+      : document.documentType === "page"
+        ? `/${document.documentPath
+            .replace(/^content\/page\//, "")
+            .replace(/\.mdx$/, "")}`
+        : `/${document.documentPath
+            .replace(/^content\//, "")
+            .replace(/\.mdx$/, "")}`;
+
+  return new URL(pathname, document.previewUrl).toString();
+}
+
 export function publishingLabels(document: StudioDocument) {
   const kind =
     document.documentType === "post"

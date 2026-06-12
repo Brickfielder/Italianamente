@@ -25,6 +25,7 @@ import {
   createHomeTileForPost,
   filterStudioPosts,
   mergeStudioDocument,
+  previewDocumentUrl,
   publishingLabels,
   seedTileFromPost,
 } from "../../lib/studio/ui";
@@ -343,6 +344,7 @@ export default function StudioApp({
     [articleCategory, articleSearch, documents]
   );
   const publishing = selected ? publishingLabels(selected) : null;
+  const previewHref = selected ? previewDocumentUrl(selected) : null;
   const homeDocument = useMemo(
     () => documents.find((document) => document.documentType === "home"),
     [documents]
@@ -1556,8 +1558,8 @@ export default function StudioApp({
             <span>Controlla il risultato prima di pubblicare.</span>
           </div>
           <div className="preview-header-links">
-            {selected.previewUrl ? (
-              <a href={selected.previewUrl} target="_blank" rel="noreferrer">
+            {previewHref ? (
+              <a href={previewHref} target="_blank" rel="noreferrer">
                 Apri anteprima
               </a>
             ) : selected.pullRequestNumber ? (

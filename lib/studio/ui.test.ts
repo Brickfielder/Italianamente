@@ -6,6 +6,7 @@ import {
   createHomeTileForPost,
   filterStudioPosts,
   mergeStudioDocument,
+  previewDocumentUrl,
   publishingLabels,
   seedTileFromPost,
 } from "./ui";
@@ -52,6 +53,27 @@ describe("studio UI helpers", () => {
       postReference: "content/culture/felicita.mdx",
       buttonText: "Leggi l'articolo",
     });
+  });
+
+  it("opens an article preview at the article route", () => {
+    expect(
+      previewDocumentUrl({
+        ...post,
+        previewUrl: "https://preview.vercel.app",
+      })
+    ).toBe("https://preview.vercel.app/culture/felicita");
+  });
+
+  it("opens homepage previews at the deployment root", () => {
+    expect(
+      previewDocumentUrl({
+        documentPath: "content/page/home.mdx",
+        documentType: "home",
+        title: "Home Page",
+        body: "",
+        previewUrl: "https://preview.vercel.app",
+      })
+    ).toBe("https://preview.vercel.app/");
   });
 
   it("distinguishes publishing a new article from updating one", () => {
