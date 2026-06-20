@@ -2024,6 +2024,7 @@
   }
 
   .studio-tour {
+    width: 100%;
     border-radius: 12px 12px 10px 10px;
     margin: 0;
   }

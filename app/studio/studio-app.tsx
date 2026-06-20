@@ -56,7 +56,7 @@ const TOUR_STEPS: Array<{
   {
     title: "Crea un nuovo contenuto",
     body:
-      "Premi Nuovo contenuto nella lista a sinistra. Sul telefono apri prima Contenuti dalla barra in basso.",
+      "Premi Nuovo contenuto (clicca Nuovo contenuto) nella lista a sinistra. Sul telefono apri prima Contenuti dalla barra in basso.",
     target: "new-content",
     workspace: "content",
   },
