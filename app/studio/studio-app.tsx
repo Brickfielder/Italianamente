@@ -34,40 +34,68 @@ type SaveState = "saved" | "saving" | "dirty" | "error";
 type InsertDialog = "link" | "image" | "video" | "audio" | null;
 type PreviewMode = "article" | "card" | "mobile";
 type MobileWorkspace = "content" | "edit" | "preview";
+type TourTarget =
+  | "new-content"
+  | "details"
+  | "body"
+  | "homepage"
+  | "home-card"
+  | "preview";
 const MESSAGE_DURATION_MS = 4000;
 const LONG_PRESS_DURATION_MS = 650;
 const TOUR_STORAGE_KEY = "italianamente-studio-tour-seen";
 
-const TOUR_STEPS = [
+const TOUR_STEPS: Array<{
+  title: string;
+  body: string;
+  target: TourTarget;
+  workspace: MobileWorkspace;
+  selectHome?: boolean;
+  previewMode?: PreviewMode;
+}> = [
   {
     title: "Crea un nuovo contenuto",
     body:
       "Premi Nuovo contenuto nella lista a sinistra. Sul telefono apri prima Contenuti dalla barra in basso.",
+    target: "new-content",
+    workspace: "content",
   },
   {
     title: "Compila i dettagli",
     body:
       "Scrivi titolo, estratto e categoria. L'estratto e' importante per le card e per capire subito di cosa parla l'articolo.",
+    target: "details",
+    workspace: "edit",
   },
   {
     title: "Scrivi l'articolo",
     body:
       "Nel corpo puoi aggiungere testo, link, immagini, video e audio. Lo Studio salva automaticamente mentre lavori.",
+    target: "body",
+    workspace: "edit",
   },
   {
     title: "Apri la Homepage",
     body:
       "Un articolo pubblicato non appare da solo in prima pagina: apri Homepage nella sezione Pagine.",
+    target: "homepage",
+    workspace: "content",
   },
   {
     title: "Collega l'articolo alla prima pagina",
     body:
       "In Card homepage scegli l'articolo e premi + Aggiungi card. Questo e' il passaggio che lo rende visibile nella homepage.",
+    target: "home-card",
+    workspace: "edit",
+    selectHome: true,
   },
   {
     title: "Controlla e pubblica",
     body:
       "Usa Crea anteprima, controlla il risultato anche in Mobile, poi pubblica quando l'anteprima e' pronta.",
+    target: "preview",
+    workspace: "preview",
+    previewMode: "mobile",
   },
 ];
 
@@ -349,6 +377,8 @@ export default function StudioApp({
     useState<StudioDocument | null>(null);
   const [tourOpen, setTourOpen] = useState(false);
   const [tourStep, setTourStep] = useState(0);
+  const [activeTourTarget, setActiveTourTarget] =
+    useState<TourTarget | null>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const editorPanelRef = useRef<HTMLElement>(null);
@@ -403,6 +433,9 @@ export default function StudioApp({
         buttonText: "Leggi l'articolo",
       };
   }, [homeDocument, selected]);
+  const currentTourStep = TOUR_STEPS[tourStep];
+  const tourActive = (target: TourTarget) =>
+    activeTourTarget === target ? "true" : undefined;
 
   const updateSelected = useCallback(
     (
@@ -441,6 +474,45 @@ export default function StudioApp({
     }
     setTourOpen(true);
   }, []);
+
+  useEffect(() => {
+    if (!tourOpen) {
+      setActiveTourTarget(null);
+      return;
+    }
+
+    if (
+      currentTourStep.selectHome &&
+      selectedPath !== "content/page/home.mdx"
+    ) {
+      setSelectedPath("content/page/home.mdx");
+    }
+
+    setMobileWorkspace(currentTourStep.workspace);
+    if (currentTourStep.previewMode) {
+      setPreviewMode(currentTourStep.previewMode);
+    }
+
+    setActiveTourTarget(null);
+    const timer = window.setTimeout(() => {
+      setActiveTourTarget(currentTourStep.target);
+      const target = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          `[data-tour="${currentTourStep.target}"]`
+        )
+      ).find((element) => element.getClientRects().length > 0);
+
+      target?.scrollIntoView({
+        block: "center",
+        inline: "center",
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+      });
+    }, 90);
+
+    return () => window.clearTimeout(timer);
+  }, [currentTourStep, selectedPath, tourOpen]);
 
   const refreshPreviewStatus = useCallback(
     async (document: StudioDocument, options?: { silent?: boolean }) => {
@@ -1004,7 +1076,6 @@ export default function StudioApp({
     window.localStorage.setItem(TOUR_STORAGE_KEY, "1");
     setTourOpen(false);
   };
-  const currentTourStep = TOUR_STEPS[tourStep];
   const saveStateLabel =
     saveState === "saved"
       ? "Salvato automaticamente"
@@ -1046,6 +1117,8 @@ export default function StudioApp({
           <span className="publishing-status">{publishing?.status}</span>
           <button
             className="preview-action"
+            data-tour="preview"
+            data-tour-active={tourActive("preview")}
             disabled={busy}
             onClick={createPreview}
           >
@@ -1103,6 +1176,8 @@ export default function StudioApp({
           </button>
           <button
             type="button"
+            data-tour="preview"
+            data-tour-active={tourActive("preview")}
             disabled={busy}
             onClick={createPreview}
           >
@@ -1122,6 +1197,8 @@ export default function StudioApp({
       <aside className="studio-sidebar">
         <button
           className="new-content-button"
+          data-tour="new-content"
+          data-tour-active={tourActive("new-content")}
           onClick={createPost}
         >
           <span aria-hidden="true">+</span>
@@ -1142,6 +1219,8 @@ export default function StudioApp({
           <nav className="sidebar-list" aria-label="Pagine">
             <button
               className={selected.documentType === "home" ? "active" : ""}
+              data-tour="homepage"
+              data-tour-active={tourActive("homepage")}
               onClick={() => selectDocument("content/page/home.mdx")}
             >
               <span>Homepage</span>
@@ -1273,7 +1352,11 @@ export default function StudioApp({
       </aside>
 
       <section className="studio-editor" ref={editorPanelRef}>
-        <section className="editor-section">
+        <section
+          className="editor-section"
+          data-tour="details"
+          data-tour-active={tourActive("details")}
+        >
           <header className="editor-section-heading">
             <span>1</span>
             <div>
@@ -1470,7 +1553,11 @@ export default function StudioApp({
         )}
 
         {selected.documentType === "home" ? (
-          <section className="editor-section editor-section--body">
+          <section
+            className="editor-section editor-section--body"
+            data-tour="home-card"
+            data-tour-active={tourActive("home-card")}
+          >
             <header className="editor-section-heading">
               <span>2</span>
               <div>
@@ -1485,7 +1572,11 @@ export default function StudioApp({
             />
           </section>
         ) : (
-          <section className="editor-section editor-section--body">
+          <section
+            className="editor-section editor-section--body"
+            data-tour="body"
+            data-tour-active={tourActive("body")}
+          >
             <header className="editor-section-heading">
               <span>{selected.documentType === "post" ? "3" : "2"}</span>
               <div>
@@ -1862,7 +1953,10 @@ export default function StudioApp({
       )}
 
       {tourOpen && (
-        <div className="studio-dialog-backdrop" role="presentation">
+        <div
+          className="studio-dialog-backdrop studio-tour-backdrop"
+          role="presentation"
+        >
           <section
             className="studio-dialog studio-tour"
             role="dialog"
