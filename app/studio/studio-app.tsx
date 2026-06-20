@@ -36,6 +36,40 @@ type PreviewMode = "article" | "card" | "mobile";
 type MobileWorkspace = "content" | "edit" | "preview";
 const MESSAGE_DURATION_MS = 4000;
 const LONG_PRESS_DURATION_MS = 650;
+const TOUR_STORAGE_KEY = "italianamente-studio-tour-seen";
+
+const TOUR_STEPS = [
+  {
+    title: "Crea un nuovo contenuto",
+    body:
+      "Premi Nuovo contenuto nella lista a sinistra. Sul telefono apri prima Contenuti dalla barra in basso.",
+  },
+  {
+    title: "Compila i dettagli",
+    body:
+      "Scrivi titolo, estratto e categoria. L'estratto e' importante per le card e per capire subito di cosa parla l'articolo.",
+  },
+  {
+    title: "Scrivi l'articolo",
+    body:
+      "Nel corpo puoi aggiungere testo, link, immagini, video e audio. Lo Studio salva automaticamente mentre lavori.",
+  },
+  {
+    title: "Apri la Homepage",
+    body:
+      "Un articolo pubblicato non appare da solo in prima pagina: apri Homepage nella sezione Pagine.",
+  },
+  {
+    title: "Collega l'articolo alla prima pagina",
+    body:
+      "In Card homepage scegli l'articolo e premi + Aggiungi card. Questo e' il passaggio che lo rende visibile nella homepage.",
+  },
+  {
+    title: "Controlla e pubblica",
+    body:
+      "Usa Crea anteprima, controlla il risultato anche in Mobile, poi pubblica quando l'anteprima e' pronta.",
+  },
+];
 
 const CATEGORIES = [
   "Grammatica",
@@ -313,6 +347,8 @@ export default function StudioApp({
     useState<MobileWorkspace>("content");
   const [deleteCandidate, setDeleteCandidate] =
     useState<StudioDocument | null>(null);
+  const [tourOpen, setTourOpen] = useState(false);
+  const [tourStep, setTourStep] = useState(0);
   const editorRef = useRef<HTMLDivElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const editorPanelRef = useRef<HTMLElement>(null);
@@ -397,6 +433,13 @@ export default function StudioApp({
       setMessage("");
       messageTimer.current = undefined;
     }, MESSAGE_DURATION_MS);
+  }, []);
+
+  useEffect(() => {
+    if (window.localStorage.getItem(TOUR_STORAGE_KEY)) {
+      return;
+    }
+    setTourOpen(true);
   }, []);
 
   const refreshPreviewStatus = useCallback(
@@ -953,6 +996,15 @@ export default function StudioApp({
     setSelectedPath(documentPath);
     setMobileWorkspace("edit");
   };
+  const openTour = () => {
+    setTourStep(0);
+    setTourOpen(true);
+  };
+  const closeTour = () => {
+    window.localStorage.setItem(TOUR_STORAGE_KEY, "1");
+    setTourOpen(false);
+  };
+  const currentTourStep = TOUR_STEPS[tourStep];
   const saveStateLabel =
     saveState === "saved"
       ? "Salvato automaticamente"
@@ -984,6 +1036,13 @@ export default function StudioApp({
               {mobileSaveStateLabel}
             </span>
           </span>
+          <button
+            type="button"
+            className="tour-action"
+            onClick={openTour}
+          >
+            Tour
+          </button>
           <span className="publishing-status">{publishing?.status}</span>
           <button
             className="preview-action"
@@ -1036,6 +1095,12 @@ export default function StudioApp({
           <strong>{selected.title}</strong>
         </div>
         <div className="mobile-document-actions">
+          <button
+            type="button"
+            onClick={openTour}
+          >
+            Tour
+          </button>
           <button
             type="button"
             disabled={busy}
@@ -1790,6 +1855,59 @@ export default function StudioApp({
                 onClick={() => void deleteArticle()}
               >
                 {busy ? "Eliminazione..." : "Elimina articolo"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {tourOpen && (
+        <div className="studio-dialog-backdrop" role="presentation">
+          <section
+            className="studio-dialog studio-tour"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="studio-tour-title"
+          >
+            <p className="studio-tour__eyebrow">
+              Passo {tourStep + 1} di {TOUR_STEPS.length}
+            </p>
+            <h2 id="studio-tour-title">{currentTourStep.title}</h2>
+            <p>{currentTourStep.body}</p>
+            <div className="studio-tour__progress" aria-hidden="true">
+              {TOUR_STEPS.map((step, index) => (
+                <span
+                  key={step.title}
+                  className={index === tourStep ? "active" : ""}
+                />
+              ))}
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={closeTour}
+              >
+                Salta
+              </button>
+              <button
+                type="button"
+                disabled={tourStep === 0}
+                onClick={() => setTourStep((step) => Math.max(0, step - 1))}
+              >
+                Indietro
+              </button>
+              <button
+                type="button"
+                className="primary"
+                onClick={() => {
+                  if (tourStep === TOUR_STEPS.length - 1) {
+                    closeTour();
+                    return;
+                  }
+                  setTourStep((step) => step + 1);
+                }}
+              >
+                {tourStep === TOUR_STEPS.length - 1 ? "Fine" : "Avanti"}
               </button>
             </div>
           </section>
