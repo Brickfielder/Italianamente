@@ -2029,6 +2029,10 @@
     margin: 0;
   }
 
+  .studio-tour-backdrop .studio-tour {
+    margin: 0;
+  }
+
   .studio-dialog input,
   .studio-dialog select,
   .studio-dialog button {
