@@ -6,6 +6,12 @@ import { requireStudioUser } from "../../../../lib/studio/session";
 export async function POST(request: Request) {
   try {
     await requireStudioUser();
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error(
+        "Upload file non configurato: manca BLOB_READ_WRITE_TOKEN su Vercel."
+      );
+    }
+
     const body = (await request.json()) as HandleUploadBody;
     const result = await handleUpload({
       body,

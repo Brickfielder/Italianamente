@@ -1847,11 +1847,11 @@ export default function StudioApp({
             </h2>
             <label htmlFor="studio-insert-url">
               {insertDialog === "video"
-                ? "URL YouTube, Vimeo, Spotify o SoundCloud"
+                ? "URL YouTube, Vimeo, Spotify o SoundCloud, oppure carica un file sotto"
                 : insertDialog === "image"
-                ? "URL dell'immagine"
+                ? "URL dell'immagine, oppure carica un file sotto"
                 : insertDialog === "audio"
-                ? "URL diretto del file audio"
+                ? "URL diretto del file audio, oppure carica un file sotto"
                 : "Indirizzo del link"}
             </label>
             <input
@@ -1860,7 +1860,7 @@ export default function StudioApp({
               value={insertUrl}
               onChange={(event) => setInsertUrl(event.target.value)}
               autoFocus
-              required
+              required={insertDialog === "link"}
               placeholder="https://..."
             />
             {insertDialog !== "link" && (
@@ -1906,7 +1906,11 @@ export default function StudioApp({
               >
                 Annulla
               </button>
-              <button type="submit" className="primary">
+              <button
+                type="submit"
+                className="primary"
+                disabled={!insertUrl.trim()}
+              >
                 Inserisci
               </button>
             </div>
