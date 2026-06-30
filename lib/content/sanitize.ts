@@ -27,6 +27,12 @@ const removeEmptyEditorMarkup = (html: string) => {
   return cleaned.trim();
 };
 
+const escapeMdxText = (text: string) =>
+  text
+    .replaceAll("`", "&#96;")
+    .replaceAll("{", "&#123;")
+    .replaceAll("}", "&#125;");
+
 export function sanitizeEditorHtml(input: string) {
   const sanitized = sanitizeHtml(input, {
     allowedTags: [
@@ -118,6 +124,7 @@ export function sanitizeEditorHtml(input: string) {
       audio: ["http", "https"],
       source: ["http", "https"],
     },
+    textFilter: escapeMdxText,
     transformTags: {
       a: (_tagName, attribs) => {
         const external = /^https?:\/\//i.test(attribs.href ?? "");

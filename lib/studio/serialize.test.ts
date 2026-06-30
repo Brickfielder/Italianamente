@@ -1,4 +1,5 @@
 import matter from "gray-matter";
+import { compileMDX } from "next-mdx-remote/rsc";
 import { describe, expect, it } from "vitest";
 
 import { sanitizeEditorHtml } from "../content/sanitize";
@@ -139,6 +140,19 @@ describe("sanitizeEditorHtml", () => {
     expect(result).not.toContain("<p>\n");
     expect(result).not.toContain("<span></span>");
     expect(result).not.toContain("<p><br /></p>");
+  });
+
+  it("escapes MDX syntax in pasted HTML text", async () => {
+    const result = sanitizeEditorHtml(
+      '<p><span>Il motto e` “Il piu` bel fior ne coglie” {test}</span></p><p><span>Dante.</span></p>'
+    );
+
+    expect(result).toContain("e&#96;");
+    expect(result).toContain("piu&#96;");
+    expect(result).toContain("&#123;test&#125;");
+    await expect(
+      compileMDX({ source: result, options: { parseFrontmatter: false } })
+    ).resolves.toBeTruthy();
   });
 });
 
