@@ -127,6 +127,19 @@ describe("sanitizeEditorHtml", () => {
     expect(result).toContain("https://www.youtube.com/embed/abc");
     expect(result).not.toContain("studio-video-placeholder");
   });
+
+  it("removes empty editor markup that breaks MDX but keeps media", () => {
+    const result = sanitizeEditorHtml(
+      '<p><span>Testo</span></p><p>\n\n\n</p><p><span></span></p><p><span><img src="https://example.public.blob.vercel-storage.com/foto.jpg" alt="" /></span></p><p><br /></p><p>Fine</p>'
+    );
+
+    expect(result).toContain("<p><span>Testo</span></p>");
+    expect(result).toContain("foto.jpg");
+    expect(result).toContain("<p>Fine</p>");
+    expect(result).not.toContain("<p>\n");
+    expect(result).not.toContain("<span></span>");
+    expect(result).not.toContain("<p><br /></p>");
+  });
 });
 
 describe("serializeStudioDocument", () => {

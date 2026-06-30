@@ -8,8 +8,27 @@ const EMBED_HOSTS = new Set([
   "w.soundcloud.com",
 ]);
 
+const emptyInlineMarkup =
+  /<(span|font)\b(?:\s+[^>]*)?>\s*(?:&nbsp;|\u00a0|<br\s*\/?>|\s)*<\/\1>/gi;
+const emptyBlockMarkup =
+  /<(p|div)\b(?:\s+[^>]*)?>\s*(?:&nbsp;|\u00a0|<br\s*\/?>|\s)*<\/\1>/gi;
+
+const removeEmptyEditorMarkup = (html: string) => {
+  let cleaned = html;
+  let previous = "";
+
+  while (cleaned !== previous) {
+    previous = cleaned;
+    cleaned = cleaned
+      .replace(emptyInlineMarkup, "")
+      .replace(emptyBlockMarkup, "");
+  }
+
+  return cleaned.trim();
+};
+
 export function sanitizeEditorHtml(input: string) {
-  return sanitizeHtml(input, {
+  const sanitized = sanitizeHtml(input, {
     allowedTags: [
       "p",
       "br",
@@ -185,4 +204,6 @@ export function sanitizeEditorHtml(input: string) {
       },
     },
   });
+
+  return removeEmptyEditorMarkup(sanitized);
 }
