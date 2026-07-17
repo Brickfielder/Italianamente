@@ -83,8 +83,8 @@ export function sanitizeEditorHtml(input: string) {
       audio: ["src", "controls", "preload"],
       video: ["src", "controls", "preload", "poster", "width", "height"],
       source: ["src", "type"],
-      th: ["colspan", "rowspan", "scope"],
-      td: ["colspan", "rowspan"],
+      th: ["colspan", "rowspan", "scope", "style"],
+      td: ["colspan", "rowspan", "style"],
       figure: ["class"],
       p: ["style"],
       li: ["style"],
@@ -102,6 +102,12 @@ export function sanitizeEditorHtml(input: string) {
       },
       blockquote: {
         "text-align": [/^(left|justify)$/],
+      },
+      th: {
+        width: [/^(?:100|[1-9]?\d)%$/],
+      },
+      td: {
+        width: [/^(?:100|[1-9]?\d)%$/],
       },
       div: {
         "text-align": [/^(left|justify)$/],

@@ -389,6 +389,7 @@ export default function StudioApp({
   const longPressOrigin = useRef<{ x: number; y: number } | null>(null);
   const suppressArticleClick = useRef<string | null>(null);
   const selectionRef = useRef<Range | null>(null);
+  const tableCellRef = useRef<HTMLTableCellElement | null>(null);
 
   const selected = useMemo(
     () => documents.find((document) => document.documentPath === selectedPath),
@@ -690,6 +691,73 @@ export default function StudioApp({
     }
     runCommand("insertHTML", html);
   };
+
+  const selectedTableCell = () => {
+    const editor = editorRef.current;
+    if (tableCellRef.current && editor?.contains(tableCellRef.current)) {
+      return tableCellRef.current;
+    }
+    const node = selectionRef.current?.startContainer;
+    const element =
+      node?.nodeType === Node.ELEMENT_NODE
+        ? (node as Element)
+        : node?.parentElement;
+    const cell = element?.closest("th, td") as HTMLTableCellElement | null;
+    return cell && editor?.contains(cell) ? cell : null;
+  };
+
+  const editSelectedTable = (
+    edit: (cell: HTMLTableCellElement) => void
+  ) => {
+    const cell = selectedTableCell();
+    if (!cell) {
+      showMessage("Seleziona prima una cella della tabella.");
+      return;
+    }
+    edit(cell);
+    updateSelected({ body: editorRef.current?.innerHTML ?? "" });
+  };
+
+  const addTableRow = () =>
+    editSelectedTable((cell) => {
+      const row = cell.parentElement as HTMLTableRowElement;
+      const newRow = document.createElement("tr");
+      for (let index = 0; index < row.cells.length; index += 1) {
+        const newCell = document.createElement("td");
+        newCell.textContent = "Testo";
+        newRow.append(newCell);
+      }
+      row.after(newRow);
+    });
+
+  const addTableColumn = () =>
+    editSelectedTable((cell) => {
+      const columnIndex = cell.cellIndex + 1;
+      const table = cell.closest("table")!;
+      for (const row of Array.from(table.rows)) {
+        const newCell = document.createElement(
+          row.cells[0]?.tagName === "TH" ? "th" : "td"
+        );
+        newCell.textContent =
+          newCell.tagName === "TH" ? "Intestazione" : "Testo";
+        row.insertBefore(newCell, row.cells[columnIndex] ?? null);
+      }
+    });
+
+  const setTableColumnWidth = (value: string) =>
+    editSelectedTable((cell) => {
+      const width = value === "auto" ? "" : `${value}%`;
+      const columnIndex = cell.cellIndex;
+      const table = cell.closest("table")!;
+      for (const row of Array.from(table.rows)) {
+        const columnCell = row.cells[columnIndex];
+        if (columnCell) {
+          width
+            ? columnCell.style.setProperty("width", width)
+            : columnCell.style.removeProperty("width");
+        }
+      }
+    });
 
   const rememberSelection = () => {
     const selection = window.getSelection();
@@ -1699,6 +1767,42 @@ export default function StudioApp({
                 >
                   <StudioIcon name="table" />
                 </button>
+                <button
+                  className="toolbar-button toolbar-button--table"
+                  title="Aggiungi una riga sotto la cella selezionata"
+                  onPointerDown={rememberSelection}
+                  onClick={addTableRow}
+                >
+                  Riga +
+                </button>
+                <button
+                  className="toolbar-button toolbar-button--table"
+                  title="Aggiungi una colonna a destra della cella selezionata"
+                  onPointerDown={rememberSelection}
+                  onClick={addTableColumn}
+                >
+                  Colonna +
+                </button>
+                <select
+                  className="toolbar-table-width"
+                  defaultValue=""
+                  aria-label="Larghezza della colonna selezionata"
+                  title="Modifica la larghezza della colonna selezionata"
+                  onPointerDown={rememberSelection}
+                  onChange={(event) => {
+                    setTableColumnWidth(event.target.value);
+                    event.target.value = "";
+                  }}
+                >
+                  <option value="" disabled>Larghezza</option>
+                  <option value="20">20%</option>
+                  <option value="25">25%</option>
+                  <option value="33">33%</option>
+                  <option value="50">50%</option>
+                  <option value="67">67%</option>
+                  <option value="75">75%</option>
+                  <option value="auto">Automatica</option>
+                </select>
                 <button className="toolbar-button" title="Inserisci divisore" aria-label="Inserisci divisore" onClick={() => insertHtml("<hr><p></p>")}><StudioIcon name="divider" /></button>
               </div>
 
@@ -1715,6 +1819,11 @@ export default function StudioApp({
               className="visual-editor post-content"
               contentEditable
               suppressContentEditableWarning
+              onPointerDown={(event) => {
+                tableCellRef.current = (event.target as Element).closest?.(
+                  "th, td"
+                ) as HTMLTableCellElement | null;
+              }}
               onInput={() =>
                 updateSelected({ body: editorRef.current?.innerHTML ?? "" })
               }
