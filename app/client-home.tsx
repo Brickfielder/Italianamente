@@ -14,6 +14,27 @@ export default function ClientHomePage({ page }: { page: PageDocument }) {
 
   return (
     <main className="container">
+      <section className="home-mission" aria-labelledby="home-mission-title">
+        <h2 id="home-mission-title">Impara la lingua, vivi la cultura</h2>
+        <p>
+          Un luogo dove le regole incontrano le storie, la cultura e la vita
+          quotidiana.
+        </p>
+        <nav className="home-pathways" aria-label="Esplora Italianamente">
+          <Link href="/grammar">
+            <strong>Lingua</strong>
+            <span>Parole e grammatica nel loro contesto</span>
+          </Link>
+          <Link href="/culture">
+            <strong>Cultura</strong>
+            <span>Modi di dire e Barzellette</span>
+          </Link>
+          <Link href="/multimedia">
+            <strong>Vita italiana</strong>
+            <span>Curiosità per capire davvero l’Italia</span>
+          </Link>
+        </nav>
+      </section>
       {lastUpdatedLabel && (
         <p className="home-metadata">
           Ultimo aggiornamento:{" "}

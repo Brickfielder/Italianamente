@@ -150,6 +150,69 @@ nav.main-nav a:hover { color: var(--primary-color); border-bottom: 2px solid var
   color: var(--primary-color);
 }
 
+body:has(.home-mission) .main-nav {
+  display: none;
+}
+
+body:has(.home-mission) header {
+  padding: 10px 0 0;
+}
+
+body:has(.home-mission) .brand-area {
+  padding: 10px 0;
+}
+
+.home-mission {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 0 0 20px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.home-mission h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+
+.home-mission > p {
+  font-size: 1.05rem;
+  margin-bottom: 20px;
+}
+
+.home-pathways {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.home-pathways a {
+  display: grid;
+  gap: 4px;
+  padding: 0 24px;
+}
+
+.home-pathways a + a {
+  border-left: 2px solid var(--accent-color);
+}
+
+.home-pathways strong {
+  font-family: 'Playfair Display', serif;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+}
+
+.home-pathways span {
+  font-size: 0.95rem;
+}
+
+.home-pathways a:hover strong,
+.home-pathways a:focus-visible strong {
+  text-decoration: underline;
+  text-decoration-color: var(--accent-color);
+  text-underline-offset: 6px;
+}
+
 /* Questa regola serve per assicurarsi che il link non interrompa la griglia */
 .container > a {
   display: contents;
@@ -699,6 +762,28 @@ footer {
   .home-metadata {
     font-size: 0.95rem;
     padding-bottom: 4px;
+  }
+
+  .home-mission {
+    padding: 4px 0 26px;
+  }
+
+  .home-mission > p {
+    margin: 0 auto 24px;
+    max-width: 34rem;
+  }
+
+  .home-pathways {
+    grid-template-columns: 1fr;
+  }
+
+  .home-pathways a {
+    padding: 14px 0;
+  }
+
+  .home-pathways a + a {
+    border-left: 0;
+    border-top: 1px solid var(--accent-color);
   }
 
   .posts-page {
