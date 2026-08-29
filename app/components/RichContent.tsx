@@ -74,13 +74,16 @@ const styledTags = {
 };
 
 export const prepareMdxSource = (source: string) =>
-  Object.entries(styledTags).reduce(
-    (prepared, [tag, component]) =>
-      prepared
-        .replace(new RegExp(`<${tag}(?=[\\s>])`, "g"), `<${component}`)
-        .replace(new RegExp(`</${tag}>`, "g"), `</${component}>`),
-    source
-  );
+  Object.entries(styledTags)
+    .reduce(
+      (prepared, [tag, component]) =>
+        prepared
+          .replace(new RegExp(`<${tag}(?=[\\s>])`, "g"), `<${component}`)
+          .replace(new RegExp(`</${tag}>`, "g"), `</${component}>`),
+      source
+    )
+    .replace(/<\/MdxParagraph>\s*<table/g, "</MdxParagraph>\n\n<table")
+    .replace(/<\/table>\s*<MdxParagraph/g, "</table>\n\n<MdxParagraph");
 
 const ExternalLink = ({
   href,

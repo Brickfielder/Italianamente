@@ -2,6 +2,7 @@ import matter from "gray-matter";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { describe, expect, it } from "vitest";
 
+import { prepareMdxSource } from "../../app/components/RichContent";
 import { sanitizeEditorHtml } from "../content/sanitize";
 import {
   editorHtmlToPublishedHtml,
@@ -117,6 +118,17 @@ describe("sanitizeEditorHtml", () => {
     expect(result).toContain("text-align:justify");
     expect(result).toContain("text-align:left");
     expect(result).not.toContain("position");
+  });
+
+  it("compiles tables placed directly after rich-text paragraphs", async () => {
+    const source = prepareMdxSource(
+      '<p><span>Introduzione</span></p><table><tbody><tr><td><p><span style="color:#060606">Contenuto</span></p></td></tr></tbody></table><p><span>Conclusione</span></p>'
+    );
+
+    expect(source).toContain("</MdxParagraph>\n\n<table");
+    await expect(
+      compileMDX({ source, options: { parseFrontmatter: false } })
+    ).resolves.toBeTruthy();
   });
 
   it("converts editor video placeholders into published iframes", () => {
