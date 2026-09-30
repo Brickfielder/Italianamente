@@ -108,13 +108,9 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 .browse-all { display: inline-block; margin-top: 35px; padding: 12px 22px; border: 1px solid #be9e84; border-radius: 100px; font-size: 13px; font-weight: 600; }
 .browse-all:hover { background: var(--card-color); }
 
-/* Questa regola serve per assicurarsi che il link non interrompa la griglia */
-.container > a {
-  display: contents;
-}
-
 .container > .tile-link {
-  display: contents;
+  display: block;
+  min-width: 0;
 }
 
 .container a {
