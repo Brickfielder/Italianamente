@@ -2,6 +2,24 @@ import Link from "next/link";
 
 import type { PageDocument } from "../lib/content/types";
 
+// Tabler icons; licence included in public/design/categories.
+const categoryArt: Record<string, { icon: string; color: string }> = {
+  curiosita: { icon: "bulb", color: "#e5c483" },
+  grammatica: { icon: "book-2", color: "#dc9d82" },
+  cultura: { icon: "building-bank", color: "#b7b994" },
+  attualita: { icon: "news", color: "#dc9d82" },
+  modo: { icon: "messages", color: "#b7b994" },
+  ricetta: { icon: "tools-kitchen-2", color: "#e5c483" },
+  film: { icon: "movie", color: "#b7b994" },
+  barzelletta: { icon: "mood-smile", color: "#dc9d82" },
+  prossima: { icon: "map-pin", color: "#e5c483" },
+};
+
+export function getCategoryArt(category = "") {
+  const key = category.normalize("NFD").replace(/[\u0300-\u036f'`’]/g, "").trim().toLowerCase().split(/\s+/)[0];
+  return categoryArt[key] ?? categoryArt.curiosita;
+}
+
 export default function ClientHomePage({ page }: { page: PageDocument }) {
   const lastUpdatedSource = page.tilesLastUpdated ?? null;
   const lastUpdatedLabel = lastUpdatedSource
@@ -53,13 +71,14 @@ export default function ClientHomePage({ page }: { page: PageDocument }) {
       {page.tiles?.map((tile, index) => {
         const referencedPost = tile.referencedPost;
         const displayCategory = tile.category || referencedPost?.category;
+        const art = getCategoryArt(displayCategory);
         const displayTitle = tile.title || referencedPost?.title;
         const slug = referencedPost?._sys.relativePath.replace(/\.mdx$/, "");
         const postHref = slug ? `/${slug}` : null;
         const tileContent = (
           <article className="home-card">
-            <div className="home-card-art" aria-hidden="true">
-              <img src={`/design/${["letters", "sun", "question"][index % 3]}.png`} alt="" />
+            <div className="home-card-art" style={{ backgroundColor: art.color }} aria-hidden="true">
+              <img src={`/design/categories/${art.icon}.svg`} alt="" width="100" height="100" />
             </div>
             <div className="home-card-body">
             <div>
