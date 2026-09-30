@@ -13,46 +13,55 @@ export default function ClientHomePage({ page }: { page: PageDocument }) {
     : null;
 
   return (
-    <main className="container">
+    <main className="home-page">
       <section className="home-mission" aria-labelledby="home-mission-title">
-        <h2 id="home-mission-title">Impara la lingua, vivi la cultura</h2>
+        <div className="eyebrow">Benvenuti a ItalianaMente</div>
+        <h1 id="home-mission-title">Impara la lingua,<br /><em>vivi la cultura.</em></h1>
         <p>
           Un luogo dove le regole incontrano le storie, la cultura e la vita
           quotidiana.
         </p>
+        <div className="hero-decoration">
+          <img src="/design/flower.png" alt="" width="69" height="89" />
+          <a className="explore-button" href="#articoli">Comincia a esplorare ↗</a>
+          <img src="/design/flower.png" alt="" width="69" height="89" />
+        </div>
+      </section>
         <nav className="home-pathways" aria-label="Esplora Italianamente">
           <Link href="/grammar">
             <strong>Lingua</strong>
-            <span>Parole e grammatica nel loro contesto</span>
+            <span>Parole e grammatica →</span>
           </Link>
           <Link href="/culture">
             <strong>Cultura</strong>
-            <span>Modi di dire e Barzellette</span>
+            <span>Modi di dire e barzellette →</span>
           </Link>
           <Link href="/multimedia">
             <strong>Vita italiana</strong>
-            <span>Curiosità per capire davvero l’Italia</span>
+            <span>Curiosità sull’Italia →</span>
           </Link>
         </nav>
-      </section>
+      <section className="home-latest" id="articoli" aria-labelledby="articles-title">
       {lastUpdatedLabel && (
         <p className="home-metadata">
-          Ultimo aggiornamento:{" "}
+          Ultimo aggiornamento · {" "}
           <time dateTime={lastUpdatedSource ?? undefined}>{lastUpdatedLabel}</time>
         </p>
       )}
+      <h2 id="articles-title">Da leggere con calma</h2>
+      <div className="home-articles">
       {page.tiles?.map((tile, index) => {
         const referencedPost = tile.referencedPost;
         const displayCategory = tile.category || referencedPost?.category;
         const displayTitle = tile.title || referencedPost?.title;
         const slug = referencedPost?._sys.relativePath.replace(/\.mdx$/, "");
         const postHref = slug ? `/${slug}` : null;
-        const tileClasses = `tile ${
-          tile.style === "idiom" ? "idiom" : ""
-        } ${tile.style === "joke" ? "joke" : ""}`;
-
         const tileContent = (
-          <article className={tileClasses}>
+          <article className="home-card">
+            <div className="home-card-art" aria-hidden="true">
+              <img src={`/design/${["letters", "sun", "question"][index % 3]}.png`} alt="" />
+            </div>
+            <div className="home-card-body">
             <div>
               {displayCategory && (
                 <span className="tile-category">{displayCategory}</span>
@@ -60,7 +69,7 @@ export default function ClientHomePage({ page }: { page: PageDocument }) {
               {displayTitle && <h3>{displayTitle}</h3>}
               <div className="tile-content">
                 {tile.description && (
-                  <p style={{ marginBottom: "10px" }}>{tile.description}</p>
+                  <p>{tile.description}</p>
                 )}
                 {tile.bulletPoints && tile.bulletPoints.length > 0 && (
                   <ul>
@@ -71,8 +80,9 @@ export default function ClientHomePage({ page }: { page: PageDocument }) {
                 )}
               </div>
             </div>
-            <div className="read-more home-card-cta">
+            <div className="read-more">
               {tile.buttonText || (postHref ? "Leggi l'articolo" : "")}
+            </div>
             </div>
           </article>
         );
@@ -87,6 +97,9 @@ export default function ClientHomePage({ page }: { page: PageDocument }) {
           </div>
         );
       })}
+      </div>
+      <Link href="/posts" className="browse-all">Esplora tutti gli articoli →</Link>
+      </section>
     </main>
   );
 }
