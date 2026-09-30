@@ -40,9 +40,7 @@ export default function ClientHomePage({ page }: { page: PageDocument }) {
           quotidiana.
         </p>
         <div className="hero-decoration">
-          <img src="/design/flower.png" alt="" width="69" height="89" />
           <a className="explore-button" href="#articoli">Comincia a esplorare ↗</a>
-          <img src="/design/flower.png" alt="" width="69" height="89" />
         </div>
       </section>
         <nav className="home-pathways" aria-label="Esplora Italianamente">

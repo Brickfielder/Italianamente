@@ -80,8 +80,7 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 }
 .home-mission h1 em { color: #b25c4d; }
 .home-mission > p { font-size: 17px; max-width: 610px; line-height: 1.7; margin: auto; }
-.hero-decoration { display: flex; justify-content: space-between; align-items: center; max-width: 760px; margin: 32px auto 0; }
-.hero-decoration img { width: 69px; height: 89px; object-fit: contain; }
+.hero-decoration { display: flex; justify-content: center; align-items: center; min-height: 89px; margin: 32px auto 0; }
 .explore-button { padding: 15px 23px; border-radius: 4px; background: var(--text-color); color: #fff8ec; font-size: 13px; font-weight: 700; }
 .explore-button:hover { background: var(--primary-color); }
 .home-pathways { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 40px 0 70px; }
@@ -567,7 +566,7 @@ footer {
   .main-nav ul { gap: 18px; }
   .home-mission { padding: 45px 0 38px; }
   .home-mission h1 { font-size: clamp(40px, 8.5vw, 61px); }
-  .hero-decoration img { width: 36px; height: 46px; }
+  .hero-decoration { min-height: 46px; }
   .home-pathways, .home-articles { grid-template-columns: 1fr; }
   .home-card-art { height: 140px; }
   .home-card-body { height: calc(100% - 140px); min-height: 0; }
