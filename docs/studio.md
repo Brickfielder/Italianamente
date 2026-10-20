@@ -24,6 +24,12 @@ Studio is the private editor at `/studio`. Published content remains in
 - `Crea anteprima` writes the sanitized MDX to a `studio/*` branch and opens
   or updates a pull request.
 - Vercel creates the branch preview through its normal Git integration.
+- `Apri anteprima` checks the editor's Studio session and opens the matching
+  deployment with a one-hour Vercel share link. Editors do not need a Vercel
+  account. Anyone with the link can view that deployment until the link expires;
+  opening it again from Studio requests a fresh link. `VERCEL_TOKEN` must allow
+  deployment lookup and share-link management. Vercel account share-link limits
+  still apply. The token and share links are not stored in draft documents.
 - `Pubblica` checks that `main` has not moved, then squash-merges the PR.
 - Archived posts remain in Git but are omitted from public pages.
 
