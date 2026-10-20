@@ -17,18 +17,20 @@ export default function RootLayout({
   return (
     <html lang="it">
       <body>
-        <header>
-          <div className="top-bar">
-            <Link href={ABOUT_PAGE_HREF}>About</Link>
-            <a href="mailto:tiziana.mazzotta25@gmail.com">Contact</a>
+        <a className="skip-link" href="#main-content">Vai al contenuto</a>
+        <header className="site-header">
+          <div className="header-top">
+            <Link href="/" className="brand-area" aria-label="ItalianaMente — Home">
+              <span className="logo">ItalianaMente</span>
+              <span className="subtitle">Impara l’italiano con Tiziana</span>
+            </Link>
+            <nav className="top-bar" aria-label="Informazioni">
+              <Link href={ABOUT_PAGE_HREF}>Chi sono</Link>
+              <a href="mailto:tiziana.mazzotta25@gmail.com">Contatti</a>
+            </nav>
           </div>
 
-          <div className="brand-area">
-            <h1 className="logo">ITALIANAMENTE</h1>
-            <p className="subtitle">{"Impara l'italiano con Tiziana"}</p>
-          </div>
-
-          <nav className="main-nav">
+          <nav className="main-nav" aria-label="Navigazione principale">
             <ul>
               <li><a href="/">Home</a></li>
               <li><a href="/grammar">Grammatica</a></li>
@@ -38,10 +40,10 @@ export default function RootLayout({
           </nav>
         </header>
 
-        {children}
+        <div id="main-content">{children}</div>
 
         <footer>
-          &copy; 2026 ItalianaMente - Corso di Italiano con Tiziana
+          &copy; 2026 ItalianaMente · Corso di italiano con Tiziana
         </footer>
 
         <Script
