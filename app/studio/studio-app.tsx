@@ -25,7 +25,6 @@ import {
   createHomeTileForPost,
   filterStudioPosts,
   mergeStudioDocument,
-  previewDocumentUrl,
   publishingLabels,
   seedTileFromPost,
 } from "../../lib/studio/ui";
@@ -411,7 +410,9 @@ export default function StudioApp({
     [articleCategory, articleSearch, documents]
   );
   const publishing = selected ? publishingLabels(selected) : null;
-  const previewHref = selected ? previewDocumentUrl(selected) : null;
+  const previewHref = selected?.id && selected.previewUrl
+    ? `/api/studio/preview-access?id=${encodeURIComponent(selected.id)}`
+    : null;
   const homeDocument = useMemo(
     () => documents.find((document) => document.documentType === "home"),
     [documents]
@@ -1840,7 +1841,12 @@ export default function StudioApp({
           </div>
           <div className="preview-header-links">
             {previewHref ? (
-              <a href={previewHref} target="_blank" rel="noreferrer">
+              <a
+                href={previewHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Apri in una nuova scheda. Il link è valido per un'ora."
+              >
                 Apri anteprima
               </a>
             ) : selected.pullRequestNumber ? (

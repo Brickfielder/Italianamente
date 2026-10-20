@@ -4,10 +4,12 @@ import matter from "gray-matter";
 
 import { serializeStudioDocument } from "./serialize";
 import type { StudioDocument } from "./types";
+import { previewDocumentUrl } from "./ui";
 
 type DeploymentMeta = Record<string, string | undefined>;
 
 type VercelDeployment = {
+  uid?: string;
   createdAt?: number;
   meta?: DeploymentMeta;
   readyState?: string;
@@ -17,6 +19,7 @@ type VercelDeployment = {
 type PreviewLookupResult = {
   ready: boolean;
   url: string | null;
+  deploymentId?: string;
 };
 
 const repository = () => {
@@ -138,7 +141,11 @@ export const selectPreviewDeployment = (
   }
 
   return deployment.readyState === "READY"
-    ? { ready: true, url: `https://${deployment.url}` }
+    ? {
+        ready: true,
+        url: `https://${deployment.url}`,
+        ...(deployment.uid ? { deploymentId: deployment.uid } : {}),
+      }
     : { ready: false, url: null };
 };
 
@@ -181,6 +188,59 @@ export const getPreviewUrl = async (
 
 export const hasPreviewLookup = () =>
   Boolean(process.env.VERCEL_TOKEN && process.env.VERCEL_PROJECT_ID);
+
+export async function createPreviewShareUrl(
+  deploymentId: string,
+  document: StudioDocument
+) {
+  const previewUrl = previewDocumentUrl(document);
+  if (!previewUrl || !process.env.VERCEL_TOKEN) {
+    throw new Error("Preview sharing is not configured.");
+  }
+  const url = new URL(previewUrl);
+  if (
+    url.protocol !== "https:" ||
+    url.origin !== new URL(document.previewUrl!).origin ||
+    !url.hostname.endsWith(".vercel.app")
+  ) {
+    throw new Error("Invalid preview URL.");
+  }
+  const params = new URLSearchParams();
+  if (process.env.VERCEL_TEAM_ID) {
+    params.set("teamId", process.env.VERCEL_TEAM_ID);
+  }
+  const response = await fetch(
+    `https://api.vercel.com/aliases/${encodeURIComponent(deploymentId)}/protection-bypass?${params}`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ttl: 3600 }),
+      cache: "no-store",
+    }
+  );
+  if (!response.ok) {
+    throw new Error("Unable to create a temporary preview link.");
+  }
+  const data = (await response.json()) as {
+    protectionBypass?: Record<string, { scope?: string; expires?: number }>;
+  };
+  const share = Object.entries(data.protectionBypass ?? {}).find(
+    ([, access]) =>
+      access.scope === "shareable-link" &&
+      access.expires &&
+      access.expires > Date.now() / 1000 &&
+      // Allow a minute of clock skew when checking Vercel's one-hour expiry.
+      access.expires <= Date.now() / 1000 + 3660
+  );
+  if (!share) {
+    throw new Error("No temporary preview link was returned.");
+  }
+  url.searchParams.set("_vercel_share", share[0]);
+  return url.toString();
+}
 
 export async function createPreview(
   document: StudioDocument,
