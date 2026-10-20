@@ -80,7 +80,9 @@ export const prepareMdxSource = (source: string) =>
         prepared
           .replace(new RegExp(`<${tag}(?=[\\s>])`, "g"), `<${component}`)
           .replace(new RegExp(`</${tag}>`, "g"), `</${component}>`),
-      source
+      source.replace(/<p\b[^>]*>[\s\S]*?<\/p>/g, (paragraph) =>
+        paragraph.replace(/\r?\n(?:[ \t]*\r?\n)+/g, "\n")
+      )
     )
     .replace(/<\/MdxParagraph>\s*<table/g, "</MdxParagraph>\n\n<table")
     .replace(/<\/table>\s*<MdxParagraph/g, "</table>\n\n<MdxParagraph");
